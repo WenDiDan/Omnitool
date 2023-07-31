@@ -1,0 +1,6 @@
+<view class="inputshow">
+    <textarea maxlength='500' placeholder-style="color:#5F5F5F;" bindinput='limitWord' value="{{content}}" placeholder='请输入备注（最多500个字）'></textarea>
+    <view class="clear">
+      <text style="float: right">{{currentWord}}/{{maxWord}}(最多可输入500字)</text>
+    </view>
+  </view>

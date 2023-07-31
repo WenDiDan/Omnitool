@@ -1,0 +1,43 @@
+page {
+    height: 100%;
+    width: 750rpx;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(241, 241, 241);
+  }
+.text-red{
+    color: red
+  }
+  .text-blue{
+    color: blue
+  }
+  .text-yellow{
+    color: yellow
+  }
+  .text-yellow1{
+    color: yellow
+  }
+  .text-green{
+    color: rgb(0, 255, 34)
+  }
+  .text-red{
+    color: rgb(255, 0, 0)
+  }
+   
+  button{
+    margin-top: 30rpx;
+    margin-bottom: 30rpx;
+  }
+  .button-sp-area{
+    margin: 0 auto;
+    width: 60%;
+  }
+  .mini-btn{
+    margin-right: 10rpx;
+  }
+  /*!
+ * WeUI v2.6.0 (https://github.com/weui/weui-wxss)
+ * Copyright 2023 Tencent, Inc.
+ * Licensed under the MIT license
+ */
+.weui-tabbar{position:fixed;bottom:0;left:0;right:0}.weui-tab__panel{padding:100px}
