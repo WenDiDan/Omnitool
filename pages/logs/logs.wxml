@@ -1,6 +1,12 @@
 <!--logs.wxml-->
+<button type="primary" bindtap="clear">清楚日志</button>
 <view class="container log-list">
   <block wx:for="{{logs}}" wx:key="timeStamp" wx:for-item="log">
     <text class="log-item">{{index + 1}}. {{log.date}}</text>
   </block>
 </view>
+<!-- <view>
+  <text class="title" wx:for="{{logs}}">
+    {{index}}、 {{item}}
+   </text>
+</view> -->

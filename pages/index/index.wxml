@@ -1,28 +1,6 @@
-<!--index.wxml-->
-<view class="container">
-  <view class="userinfo">
-    <block wx:if="{{canIUseOpenData}}">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
-      </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
+<view class="inputshow">
+    <textarea maxlength='500' placeholder-style="color:#5F5F5F;" bindinput='limitWord' value="{{content}}" placeholder='请输入备注（最多500个字）'></textarea>
+    <view class="clear">
+      <text style="float: right">{{currentWord}}/{{maxWord}}(最多可输入500字)</text>
+    </view>
   </view>
-  <view class="text-blue">
-    <text class="user-motto">{{time}}</text>
-  </view>
-</view>
-
-
-<view><text>你扫到的是{{scanType}}</text></view>
-<view><text>内容为：{{result}}</text></view>
-<button type="primary" bindtap="scanCode">扫一扫</button>

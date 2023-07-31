@@ -13,7 +13,17 @@ App({
       }
     })
   },
+  onLoad:function (options) {
+    wx.stopPullDownRefresh() 
+    var that = this;
+    //刷新完成后停止下拉刷新动效
+    //后面的业务代码大家自行发挥
+  },
   globalData: {
-    userInfo: null
-  }
+    userInfo: null,
+    items: ['A', 'B', 'C','A-1'],
+    start:'',
+    stop:'',
+    rec:'2',
+  },
 })

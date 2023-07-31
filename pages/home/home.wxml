@@ -1,0 +1,36 @@
+<wxs src="../../utils/subutil.wxs" module="tools" />
+
+<view><text class="weui-form-preview__value,text-blue">当前时间：{{Time}}</text> </view>
+<view><text>你扫到的是：{{scanType}}</text></view>
+<view><text>扫码信息：{{result}}</text></view>
+<view><text>位数:</text>{{result.length == 0 ? '' : result.length}}</view>
+
+<!-- <view wx:if="{{result.length == 0 }}"><text class="text-green">{{result.length}}</text></view>  -->
+<view><text>日期: </text>{{tools.subDate(result)}}{{tools.subDate(result) == '' ? '' : '月'}}{{tools.subDate1(result)}}{{tools.subDate1(result) == '' ? '' : '日'}}</view>
+
+<view wx:if="{{result.length == rec }}"><text class="text-green">合格</text></view> 
+<view wx:elif="{{rec !=0  }}"><text class="text-red">不合格</text></view>
+<view wx:else></view>
+
+
+<view><text>扫码信息：{{tools.start}}{{tools.convertTo(result)}}</text></view>
+
+
+
+
+
+
+<view class="page-body">
+  <view class="btn-area" id="buttonContainer">
+    <button bindtap="scanCode" type="primary">扫描条码 </button>
+    <button type="primary" bindtap="buttonHandler">储存条码</button>
+    <button bindtap="clear1" style="background-color:{{color1}}">清楚</button>
+    <button bind:tap="bindViewTap">点击</button>
+    </view>
+  </view>
+
+历史记录：
+<view><text class="text-blue" wx:for="{{records}}"wx:key="index" >
+{{index+1}}.{{item}} -----{{item.length}}位
+</text> 
+</view>

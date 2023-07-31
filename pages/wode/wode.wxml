@@ -1,0 +1,21 @@
+<wxs src="../../utils/subutil.wxs" module="tools" />
+<!--弹窗模块-->
+<view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+<view class="modal-dialog" wx:if="{{showModal}}">
+    <view class="modal-title">修改姓名</view>
+    <view class="modal-content">
+      <view class="modal-input">
+        <input placeholder-class="input-holder" type="text" maxlength="10" bindinput="inputChangename" class="input" value="{{rec}}"></input>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <view class="btn-cancel" bindtap="onCancelname" data-status="cancel">取消</view>
+      <view class="btn-confirm" bindtap="onConfirmname" data-status="confirm">确定</view>
+    </view>
+  </view>
+<!--视图层-->
+ <view class='edit_name'>
+  <view class='stu_name'>姓名</view>
+  <text class='list' selectable='true'>{{rec}}</text>
+  <view class='edit' bindtap='nameup'>更新</view>
+ </view>
