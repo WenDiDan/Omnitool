@@ -1,0 +1,87 @@
+.history-header {
+    margin-bottom: 30rpx;
+  }
+  
+  .title {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .clear-btn {
+    background: none;
+    color: #ff3b30;
+    font-size: 28rpx;
+    padding: 0;
+    margin: 0;
+    line-height: normal;
+  }
+  
+  .clear-btn::after {
+    border: none;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 120rpx 0;
+  }
+  
+  .empty-icon {
+    font-size: 120rpx;
+    display: block;
+    margin-bottom: 30rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
+    display: block;
+    margin-bottom: 60rpx;
+  }
+  
+  .history-item {
+    background: white;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .item-info {
+    flex: 1;
+  }
+  
+  .item-code {
+    display: block;
+    font-size: 28rpx;
+    color: #333;
+    margin-bottom: 12rpx;
+    word-break: break-all;
+  }
+  
+  .item-meta {
+    display: flex;
+    align-items: center;
+  }
+  
+  .item-type {
+    font-size: 22rpx;
+    color: #007aff;
+    background: #e8f4ff;
+    padding: 4rpx 12rpx;
+    border-radius: 20rpx;
+    margin-right: 16rpx;
+  }
+  
+  .item-time {
+    font-size: 22rpx;
+    color: #999;
+  }
+  
+  .item-arrow {
+    font-size: 40rpx;
+    color: #ccc;
+    margin-left: 20rpx;
+  }

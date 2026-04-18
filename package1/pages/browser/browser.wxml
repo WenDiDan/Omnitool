@@ -1,0 +1,16 @@
+<view class="browser-container">
+  <view class="browser-header">
+    <view class="header-actions">
+      <text class="action-btn" bindtap="goBack">←</text>
+      <text class="action-btn" bindtap="goForward">→</text>
+      <text class="action-btn" bindtap="refresh">↻</text>
+    </view>
+    <input class="url-input" value="{{url}}" bindinput="onUrlInput" bindconfirm="loadUrl" confirm-type="go"/>
+  </view>
+  <web-view 
+    class="webview" 
+    src="{{currentUrl}}" 
+    bindload="onPageLoad" 
+    binderror="onPageError"
+  ></web-view>
+</view>

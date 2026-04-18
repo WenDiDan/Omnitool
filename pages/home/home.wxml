@@ -1,36 +1,46 @@
-<wxs src="../../utils/subutil.wxs" module="tools" />
+<view class="container">
+  <view class="welcome-card card">
+    <text class="welcome-title">欢迎使用条码扫描器</text>
+    <text class="welcome-desc">快速扫描条码、二维码，获取详细信息</text>
+    <button class="btn-primary" bindtap="goToScan">开始扫码</button>
+  </view>
 
-<view><text class="weui-form-preview__value,text-blue">当前时间：{{Time}}</text> </view>
-<view><text>你扫到的是：{{scanType}}</text></view>
-<view><text>扫码信息：{{result}}</text></view>
-<view><text>位数:</text>{{result.length == 0 ? '' : result.length}}</view>
-
-<!-- <view wx:if="{{result.length == 0 }}"><text class="text-green">{{result.length}}</text></view>  -->
-<view><text>日期: </text>{{tools.subDate(result)}}{{tools.subDate(result) == '' ? '' : '月'}}{{tools.subDate1(result)}}{{tools.subDate1(result) == '' ? '' : '日'}}</view>
-
-<view wx:if="{{result.length == rec }}"><text class="text-green">合格</text></view> 
-<view wx:elif="{{rec !=0  }}"><text class="text-red">不合格</text></view>
-<view wx:else></view>
-
-
-<view><text>扫码信息：{{tools.start}}{{tools.convertTo(result)}}</text></view>
-
-
-
-
-
-
-<view class="page-body">
-  <view class="btn-area" id="buttonContainer">
-    <button bindtap="scanCode" type="primary">扫描条码 </button>
-    <button type="primary" bindtap="buttonHandler">储存条码</button>
-    <button bindtap="clear1" style="background-color:{{color1}}">清楚</button>
-    <button bind:tap="bindViewTap">点击</button>
+  <view class="stats-card card">
+    <text class="stats-title">今日统计</text>
+    <view class="stats-content">
+      <view class="stat-item">
+        <text class="stat-number">{{todayCount}}</text>
+        <text class="stat-label">今日扫描</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{totalCount}}</text>
+        <text class="stat-label">累计扫描</text>
+      </view>
     </view>
   </view>
 
-历史记录：
-<view><text class="text-blue" wx:for="{{records}}"wx:key="index" >
-{{index+1}}.{{item}} -----{{item.length}}位
-</text> 
+  <view class="features-card card">
+    <text class="features-title">功能特点</text>
+    <view class="feature-item">
+      <text class="feature-icon">📷</text>
+      <view class="feature-info">
+        <text class="feature-name">快速识别</text>
+        <text class="feature-desc">支持多种条码和二维码类型</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">🔍</text>
+      <view class="feature-info">
+        <text class="feature-name">智能解码</text>
+        <text class="feature-desc">自动识别并解码条码信息</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">📜</text>
+      <view class="feature-info">
+        <text class="feature-name">历史记录</text>
+        <text class="feature-desc">保存所有扫描记录，方便查看</text>
+      </view>
+    </view>
+  </view>
 </view>

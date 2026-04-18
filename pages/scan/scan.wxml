@@ -1,0 +1,117 @@
+<view class="scan-container">
+  <!-- 预览区域（隐藏，只有点击扫码才显示） -->
+  <view class="preview-area" wx:if="{{showPreview}}">
+    <camera 
+      id="camera" 
+      class="camera-preview" 
+      mode="scanCode"
+      bindscancode="onScanCode"
+      bindstop="onCameraStop"
+      binderror="onCameraError"
+      frame-size="medium"
+      flash="{{flashOn ? 'torch' : 'off'}}"
+    >
+    </camera>
+
+    <!-- 扫描框 -->
+    <view class="scan-area">
+      <view class="scan-border">
+        <view class="scan-corner top-left"></view>
+        <view class="scan-corner top-right"></view>
+        <view class="scan-corner bottom-left"></view>
+        <view class="scan-corner bottom-right"></view>
+        <view class="scan-line"></view>
+      </view>
+      <text class="scan-tip">将条码/二维码放入框内</text>
+    </view>
+
+    <!-- 闪光灯控制 -->
+    <view class="flash-control" bindtap="toggleFlash">
+      <text>{{flashOn ? '🔦 关闭闪光灯' : '💡 开启闪光灯'}}</text>
+    </view>
+
+    <!-- 关闭预览按钮 -->
+    <view class="close-preview" bindtap="closePreview">
+      <text>✕ 取消</text>
+    </view>
+  </view>
+
+  <!-- 扫码按钮（未预览时显示） -->
+  <view class="scan-button-area" wx:if="{{!showPreview}}">
+    <view class="scan-btn" bindtap="startScan">
+      <view class="scan-icon">📷</view>
+      <text class="scan-text">点击扫码</text>
+    </view>
+    <view class="scan-options">
+      <view class="option-item" bindtap="selectFromAlbum">
+        <view class="option-icon">🖼️</view>
+        <text>相册选择</text>
+      </view>
+      <view class="option-item" bindtap="manualInput">
+        <view class="option-icon">✏️</view>
+        <text>手动输入</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近扫描记录（可关闭） -->
+  <view class="recent-scans" wx:if="{{recentScans.length > 0 && !showPreview && !hideRecentScans}}">
+    <view class="recent-header">
+      <view class="recent-title-area">
+        <text class="recent-title">最近扫描</text>
+        <text class="recent-count">{{recentScans.length}}条</text>
+      </view>
+      <view class="recent-actions">
+        <text class="recent-close" bindtap="closeRecentScans">✕ 关闭</text>
+        <text class="recent-more" bindtap="goToHistory">查看全部 ></text>
+      </view>
+    </view>
+    <scroll-view scroll-x class="recent-list">
+      <view 
+        class="recent-item" 
+        wx:for="{{recentScans}}" 
+        wx:key="index"
+        bindtap="viewDetail"
+        data-code="{{item.code}}"
+      >
+        <text class="recent-icon">📱</text>
+        <text class="recent-code">{{item.code}}</text>
+        <text class="recent-type">{{item.type}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 关闭后的提示条 -->
+  <view class="recent-closed-tip" wx:if="{{hideRecentScans && recentScans.length > 0 && !showPreview}}" bindtap="showRecentScans">
+    <text>📜 最近扫描已关闭，点击重新显示</text>
+  </view>
+</view>
+
+<!-- 结果弹窗 -->
+<view class="result-modal" wx:if="{{showResult}}" bindtap="closeResult">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">扫描结果</text>
+      <text class="modal-close" bindtap="closeResult">✕</text>
+    </view>
+    <view class="modal-body">
+      <view class="result-code">
+        <text class="result-label">条码内容：</text>
+        <text class="result-value" selectable>{{scanResult.code}}</text>
+      </view>
+      <view class="result-type">
+        <text class="result-label">条码类型：</text>
+        <text class="result-value">{{scanResult.type}}</text>
+      </view>
+      <view class="result-time">
+        <text class="result-label">扫描时间：</text>
+        <text class="result-value">{{scanResult.time}}</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn-copy" bindtap="copyResult">复制</button>
+      <button class="btn-search" bindtap="searchResult">搜索</button>
+      <button class="btn-decode" bindtap="decodeResult">解码</button>
+    </view>
+  </view>
+</view>

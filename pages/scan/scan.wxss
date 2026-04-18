@@ -1,0 +1,403 @@
+/* 扫码按钮区域 */
+.scan-button-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .scan-btn {
+    background: white;
+    border-radius: 120rpx;
+    padding: 50rpx 80rpx;
+    text-align: center;
+    box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+    margin-bottom: 80rpx;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 30rpx 50rpx rgba(0, 0, 0, 0.3);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .scan-icon {
+    font-size: 120rpx;
+    display: block;
+    margin-bottom: 20rpx;
+  }
+  
+  .scan-text {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .scan-options {
+    display: flex;
+    gap: 60rpx;
+  }
+  
+  .option-item {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 60rpx;
+    padding: 20rpx 40rpx;
+    text-align: center;
+    color: white;
+  }
+  
+  .option-icon {
+    font-size: 48rpx;
+    display: block;
+    margin-bottom: 10rpx;
+  }
+  
+  .option-item text {
+    font-size: 24rpx;
+  }
+  
+  /* 预览区域 */
+  .preview-area {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+  }
+  
+  .camera-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .scan-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  
+  .scan-border {
+    position: relative;
+    width: 500rpx;
+    height: 500rpx;
+    border: 2rpx solid rgba(255, 255, 255, 0.8);
+  }
+  
+  .scan-corner {
+    position: absolute;
+    width: 60rpx;
+    height: 60rpx;
+    border-color: #007aff;
+    border-style: solid;
+  }
+  
+  .top-left {
+    top: -4rpx;
+    left: -4rpx;
+    border-top-width: 6rpx;
+    border-left-width: 6rpx;
+  }
+  
+  .top-right {
+    top: -4rpx;
+    right: -4rpx;
+    border-top-width: 6rpx;
+    border-right-width: 6rpx;
+  }
+  
+  .bottom-left {
+    bottom: -4rpx;
+    left: -4rpx;
+    border-bottom-width: 6rpx;
+    border-left-width: 6rpx;
+  }
+  
+  .bottom-right {
+    bottom: -4rpx;
+    right: -4rpx;
+    border-bottom-width: 6rpx;
+    border-right-width: 6rpx;
+  }
+  
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4rpx;
+    background: linear-gradient(90deg, transparent, #007aff, transparent);
+    animation: scan 2s linear infinite;
+  }
+  
+  @keyframes scan {
+    0% {
+      top: 0;
+    }
+    100% {
+      top: 100%;
+    }
+  }
+  
+  .scan-tip {
+    display: block;
+    margin-top: 40rpx;
+    color: white;
+    font-size: 28rpx;
+    text-align: center;
+  }
+  
+  .flash-control {
+    position: absolute;
+    bottom: 200rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20rpx 40rpx;
+    border-radius: 60rpx;
+    color: white;
+    font-size: 28rpx;
+  }
+  
+  .close-preview {
+    position: absolute;
+    top: 100rpx;
+    right: 30rpx;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15rpx 30rpx;
+    border-radius: 60rpx;
+    color: white;
+    font-size: 28rpx;
+  }
+  
+  /* 最近扫描记录 */
+  .recent-scans {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 30rpx;
+    border-top-left-radius: 30rpx;
+    border-top-right-radius: 30rpx;
+  }
+  
+  .recent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+  
+  .recent-title {
+    font-size: 32rpx;
+    font-weight: bold;
+  }
+  
+  .recent-more {
+    font-size: 26rpx;
+    color: #007aff;
+  }
+  
+  .recent-list {
+    white-space: nowrap;
+  }
+  
+  .recent-item {
+    display: inline-block;
+    width: 200rpx;
+    margin-right: 20rpx;
+    text-align: center;
+  }
+  
+  .recent-icon {
+    font-size: 60rpx;
+    display: block;
+    margin-bottom: 12rpx;
+  }
+  
+  .recent-code {
+    display: block;
+    font-size: 24rpx;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .recent-type {
+    display: block;
+    font-size: 20rpx;
+    color: #999;
+    margin-top: 8rpx;
+  }
+  
+  /* 结果弹窗 */
+  .result-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    width: 600rpx;
+    background: white;
+    border-radius: 24rpx;
+    overflow: hidden;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx;
+    border-bottom: 1rpx solid #e5e5e5;
+  }
+  
+  .modal-title {
+    font-size: 36rpx;
+    font-weight: bold;
+  }
+  
+  .modal-close {
+    font-size: 48rpx;
+    color: #999;
+  }
+  
+  .modal-body {
+    padding: 30rpx;
+  }
+  
+  .result-code, .result-type, .result-time {
+    margin-bottom: 20rpx;
+  }
+  
+  .result-label {
+    font-size: 28rpx;
+    color: #666;
+    margin-right: 20rpx;
+  }
+  
+  .result-value {
+    font-size: 28rpx;
+    color: #333;
+    word-break: break-all;
+  }
+  
+  .modal-footer {
+    display: flex;
+    padding: 30rpx;
+    border-top: 1rpx solid #e5e5e5;
+  }
+  
+  .btn-copy, .btn-search, .btn-decode {
+    flex: 1;
+    margin: 0 10rpx;
+    height: 70rpx;
+    line-height: 70rpx;
+    font-size: 28rpx;
+    border-radius: 12rpx;
+  }
+  
+  .btn-copy {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .btn-search {
+    background: #007aff;
+    color: white;
+  }
+  
+  .btn-decode {
+    background: #34c759;
+    color: white;
+  }
+  /* 在原有样式基础上添加以下样式 */
+
+.recent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+  
+  .recent-title-area {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+  }
+  
+  .recent-title {
+    font-size: 32rpx;
+    font-weight: bold;
+  }
+  
+  .recent-count {
+    font-size: 24rpx;
+    color: #999;
+  }
+  
+  .recent-actions {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+  }
+  
+  .recent-more {
+    font-size: 26rpx;
+    color: #007aff;
+  }
+  
+  .recent-close {
+    font-size: 24rpx;
+    color: #ff3b30;
+    padding: 8rpx 16rpx;
+    background: #fff5f5;
+    border-radius: 20rpx;
+  }
+  
+  .recent-closed-tip {
+    position: absolute;
+    bottom: 30rpx;
+    left: 30rpx;
+    right: 30rpx;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 24rpx;
+    border-radius: 60rpx;
+    text-align: center;
+    color: white;
+    font-size: 28rpx;
+  }
+  
+  .recent-closed-tip:active {
+    background: rgba(0, 0, 0, 0.9);
+  }

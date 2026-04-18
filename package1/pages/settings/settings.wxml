@@ -1,0 +1,25 @@
+<view class="container">
+  <view class="card">
+    <view class="setting-item flex-between">
+      <text class="setting-label">扫描声音</text>
+      <switch checked="{{settings.soundEnabled}}" bindchange="toggleSound" color="#007aff"/>
+    </view>
+    <view class="divider"></view>
+    <view class="setting-item flex-between">
+      <text class="setting-label">震动反馈</text>
+      <switch checked="{{settings.vibrationEnabled}}" bindchange="toggleVibration" color="#007aff"/>
+    </view>
+    <view class="divider"></view>
+    <view class="setting-item flex-between">
+      <text class="setting-label">自动复制</text>
+      <switch checked="{{settings.autoCopy}}" bindchange="toggleAutoCopy" color="#007aff"/>
+    </view>
+    <view class="divider"></view>
+    <view class="setting-item flex-between">
+      <text class="setting-label">历史记录上限</text>
+      <picker mode="selector" range="{{historyLimits}}" bindchange="changeHistoryLimit">
+        <text class="setting-value">{{settings.historyLimit}}条</text>
+      </picker>
+    </view>
+  </view>
+</view>

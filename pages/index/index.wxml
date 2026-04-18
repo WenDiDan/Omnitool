@@ -1,6 +1,47 @@
-<view class="inputshow">
-    <textarea maxlength='500' placeholder-style="color:#5F5F5F;" bindinput='limitWord' value="{{content}}" placeholder='请输入备注（最多500个字）'></textarea>
-    <view class="clear">
-      <text style="float: right">{{currentWord}}/{{maxWord}}(最多可输入500字)</text>
+<view class="container">
+  <view class="input-card card">
+    <textarea 
+      class="code-input" 
+      placeholder="请输入或粘贴条码内容"
+      value="{{inputCode}}"
+      bindinput="onInput"
+      maxlength="-1"
+    ></textarea>
+    <button class="btn-primary" bindtap="decode">解码</button>
+  </view>
+
+  <view class="result-card card" wx:if="{{decodedResult}}">
+    <view class="result-header">
+      <text class="result-title">解码结果</text>
+      <text class="result-copy" bindtap="copyResult">复制</text>
+    </view>
+    <view class="result-content">
+      <view class="info-row">
+        <text class="info-label">条码类型：</text>
+        <text class="info-value">{{decodedResult.type}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">条码内容：</text>
+        <text class="info-value" selectable>{{decodedResult.data}}</text>
+      </view>
+      <view class="info-row" wx:if="{{decodedResult.country}}">
+        <text class="info-label">国家/地区：</text>
+        <text class="info-value">{{decodedResult.country}}</text>
+      </view>
+      <view class="info-row" wx:if="{{decodedResult.manufacturerCode}}">
+        <text class="info-label">厂商代码：</text>
+        <text class="info-value">{{decodedResult.manufacturerCode}}</text>
+      </view>
+      <view class="info-row" wx:if="{{decodedResult.productCode}}">
+        <text class="info-label">产品代码：</text>
+        <text class="info-value">{{decodedResult.productCode}}</text>
+      </view>
+      <view class="info-row" wx:if="{{decodedResult.valid !== undefined}}">
+        <text class="info-label">校验结果：</text>
+        <text class="info-value {{decodedResult.valid ? 'valid' : 'invalid'}}">
+          {{decodedResult.valid ? '有效' : '无效'}}
+        </text>
+      </view>
     </view>
   </view>
+</view>

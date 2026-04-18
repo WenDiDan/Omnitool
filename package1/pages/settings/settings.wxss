@@ -1,0 +1,13 @@
+.setting-item {
+    padding: 30rpx 0;
+  }
+  
+  .setting-label {
+    font-size: 30rpx;
+    color: #333;
+  }
+  
+  .setting-value {
+    font-size: 28rpx;
+    color: #666;
+  }

@@ -1,47 +1,79 @@
 {
-    "pages":[
-    
-        "pages/home/home", 
-        "pages/index/index",
-        "pages/new/new",
-        "pages/wode/wode",
-        "pages/logs/logs"
-      ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#3cff2a",
-    "navigationBarTextStyle":"white"
-  },
-  "style": "v2",
-  "sitemapLocation": "sitemap.json",
-
-
-  "useExtendedLib": {
+    "pages": [
+      "pages/scan/scan",
+      "pages/home/home",
+      "pages/index/index",
+      "pages/my/my",
+      "pages/history/history"
+    ],
+    "lazyCodeLoading": "requiredComponents",
+    "entryPagePath": "pages/scan/scan",
+    "window": {
+      "backgroundTextStyle": "light",
+      "navigationBarBackgroundColor": "#007aff",
+      "navigationBarTitleText": "条码扫描器",
+      "navigationBarTextStyle": "white",
+      "enablePullDownRefresh": false,
+      "backgroundColor": "#f8f8f8",
+      "pageOrientation": "portrait",
+      "navigationStyle": "default"
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json",
+    "useExtendedLib": {
       "weui": true
     },
-"tabBar": {
-        "selectedColor":"#33a3dc", 
-        "list": [
-          {
-            "pagePath": "pages/home/home",
-            "text": "首页",
-            "iconPath": "/images/shouye1.png",
-            "selectedIconPath": "/images/shouye.png"
-          },
-          {
-            "pagePath": "pages/new/new",
-            "text": "批量扫码"       
-         },
-         {
-            "pagePath": "pages/index/index",
-            "text": "生成"       
-         },
-         {
-            "pagePath": "pages/wode/wode",
-            "text": "我的",
-            "iconPath": "/images/wode1.png",
-            "selectedIconPath": "/images/wode.png"       
-         }
+    "tabBar": {
+      "color": "#999999",
+      "selectedColor": "#007aff",
+      "backgroundColor": "#ffffff",
+      "borderStyle": "black",
+      "list": [
+        {
+          "pagePath": "pages/scan/scan",
+          "text": "扫码",
+          "iconPath": "images/scan.png",
+          "selectedIconPath": "images/scan_selected.png"
+        },
+        {
+          "pagePath": "pages/home/home",
+          "text": "首页",
+          "iconPath": "images/home.png",
+          "selectedIconPath": "images/home_selected.png"
+        },
+        {
+          "pagePath": "pages/index/index",
+          "text": "解密",
+          "iconPath": "images/decode.png",
+          "selectedIconPath": "images/decode_selected.png"
+        },
+        {
+          "pagePath": "pages/my/my",
+          "text": "我的",
+          "iconPath": "images/my.png",
+          "selectedIconPath": "images/my_selected.png"
+        }
+      ]
+    },
+    "subPackages": [
+      {
+        "root": "package1",
+        "name": "tools",
+        "pages": [
+          "pages/settings/settings",
+          "pages/browser/browser"
         ]
       }
-}
+    ],
+    "permission": {
+      "scope.camera": {
+        "desc": "用于扫码功能，需要访问您的相机"
+      }
+    },
+    "requiredPrivateInfos": [],
+    "debug": false,
+    "networkTimeout": {
+      "request": 10000,
+      "downloadFile": 10000
+    }
+  }

@@ -1,0 +1,68 @@
+.user-card {
+    align-items: center;
+  }
+  
+  .avatar {
+    width: 120rpx;
+    height: 120rpx;
+    background: linear-gradient(135deg, #007aff, #00c6ff);
+    border-radius: 60rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60rpx;
+    margin-right: 30rpx;
+  }
+  
+  .user-info {
+    flex: 1;
+  }
+  
+  .user-name {
+    display: block;
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10rpx;
+  }
+  
+  .user-stats {
+    font-size: 24rpx;
+    color: #999;
+  }
+  
+  .menu-item {
+    padding: 30rpx 0;
+  }
+  
+  .menu-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .menu-icon {
+    font-size: 40rpx;
+    margin-right: 20rpx;
+  }
+  
+  .menu-title {
+    font-size: 30rpx;
+    color: #333;
+  }
+  
+  .menu-arrow {
+    font-size: 40rpx;
+    color: #ccc;
+  }
+  
+  .menu-value {
+    font-size: 26rpx;
+    color: #999;
+  }
+  
+  .version-info {
+    text-align: center;
+    margin-top: 60rpx;
+    font-size: 24rpx;
+    color: #ccc;
+  }
