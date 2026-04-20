@@ -1,0 +1,9 @@
+{
+  "name": "fetchWeb",
+  "version": "1.0.0",
+  "description": "代理获取网页内容",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

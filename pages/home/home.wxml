@@ -22,21 +22,21 @@
   <view class="features-card card">
     <text class="features-title">功能特点</text>
     <view class="feature-item">
-      <text class="feature-icon">📷</text>
+      <image class="feature-icon" src="/images/icon_scan.png" mode="aspectFit"/>
       <view class="feature-info">
         <text class="feature-name">快速识别</text>
         <text class="feature-desc">支持多种条码和二维码类型</text>
       </view>
     </view>
     <view class="feature-item">
-      <text class="feature-icon">🔍</text>
+      <image class="feature-icon" src="/images/icon_search.png" mode="aspectFit"/>
       <view class="feature-info">
         <text class="feature-name">智能解码</text>
         <text class="feature-desc">自动识别并解码条码信息</text>
       </view>
     </view>
     <view class="feature-item">
-      <text class="feature-icon">📜</text>
+      <image class="feature-icon" src="/images/icon_history.png" mode="aspectFit"/>
       <view class="feature-info">
         <text class="feature-name">历史记录</text>
         <text class="feature-desc">保存所有扫描记录，方便查看</text>

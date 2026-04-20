@@ -5,7 +5,7 @@
   </view>
   
   <view wx:if="{{historyList.length === 0}}" class="empty-state">
-    <text class="empty-icon">📭</text>
+    <image class="empty-icon" src="/images/icon_empty.png" mode="aspectFit"/>
     <text class="empty-text">暂无扫描记录</text>
     <button class="btn-primary" bindtap="goToScan">去扫码</button>
   </view>

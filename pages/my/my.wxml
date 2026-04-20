@@ -1,47 +1,244 @@
-<view class="container">
-  <view class="user-card card flex-row">
-    <view class="avatar">👤</view>
-    <view class="user-info">
-      <text class="user-name">条码扫描器用户</text>
-      <text class="user-stats">已扫描 {{totalCount}} 次</text>
+<view class="page-wrap">
+  <!-- 头部区域 -->
+  <view class="header-section">
+    <view class="header-bg"></view>
+    <view class="header-slant"></view>
+
+    <!-- 未登录状态 -->
+    <view class="profile-content" wx:if="{{!isLoggedIn}}" bindtap="showLogin">
+      <view class="avatar-wrap">
+        <view class="avatar-img avatar-default">
+          <image class="avatar-placeholder-icon" src="/images/icon_user_white.png" mode="aspectFit"/>
+        </view>
+        <view class="avatar-ring"></view>
+      </view>
+      <view class="user-info">
+        <text class="nick-text">未登录</text>
+        <text class="user-desc">点击登录享受更多功能</text>
+      </view>
+      <view class="login-btn">
+        <text class="login-btn-text">微信登录</text>
+      </view>
+    </view>
+
+    <!-- 已登录状态 -->
+    <view class="profile-content" wx:if="{{isLoggedIn}}" bindtap="onEditProfile">
+      <view class="avatar-wrap">
+        <image class="avatar-img" src="{{avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+        <view class="avatar-ring"></view>
+        <view class="avatar-badge">
+          <image class="avatar-badge-icon" src="/images/icon_camera_white.png" mode="aspectFit"/>
+        </view>
+      </view>
+      <view class="user-info">
+        <view class="nick-row">
+          <text class="nick-text">{{nickName || '点击设置昵称'}}</text>
+          <view class="role-badge role-{{userInfo.role || 'user'}}">
+            <text class="role-badge-text">{{roleLabel}}</text>
+          </view>
+        </view>
+        <text class="user-desc">ID: {{openidShort || '---'}}</text>
+      </view>
     </view>
   </view>
 
-  <view class="menu-card card">
-    <view class="menu-item flex-between" bindtap="goToHistory">
-      <view class="menu-left">
-        <text class="menu-icon">📜</text>
-        <text class="menu-title">扫描历史</text>
+  <!-- 身份状态卡（已登录才显示） -->
+  <view class="identity-card" wx:if="{{isLoggedIn && userInfo}}">
+    <view class="identity-row">
+      <view class="identity-icon-box">
+        <image class="identity-icon" src="/images/icon_device.png" mode="aspectFit"/>
       </view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="divider"></view>
-    <view class="menu-item flex-between" bindtap="goToSettings">
-      <view class="menu-left">
-        <text class="menu-icon">⚙️</text>
-        <text class="menu-title">设置</text>
+      <view class="identity-info">
+        <text class="identity-label">身份状态</text>
+        <text class="identity-value">{{roleLabel}} · 权限等级 {{userInfo.level || 1}}</text>
       </view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="divider"></view>
-    <view class="menu-item flex-between" bindtap="clearCache">
-      <view class="menu-left">
-        <text class="menu-icon">🗑️</text>
-        <text class="menu-title">清除缓存</text>
-      </view>
-      <text class="menu-value">{{cacheSize}}</text>
-    </view>
-    <view class="divider"></view>
-    <view class="menu-item flex-between" bindtap="showAbout">
-      <view class="menu-left">
-        <text class="menu-icon">ℹ️</text>
-        <text class="menu-title">关于</text>
-      </view>
-      <text class="menu-arrow">›</text>
+      <view class="identity-status-dot {{isAdmin ? 'dot-admin' : ''}}"></view>
     </view>
   </view>
 
-  <view class="version-info">
-    <text>版本 1.0.0</text>
+  <!-- 统计卡片 -->
+  <view class="stats-section">
+    <view class="stat-item stat-main">
+      <text class="stat-num">{{totalCount}}</text>
+      <text class="stat-lbl">累计扫描</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num accent">{{todayCount}}</text>
+      <text class="stat-lbl">今日</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{typeCount}}</text>
+      <text class="stat-lbl">条码类型</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" wx:if="{{isAdmin}}" bindtap="toggleAdminPanel">
+        <view class="menu-icon-circle" style="background: #0D1B2A;">
+          <image class="menu-icon" src="/images/icon_settings_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name">用户管理</text>
+          <text class="menu-hint">{{userTotal}} 位用户</text>
+        </view>
+        <text class="menu-arrow">{{showAdminPanel ? '▾' : '›'}}</text>
+      </view>
+
+      <view class="menu-item" bindtap="goToHistory">
+        <view class="menu-icon-circle" style="background: #3D8B7A;">
+          <image class="menu-icon" src="/images/icon_history_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name">扫描历史</text>
+          <text class="menu-hint">{{totalCount}} 条记录</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-sep"></view>
+      <view class="menu-item" bindtap="goToSettings">
+        <view class="menu-icon-circle" style="background: #E07A5F;">
+          <image class="menu-icon" src="/images/icon_settings_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name">设置</text>
+          <text class="menu-hint">声音、显示等偏好</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" wx:if="{{isLoggedIn}}" bindtap="logout">
+        <view class="menu-icon-circle" style="background: #C0392B;">
+          <image class="menu-icon" src="/images/icon_delete_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name" style="color: #C0392B;">退出登录</text>
+          <text class="menu-hint">切换账号或重新登录</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-sep" wx:if="{{isLoggedIn}}"></view>
+      <view class="menu-item" bindtap="clearCache">
+        <view class="menu-icon-circle" style="background: #5B8E7D;">
+          <image class="menu-icon" src="/images/icon_delete_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name">清除缓存</text>
+          <text class="menu-hint">{{cacheSize}}</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-sep"></view>
+      <view class="menu-item" bindtap="showAbout">
+        <view class="menu-icon-circle" style="background: #8D6E63;">
+          <image class="menu-icon" src="/images/icon_info_white.png" mode="aspectFit"/>
+        </view>
+        <view class="menu-body">
+          <text class="menu-name">关于</text>
+          <text class="menu-hint">版本 1.0.0</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 管理员面板 -->
+  <view class="admin-panel" wx:if="{{showAdminPanel && isAdmin}}">
+    <!-- 面板头部 -->
+    <view class="admin-header">
+      <view class="admin-header-left">
+        <text class="admin-title">用户管理</text>
+        <text class="admin-count">{{userTotal}} 人</text>
+      </view>
+      <view class="admin-refresh" bindtap="refreshAdmin">
+        <text class="admin-refresh-text">刷新</text>
+      </view>
+    </view>
+
+    <!-- 角色统计 -->
+    <view class="admin-stats">
+      <view class="admin-stat-item">
+        <text class="admin-stat-num admin-stat-admin">{{adminStatAdmin}}</text>
+        <text class="admin-stat-lbl">管理员</text>
+      </view>
+      <view class="admin-stat-item">
+        <text class="admin-stat-num admin-stat-vip">{{adminStatVip}}</text>
+        <text class="admin-stat-lbl">VIP</text>
+      </view>
+      <view class="admin-stat-item">
+        <text class="admin-stat-num admin-stat-user">{{adminStatUser}}</text>
+        <text class="admin-stat-lbl">用户</text>
+      </view>
+      <view class="admin-stat-item">
+        <text class="admin-stat-num admin-stat-blocked">{{adminStatBlocked}}</text>
+        <text class="admin-stat-lbl">封禁</text>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="admin-loading" wx:if="{{adminLoading}}">
+      <view class="admin-loading-spinner"></view>
+      <text class="admin-loading-text">加载中...</text>
+    </view>
+
+    <!-- 用户列表 -->
+    <view class="user-list" wx:if="{{!adminLoading}}">
+      <view class="user-row" wx:for="{{userList}}" wx:key="openid">
+        <view class="user-avatar-sm">
+          <image class="user-avatar-img" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+          <view class="user-online-dot role-dot-{{item.role}}" wx:if="{{item.role !== 'blocked'}}"></view>
+        </view>
+        <view class="user-info-sm">
+          <view class="user-name-row">
+            <text class="user-name-sm">{{item.nickName || '微信用户'}}</text>
+          </view>
+          <text class="user-meta-sm">ID: {{item.openid.slice(-8).toUpperCase()}} · {{item.createdAt ? item.createdAt.slice(0,10) : '未知'}}</text>
+        </view>
+        <view class="user-role-tag role-{{item.role}}" bindtap="onSetRole" data-openid="{{item.openid}}" data-role="{{item.role}}">
+          <text class="user-role-text">{{item.roleLabel}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="admin-empty" wx:if="{{!adminLoading && userList.length === 0}}">
+      <text class="admin-empty-icon">👥</text>
+      <text class="admin-empty-text">暂无用户数据</text>
+      <text class="admin-empty-hint">用户登录后将自动出现在这里</text>
+    </view>
+  </view>
+
+  <!-- 底部 -->
+  <view class="footer">
+    <text class="footer-text">条码扫描器 v1.0.0</text>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showProfileModal}}" bindtap="closeProfileModal">
+    <view class="modal-box" catchtap="">
+      <view class="modal-header">
+        <view class="modal-accent-bar"></view>
+        <text class="modal-title">编辑资料</text>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">头像</text>
+        <button class="profile-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onEditChooseAvatar">
+          <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+          <text class="profile-avatar-hint">点击更换</text>
+        </button>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">昵称</text>
+        <input class="profile-nick-input" type="nickname" value="{{editNickName}}" placeholder="请输入昵称" bindinput="onEditNickInput"/>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="closeProfileModal">取消</view>
+        <view class="modal-btn modal-confirm" bindtap="confirmProfile">保存</view>
+      </view>
+    </view>
   </view>
 </view>

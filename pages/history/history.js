@@ -31,8 +31,9 @@ Page({
 
   viewDetail(e) {
     const code = e.currentTarget.dataset.code;
-    wx.navigateTo({
-      url: `/pages/scan/scan?code=${encodeURIComponent(code)}`
+    app.globalData.pendingScanCode = code;
+    wx.switchTab({
+      url: '/pages/scan/scan'
     });
   },
 

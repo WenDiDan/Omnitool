@@ -4,10 +4,10 @@
   
   .setting-label {
     font-size: 30rpx;
-    color: #333;
+    color: #0D1B2A;
   }
   
   .setting-value {
     font-size: 28rpx;
-    color: #666;
+    color: #3D8B7A;
   }

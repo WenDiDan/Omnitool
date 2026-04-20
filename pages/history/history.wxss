@@ -5,12 +5,12 @@
   .title {
     font-size: 36rpx;
     font-weight: bold;
-    color: #333;
+    color: #0D1B2A;
   }
   
   .clear-btn {
     background: none;
-    color: #ff3b30;
+    color: #E07A5F;
     font-size: 28rpx;
     padding: 0;
     margin: 0;
@@ -27,9 +27,10 @@
   }
   
   .empty-icon {
-    font-size: 120rpx;
+    width: 120rpx;
+    height: 120rpx;
     display: block;
-    margin-bottom: 30rpx;
+    margin: 0 auto 30rpx;
   }
   
   .empty-text {
@@ -41,12 +42,13 @@
   
   .history-item {
     background: white;
-    border-radius: 16rpx;
+    border-radius: 20rpx;
     padding: 30rpx;
     margin-bottom: 20rpx;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0 2rpx 16rpx rgba(13,27,42,0.05);
   }
   
   .item-info {
@@ -56,7 +58,7 @@
   .item-code {
     display: block;
     font-size: 28rpx;
-    color: #333;
+    color: #0D1B2A;
     margin-bottom: 12rpx;
     word-break: break-all;
   }
@@ -68,8 +70,8 @@
   
   .item-type {
     font-size: 22rpx;
-    color: #007aff;
-    background: #e8f4ff;
+    color: #3D8B7A;
+    background: #EFF5F3;
     padding: 4rpx 12rpx;
     border-radius: 20rpx;
     margin-right: 16rpx;
@@ -82,6 +84,6 @@
   
   .item-arrow {
     font-size: 40rpx;
-    color: #ccc;
+    color: #C8C4B8;
     margin-left: 20rpx;
   }

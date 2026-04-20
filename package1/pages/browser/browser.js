@@ -1,58 +1,134 @@
 Page({
-    data: {
-      url: '',
-      currentUrl: '',
-      canGoBack: false,
-      canGoForward: false
-    },
-  
-    onLoad(options) {
-      if (options.url) {
-        const url = decodeURIComponent(options.url);
-        this.setData({
-          url: url,
-          currentUrl: url
-        });
-      }
-    },
-  
-    onUrlInput(e) {
-      this.setData({ url: e.detail.value });
-    },
-  
-    loadUrl() {
-      let url = this.data.url;
-      if (!url.startsWith('http')) {
-        url = 'https://' + url;
+  data: {
+    url: '',
+    displayUrl: '',
+    title: '',
+    paragraphs: [],
+    images: [],
+    items: [],
+    isSearch: false,
+    searchKeyword: '',
+    loading: false,
+    error: false,
+    errorMsg: ''
+  },
+
+  onLoad(options) {
+    if (options.url) {
+      const url = decodeURIComponent(options.url)
+      const type = options.type || 'page'
+      const isSearch = type === 'search'
+      let searchKeyword = ''
+      if (isSearch) {
+        const wdMatch = url.match(/[?&](?:wd|q|query|word)=([^&]+)/i)
+        if (wdMatch) searchKeyword = decodeURIComponent(wdMatch[1])
       }
       this.setData({
-        currentUrl: url,
-        url: url
-      });
-    },
-  
-    goBack() {
-      const webview = wx.createWebViewContext();
-      webview.goBack();
-    },
-  
-    goForward() {
-      const webview = wx.createWebViewContext();
-      webview.goForward();
-    },
-  
-    refresh() {
-      this.setData({
-        currentUrl: this.data.currentUrl
-      });
-    },
-  
-    onPageLoad() {
-      console.log('页面加载完成');
-    },
-  
-    onPageError(e) {
-      console.error('页面加载错误', e);
-      wx.showToast({ title: '页面加载失败', icon: 'none' });
+        url,
+        displayUrl: this.shortenUrl(url),
+        isSearch,
+        searchKeyword
+      })
+      this.loadPage(url, type)
     }
-  });
+  },
+
+  shortenUrl(url) {
+    try {
+      const u = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+      return u.length > 35 ? u.substring(0, 35) + '...' : u
+    } catch (e) {
+      return url
+    }
+  },
+
+  loadPage(url, type) {
+    this.setData({ loading: true, error: false, paragraphs: [], images: [], items: [], title: '' })
+
+    wx.cloud.callFunction({
+      name: 'fetchWeb',
+      data: { url, type: type || 'page' },
+      success: (res) => {
+        const result = res.result
+        if (result.code === 0) {
+          this.setData({
+            title: result.title || '',
+            paragraphs: result.paragraphs || [],
+            images: result.images || [],
+            items: result.items || [],
+            loading: false
+          })
+        } else {
+          this.setData({
+            loading: false,
+            error: true,
+            errorMsg: result.msg || '加载失败'
+          })
+        }
+      },
+      fail: (err) => {
+        this.setData({
+          loading: false,
+          error: true,
+          errorMsg: '网络请求失败，请检查云函数是否已部署'
+        })
+        console.error('云函数调用失败', err)
+      }
+    })
+  },
+
+  retry() {
+    if (this.data.url) {
+      const type = this.data.isSearch ? 'search' : 'page'
+      this.loadPage(this.data.url, type)
+    }
+  },
+
+  refreshPage() {
+    this.retry()
+  },
+
+  goBack() {
+    wx.navigateBack({ delta: 1 })
+  },
+
+  copyUrl() {
+    wx.setClipboardData({
+      data: this.data.url,
+      success: () => { wx.showToast({ title: '链接已复制', icon: 'success' }) }
+    })
+  },
+
+  showActions() {
+    wx.showActionSheet({
+      itemList: ['复制链接', '在浏览器中打开', '刷新页面'],
+      success: (res) => {
+        switch (res.tapIndex) {
+          case 0: this.copyUrl(); break
+          case 1:
+            wx.setClipboardData({
+              data: this.data.url,
+              success: () => { wx.showToast({ title: '链接已复制，请在浏览器中打开', icon: 'none', duration: 2000 }) }
+            })
+            break
+          case 2: this.refreshPage(); break
+        }
+      }
+    })
+  },
+
+  openLink(e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    // 跳转到新页面加载链接
+    wx.navigateTo({
+      url: `/package1/pages/browser/browser?url=${encodeURIComponent(url)}`
+    })
+  },
+
+  previewImage(e) {
+    const src = e.currentTarget.dataset.src
+    const images = this.data.images.map(img => img.src)
+    wx.previewImage({ current: src, urls: images })
+  }
+})

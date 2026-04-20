@@ -10,11 +10,11 @@
     "entryPagePath": "pages/scan/scan",
     "window": {
       "backgroundTextStyle": "light",
-      "navigationBarBackgroundColor": "#007aff",
+      "navigationBarBackgroundColor": "#0D1B2A",
       "navigationBarTitleText": "条码扫描器",
       "navigationBarTextStyle": "white",
       "enablePullDownRefresh": false,
-      "backgroundColor": "#f8f8f8",
+      "backgroundColor": "#F4F1DE",
       "pageOrientation": "portrait",
       "navigationStyle": "default"
     },
@@ -25,7 +25,7 @@
     },
     "tabBar": {
       "color": "#999999",
-      "selectedColor": "#007aff",
+      "selectedColor": "#3D8B7A",
       "backgroundColor": "#ffffff",
       "borderStyle": "black",
       "list": [
@@ -61,7 +61,8 @@
         "name": "tools",
         "pages": [
           "pages/settings/settings",
-          "pages/browser/browser"
+          "pages/browser/browser",
+          "pages/regcode/regcode"
         ]
       }
     ],

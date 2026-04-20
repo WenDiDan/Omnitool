@@ -1,52 +1,130 @@
 {
-    "description": "项目配置文件",
-    "packOptions": {
-        "ignore": [],
-        "include": []
+  "appid": "wxba4a79e8e7f2c608",
+  "description": "项目配置文件",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".codebuddy"
+      },
+      {
+        "type": "folder",
+        "value": ".cloudbase"
+      },
+      {
+        "type": "folder",
+        "value": ".vscode"
+      },
+      {
+        "type": "folder",
+        "value": ".rules"
+      },
+      {
+        "type": "folder",
+        "value": "codebuddy-plugin"
+      },
+      {
+        "type": "folder",
+        "value": "rules"
+      },
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "file",
+        "value": ".mcp.json"
+      },
+      {
+        "type": "file",
+        "value": ".eslintrc.js"
+      },
+      {
+        "type": "file",
+        "value": ".env.local"
+      },
+      {
+        "type": "file",
+        "value": "cloudbaserc.json"
+      },
+      {
+        "type": "file",
+        "value": "CODEBUDDY.md"
+      }
+    ],
+    "include": []
+  },
+  "miniprogramRoot": "./",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": false,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "ignoreDevUnusedFiles": false,
+    "ignoreUploadUnusedFiles": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "lazyloadPlaceholderEnable": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
     },
-    "setting": {
-        "bundle": false,
-        "userConfirmedBundleSwitch": false,
-        "urlCheck": true,
-        "scopeDataCheck": false,
-        "coverView": true,
-        "es6": true,
-        "postcss": true,
-        "compileHotReLoad": false,
-        "lazyloadPlaceholderEnable": false,
-        "preloadBackgroundData": false,
-        "minified": true,
-        "autoAudits": false,
-        "newFeature": false,
-        "uglifyFileName": false,
-        "uploadWithSourceMap": true,
-        "useIsolateContext": true,
-        "nodeModules": false,
-        "enhance": true,
-        "useMultiFrameRuntime": true,
-        "useApiHook": true,
-        "useApiHostProcess": true,
-        "showShadowRootInWxmlPanel": true,
-        "packNpmManually": false,
-        "enableEngineNative": false,
-        "packNpmRelationList": [],
-        "minifyWXSS": true,
-        "showES6CompileOption": false,
-        "minifyWXML": true,
-        "babelSetting": {
-            "ignore": [],
-            "disablePlugins": [],
-            "outputPath": ""
-        },
-        "condition": false
+    "enableEngineNative": false,
+    "useIsolateContext": true,
+    "userConfirmedBundleSwitch": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "showES6CompileOption": false,
+    "condition": false,
+    "compileWorklet": false,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "swc": false,
+    "disableSWC": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.7.5",
+  "projectname": "条码扫描器",
+  "isGameTourist": false,
+  "condition": {
+    "search": {
+      "list": []
     },
-    "compileType": "miniprogram",
-    "libVersion": "2.19.4",
-    "appid": "wxba4a79e8e7f2c608",
-    "projectname": "miniprogram-92",
-    "condition": {},
-    "editorSetting": {
-        "tabIndent": "insertSpaces",
-        "tabSize": 4
+    "conversation": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "plugin": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": []
     }
+  },
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
 }
