@@ -1,0 +1,106 @@
+<!-- 用户管理页面布局 -->
+<!-- 
+  - header-section: 顶部统计区域，展示不同角色用户数量统计
+  - loading-wrap: 加载状态指示器
+  - user-list: 用户列表展示区域
+    - list-header: 列表标题和总人数统计
+    - user-item: 单个用户条目
+      - user-avatar: 用户头像展示
+      - user-detail: 用户详细信息（昵称、ID、加入时间）
+      - user-actions: 用户操作区域（修改角色）
+  - empty-wrap: 空状态提示
+  - footer: 底部提示信息（下拉刷新）
+-->
+<view class="page-wrap">
+  <!-- 头部统计 -->
+  <view class="header-section">
+    <view class="header-bg"></view>
+    <view class="stats-card">
+      <view class="stat-row">
+        <view class="stat-item">
+          <text class="stat-num">{{adminStatAdmin}}</text>
+          <text class="stat-label">管理员</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-num accent">{{adminStatVip}}</text>
+          <text class="stat-label">VIP</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-num">{{adminStatUser}}</text>
+          <text class="stat-label">用户</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-num blocked">{{adminStatBlocked}}</text>
+          <text class="stat-label">封禁</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 用户列表 -->
+  <view class="user-list" wx:if="{{!loading && userList.length > 0}}">
+    <view class="list-header">
+      <text class="list-title">用户列表</text>
+      <text class="list-count">{{userTotal}} 人</text>
+    </view>
+    
+    <view class="user-item {{item.role}} {{item.isCurrentUser ? 'current-user' : ''}}" wx:for="{{userList}}" wx:key="openid">
+      <view class="user-info">
+        <view class="user-avatar">
+          <image class="avatar-img" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill" lazy-load="{{true}}"/>
+          <view class="online-dot role-dot-{{item.role}}" wx:if="{{item.role !== 'blocked'}}"></view>
+        </view>
+        <view class="user-detail">
+          <view class="user-name-row">
+            <text class="user-name">{{item.nickName || '微信用户'}}</text>
+            <view class="role-tag role-{{item.role}}">
+              <text class="role-text">{{item.roleLabel || '用户'}}</text>
+            </view>
+            <view class="current-tag" wx:if="{{item.isCurrentUser}}">
+              <text class="current-tag-text">本机</text>
+            </view>
+          </view>
+          <view class="user-id-row" bindtap="onCopyOpenid" data-openid="{{item.openid}}">
+            <text class="user-id-label">ID:</text>
+            <text class="user-id-value">{{item.openidDisplay || '---'}}</text>
+            <text class="user-id-copy">复制</text>
+          </view>
+          <text class="user-meta">加入: {{item.createdAt ? item.createdAt.slice(0,10) : '未知'}}</text>
+        </view>
+      </view>
+      <view class="user-actions" wx:if="{{!item.isCurrentUser}}">
+        <picker mode="selector" range="{{roleOptions}}" range-key="label" bindchange="onRoleChange" data-openid="{{item.openid}}">
+          <view class="action-btn {{item.role}}">
+            <text class="action-text">修改</text>
+          </view>
+        </picker>
+      </view>
+      <view class="user-actions self-action" wx:else>
+        <view class="action-btn self">
+          <text class="action-text">自己</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-wrap" wx:if="{{!loading && userList.length === 0}}">
+    <text class="empty-icon">👥</text>
+    <text class="empty-title">暂无用户</text>
+    <text class="empty-desc">用户登录后将自动出现在这里</text>
+  </view>
+
+  <!-- 底部 -->
+  <view class="footer">
+    <text class="footer-text">下拉刷新更新数据</text>
+  </view>
+</view>

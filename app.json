@@ -1,80 +1,84 @@
 {
     "pages": [
-      "pages/scan/scan",
-      "pages/home/home",
-      "pages/index/index",
-      "pages/my/my",
-      "pages/history/history"
+        "pages/scan/scan",
+        "pages/home/home",
+        "pages/index/index",
+        "pages/my/my",
+        "pages/history/history",
+        "pages/userManage/userManage",
+        "utils/user.js",
+        "config/user.js",
+        "config/user"
     ],
     "lazyCodeLoading": "requiredComponents",
     "entryPagePath": "pages/scan/scan",
     "window": {
-      "backgroundTextStyle": "light",
-      "navigationBarBackgroundColor": "#0D1B2A",
-      "navigationBarTitleText": "条码扫描器",
-      "navigationBarTextStyle": "white",
-      "enablePullDownRefresh": false,
-      "backgroundColor": "#F4F1DE",
-      "pageOrientation": "portrait",
-      "navigationStyle": "default"
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#0D1B2A",
+        "navigationBarTitleText": "条码扫描器",
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": false,
+        "backgroundColor": "#F4F1DE",
+        "pageOrientation": "portrait",
+        "navigationStyle": "default"
     },
     "style": "v2",
     "sitemapLocation": "sitemap.json",
     "useExtendedLib": {
-      "weui": true
+        "weui": true
     },
     "tabBar": {
-      "color": "#999999",
-      "selectedColor": "#3D8B7A",
-      "backgroundColor": "#ffffff",
-      "borderStyle": "black",
-      "list": [
-        {
-          "pagePath": "pages/scan/scan",
-          "text": "扫码",
-          "iconPath": "images/scan.png",
-          "selectedIconPath": "images/scan_selected.png"
-        },
-        {
-          "pagePath": "pages/home/home",
-          "text": "首页",
-          "iconPath": "images/home.png",
-          "selectedIconPath": "images/home_selected.png"
-        },
-        {
-          "pagePath": "pages/index/index",
-          "text": "解密",
-          "iconPath": "images/decode.png",
-          "selectedIconPath": "images/decode_selected.png"
-        },
-        {
-          "pagePath": "pages/my/my",
-          "text": "我的",
-          "iconPath": "images/my.png",
-          "selectedIconPath": "images/my_selected.png"
-        }
-      ]
+        "color": "#999999",
+        "selectedColor": "#3D8B7A",
+        "backgroundColor": "#ffffff",
+        "borderStyle": "black",
+        "list": [
+            {
+                "pagePath": "pages/scan/scan",
+                "text": "扫码",
+                "iconPath": "images/scan.png",
+                "selectedIconPath": "images/scan_selected.png"
+            },
+            {
+                "pagePath": "pages/home/home",
+                "text": "首页",
+                "iconPath": "images/home.png",
+                "selectedIconPath": "images/home_selected.png"
+            },
+            {
+                "pagePath": "pages/index/index",
+                "text": "解密",
+                "iconPath": "images/decode.png",
+                "selectedIconPath": "images/decode_selected.png"
+            },
+            {
+                "pagePath": "pages/my/my",
+                "text": "我的",
+                "iconPath": "images/my.png",
+                "selectedIconPath": "images/my_selected.png"
+            }
+        ]
     },
     "subPackages": [
-      {
-        "root": "package1",
-        "name": "tools",
-        "pages": [
-          "pages/settings/settings",
-          "pages/browser/browser",
-          "pages/regcode/regcode"
-        ]
-      }
+        {
+            "root": "package1",
+            "name": "tools",
+            "pages": [
+                "pages/settings/settings",
+                "pages/browser/browser",
+                "pages/regcode/regcode"
+            ]
+        }
     ],
     "permission": {
-      "scope.camera": {
-        "desc": "用于扫码功能，需要访问您的相机"
-      }
+        "scope.camera": {
+            "desc": "用于扫码功能，需要访问您的相机"
+        }
     },
     "requiredPrivateInfos": [],
     "debug": false,
     "networkTimeout": {
-      "request": 10000,
-      "downloadFile": 10000
+        "request": 10000,
+        "downloadFile": 10000
     }
-  }
+}

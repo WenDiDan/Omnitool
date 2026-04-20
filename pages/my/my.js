@@ -13,22 +13,15 @@ Page({
     showProfileModal: false,
     editAvatarUrl: '',
     editNickName: '',
+    isFirstLogin: false,  // 是否首次登录
     // 登录状态
     isLoggedIn: false,
     userInfo: null,
     roleLabel: '未识别',
     openidShort: '',
     isAdmin: false,
-    // 管理员功能
-    showAdminPanel: false,
-    userList: [],
-    userTotal: 0,
-    userPage: 1,
-    adminLoading: false,
-    adminStatAdmin: 0,
-    adminStatVip: 0,
-    adminStatUser: 0,
-    adminStatBlocked: 0
+    loginTime: '',      // 登录时间
+    lastActiveTime: ''  // 最后活跃时间
   },
 
   onLoad() {
@@ -43,11 +36,56 @@ Page({
     }
   },
 
+  // 下拉刷新
+  onPullDownRefresh() {
+    console.log('触发下拉刷新')
+    
+    // 重新加载用户身份（头像、昵称等）
+    if (this.data.isLoggedIn) {
+      wx.cloud.callFunction({
+        name: 'userManage',
+        data: { action: 'getInfo' },
+        success: async (res) => {
+          if (res.result && res.result.success) {
+            const user = res.result.user
+            const avatarUrl = await this.getAvatarUrl(user.avatarUrl)
+            this.setData({
+              avatarUrl: avatarUrl,
+              nickName: user.nickName || this.data.nickName,
+              roleLabel: user.roleLabel,
+              userInfo: user
+            })
+            wx.setStorageSync('userAvatar', avatarUrl)
+            if (user.nickName) {
+              wx.setStorageSync('userNickName', user.nickName)
+            }
+          }
+        },
+        fail: (err) => {
+          console.error('刷新用户信息失败', err)
+        }
+      })
+    }
+    
+    wx.stopPullDownRefresh()
+    wx.showToast({
+      title: '刷新完成',
+      icon: 'none',
+      duration: 1000
+    })
+  },
+
   // ===== 登录流程 =====
   checkLoginStatus() {
     const loggedIn = wx.getStorageSync('isLoggedIn')
+    const savedLoginTime = wx.getStorageSync('loginTime')
+    const savedLastActive = wx.getStorageSync('lastActiveTime')
     if (loggedIn) {
-      this.setData({ isLoggedIn: true })
+      this.setData({ 
+        isLoggedIn: true,
+        loginTime: savedLoginTime || '',
+        lastActiveTime: savedLastActive || savedLoginTime || ''
+      })
       this.loadUserProfile()
       this.loadUserIdentity()
     }
@@ -55,7 +93,7 @@ Page({
 
   // 一键登录：直接调用云函数获取身份
   showLogin() {
-    wx.showLoading({ title: '登录中', mask: true })
+    wx.showLoading({ title: '登录中...', mask: true })
     wx.cloud.callFunction({
       name: 'userManage',
       data: { action: 'getInfo' },
@@ -63,24 +101,49 @@ Page({
         wx.hideLoading()
         if (res.result.success) {
           const user = res.result.user
-          const avatarUrl = user.avatarUrl || '/images/icon_user_white.png'
-          const nickName = user.nickName || '微信用户'
+          const now = new Date()
+          const loginTime = this.formatDateTime(now)
 
           this.setData({
             isLoggedIn: true,
-            avatarUrl,
-            nickName,
             userInfo: user,
             roleLabel: user.roleLabel,
             openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
-            isAdmin: user.role === 'admin'
+            isAdmin: user.role === 'admin',
+            loginTime: loginTime,
+            lastActiveTime: loginTime
           })
 
           wx.setStorageSync('isLoggedIn', true)
-          wx.setStorageSync('userAvatar', avatarUrl)
-          wx.setStorageSync('userNickName', nickName)
+          wx.setStorageSync('loginTime', loginTime)
+          wx.setStorageSync('lastActiveTime', loginTime)
+          if (user.openid) {
+            wx.setStorageSync('userOpenid', user.openid)
+          }
 
-          wx.showToast({ title: '登录成功', icon: 'success' })
+          // 检查云端是否有头像昵称
+          const hasProfile = user.avatarUrl || user.nickName
+          if (hasProfile) {
+            // 云端有资料，转换头像URL为HTTPS后使用
+            this.getAvatarUrl(user.avatarUrl).then(avatarUrl => {
+              const nickName = user.nickName || '微信用户'
+              this.setData({ avatarUrl, nickName })
+              wx.setStorageSync('userAvatar', avatarUrl)
+              wx.setStorageSync('userNickName', nickName)
+              wx.showToast({ title: '登录成功', icon: 'success' })
+            })
+          } else {
+            // 云端无资料，弹出编辑框让用户设置微信头像昵称
+            wx.showToast({ title: '请设置头像昵称', icon: 'none' })
+            setTimeout(() => {
+              this.setData({
+                showProfileModal: true,
+                editAvatarUrl: '/images/icon_user_white.png',
+                editNickName: '',
+                isFirstLogin: true
+              })
+            }, 500)
+          }
         } else {
           wx.showToast({ title: res.result.error || '登录失败', icon: 'none' })
         }
@@ -88,35 +151,44 @@ Page({
       fail: (err) => {
         wx.hideLoading()
         console.error('登录失败', err)
-        wx.showToast({ title: '登录失败，请重试', icon: 'none' })
+        wx.showToast({ title: '网络异常，请重试', icon: 'none' })
       }
     })
   },
 
   // ===== 用户身份 =====
   loadUserIdentity() {
+    const openid = wx.getStorageSync('userOpenid') || ''
+    
     wx.cloud.callFunction({
       name: 'userManage',
       data: { action: 'getInfo' },
-      success: (res) => {
+      success: async (res) => {
         if (res.result.success) {
           const user = res.result.user
           const openidShort = user.openid ? user.openid.slice(-8).toUpperCase() : ''
-          // 如果云端有昵称/头像，同步到本地
+          const now = new Date()
+          const activeTime = this.formatDateTime(now)
+          
+          // 如果云端有昵称，同步到本地
           if (user.nickName) {
             this.setData({ nickName: user.nickName })
             wx.setStorageSync('userNickName', user.nickName)
           }
-          if (user.avatarUrl) {
-            this.setData({ avatarUrl: user.avatarUrl })
-            wx.setStorageSync('userAvatar', user.avatarUrl)
-          }
+          
+          // 获取头像
+          const avatarUrl = await this.getAvatarUrl(user.avatarUrl)
+          this.setData({ avatarUrl: avatarUrl })
+          wx.setStorageSync('userAvatar', avatarUrl)
+          
           this.setData({
             userInfo: user,
             roleLabel: user.roleLabel,
             openidShort,
-            isAdmin: user.role === 'admin'
+            isAdmin: user.role === 'admin',
+            lastActiveTime: activeTime
           })
+          wx.setStorageSync('lastActiveTime', activeTime)
         }
       },
       fail: (err) => {
@@ -151,31 +223,102 @@ Page({
   },
 
   confirmProfile() {
-    const avatarUrl = this.data.editAvatarUrl || this.data.avatarUrl
-    const nickName = this.data.editNickName ?? this.data.nickName
+    const tempAvatarUrl = this.data.editAvatarUrl
+    const nickName = this.data.editNickName || this.data.nickName || '微信用户'
+    
+    // 如果选择了新头像（临时路径），需要上传到云存储
+    if (tempAvatarUrl && tempAvatarUrl.startsWith('http://tmp') || tempAvatarUrl && tempAvatarUrl.startsWith('wxfile://')) {
+      wx.showLoading({ title: '上传中...', mask: true })
+      
+      // 获取当前用户openid作为文件名（统一使用jpg扩展名）
+      const openid = wx.getStorageSync('userOpenid') || ''
+      const cloudPath = `avatars/${openid}.jpg`
+      
+      // 先删除旧头像，再上传新头像
+      this.deleteOldAvatar().finally(() => {
+        // 直接上传新头像（云存储会自动覆盖同名文件）
+        wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: tempAvatarUrl,
+          success: async (res) => {
+            console.log('上传成功，fileID:', res.fileID)
+            // 直接使用返回的cloud://路径，让getAvatarUrl处理转换
+            this.saveProfileToLocalAndCloud(res.fileID, nickName)
+            wx.hideLoading()
+          },
+          fail: (err) => {
+            wx.hideLoading()
+            console.error('上传头像失败', err)
+            wx.showToast({ title: '上传失败', icon: 'none' })
+          }
+        })
+      })
+    } else {
+      // 没有新头像，直接使用原路径
+      this.saveProfileToLocalAndCloud(tempAvatarUrl || '/images/icon_user_white.png', nickName)
+    }
+  },
+
+  // 删除旧头像（根据openid删除）
+  deleteOldAvatar() {
+    return new Promise((resolve) => {
+      const openid = wx.getStorageSync('userOpenid') || ''
+      if (!openid) {
+        resolve()
+        return
+      }
+      
+      // 根据openid构建云存储路径并删除
+      const cloudPath = this.getAvatarCloudPath(openid)
+      
+      wx.cloud.deleteFile({
+        fileList: [cloudPath],
+        success: (res) => {
+          console.log('旧头像已删除:', res)
+          // 清除缓存
+          const cached = this.data._avatarCache || {}
+          delete cached[cloudPath]
+          this.setData({ _avatarCache: cached })
+          resolve()
+        },
+        fail: (err) => {
+          console.error('删除旧头像失败:', err)
+          resolve() // 即使删除失败也继续
+        }
+      })
+    })
+  },
+
+  saveProfileToLocalAndCloud(avatarUrl, nickName) {
     this.setData({
       avatarUrl,
       nickName,
       showProfileModal: false
     })
     wx.setStorageSync('userAvatar', avatarUrl)
-    wx.setStorageSync('userNickName', nickName || '')
-    this.syncProfileToCloud()
+    wx.setStorageSync('userNickName', nickName)
+    this.syncProfileToCloud(avatarUrl, nickName)
+    wx.showToast({ title: '设置成功', icon: 'success' })
   },
 
   closeProfileModal() {
-    this.setData({ showProfileModal: false })
+    this.setData({ showProfileModal: false, isFirstLogin: false })
+  },
+
+  // 阻止事件冒泡
+  stopTap() {
+    // 空方法，仅用于阻止事件冒泡
   },
 
   // 同步资料到云端（通过云函数，避免数据库权限问题）
-  syncProfileToCloud() {
+  syncProfileToCloud(avatarUrl, nickName) {
     if (!this.data.isLoggedIn) return
     wx.cloud.callFunction({
       name: 'userManage',
       data: {
         action: 'updateProfile',
-        nickName: this.data.nickName || '',
-        avatarUrl: this.data.avatarUrl || ''
+        nickName: nickName || this.data.nickName || '',
+        avatarUrl: avatarUrl || this.data.avatarUrl || ''
       }
     })
   },
@@ -195,85 +338,83 @@ Page({
             roleLabel: '未登录',
             openidShort: '',
             isAdmin: false,
-            showAdminPanel: false
+            loginTime: '',
+            lastActiveTime: ''
           })
           wx.removeStorageSync('isLoggedIn')
           wx.removeStorageSync('userAvatar')
           wx.removeStorageSync('userNickName')
+          wx.removeStorageSync('loginTime')
+          wx.removeStorageSync('lastActiveTime')
           wx.showToast({ title: '已退出', icon: 'success' })
         }
       }
     })
   },
 
-  // ===== 管理员功能 =====
-  toggleAdminPanel() {
-    if (!this.data.isAdmin) return
-    const show = !this.data.showAdminPanel
-    this.setData({ showAdminPanel: show })
-    if (show) this.loadUserList()
+  // 跳转到用户管理页面
+  goToUserManage() {
+    wx.navigateTo({ url: '/pages/userManage/userManage' })
   },
 
-  loadUserList() {
-    this.setData({ adminLoading: true })
-    wx.cloud.callFunction({
-      name: 'userManage',
-      data: { action: 'listUsers', page: this.data.userPage, pageSize: 20 },
-      success: (res) => {
-        if (res.result.success) {
-          const users = res.result.users
-          const statAdmin = users.filter(u => u.role === 'admin').length
-          const statVip = users.filter(u => u.role === 'vip').length
-          const statUser = users.filter(u => u.role === 'user').length
-          const statBlocked = users.filter(u => u.role === 'blocked').length
-          this.setData({
-            userList: users,
-            userTotal: res.result.total,
-            adminStatAdmin: statAdmin,
-            adminStatVip: statVip,
-            adminStatUser: statUser,
-            adminStatBlocked: statBlocked,
-            adminLoading: false
-          })
-        } else {
-          this.setData({ adminLoading: false })
-        }
-      },
-      fail: () => {
-        this.setData({ adminLoading: false })
-      }
-    })
+  // ===== 通用功能 =====
+
+  // 根据openid获取云存储头像URL
+  getAvatarCloudPath(openid) {
+    return `cloud://avatars/${openid}.jpg`
   },
 
-  onSetRole(e) {
-    const { openid, role } = e.currentTarget.dataset
-    if (role === 'admin') return // 不能操作管理员角色，防止误操作
-    const roles = ['admin', 'vip', 'user', 'blocked']
-    const currentIdx = roles.indexOf(role)
-    wx.showActionSheet({
-      itemList: ['设为管理员', '设为VIP用户', '设为普通用户', '封禁用户'],
-      itemColor: currentIdx === 3 ? '#C0392B' : undefined,
-      success: (res) => {
-        const newRole = roles[res.tapIndex]
-        if (newRole === role) return
-        wx.cloud.callFunction({
-          name: 'userManage',
-          data: { action: 'setRole', targetOpenid: openid, role: newRole },
-          success: (result) => {
-            if (result.result.success) {
-              wx.showToast({ title: '设置成功', icon: 'success' })
-              this.loadUserList()
-            } else {
-              wx.showToast({ title: result.result.error, icon: 'none' })
-            }
-          }
+  // 获取头像URL（简化版）- 强制刷新避免缓存
+  async getAvatarUrl(avatarUrl) {
+    console.log('getAvatarUrl called with:', avatarUrl)
+    if (!avatarUrl) return '/images/icon_user_white.png'
+    
+    // 已经是https链接，直接返回
+    if (avatarUrl.startsWith('https://')) {
+      console.log('Returning https URL:', avatarUrl)
+      return avatarUrl
+    }
+    
+    // 微信头像链接
+    if (avatarUrl.startsWith('http://thirdwx.qlogo.cn') || avatarUrl.startsWith('http://wx.qlogo.cn')) {
+      const url = avatarUrl.replace('http://', 'https://')
+      console.log('Converted wechat avatar:', url)
+      return url
+    }
+    
+    // 云存储cloud://链接 - 强制刷新获取最新URL
+    if (avatarUrl.startsWith('cloud://')) {
+      console.log('Getting temp URL for cloud file:', avatarUrl)
+      try {
+        // 添加时间戳参数强制刷新，避免缓存返回旧文件
+        const timestamp = Date.now()
+        const res = await wx.cloud.getTempFileURL({ 
+          fileList: [{
+            fileID: avatarUrl,
+            maxAge: 0  // 不使用缓存
+          }]
         })
+        console.log('getTempFileURL result:', res)
+        if (res.fileList && res.fileList[0]) {
+          const fileInfo = res.fileList[0]
+          console.log('fileInfo:', fileInfo)
+          if (fileInfo.status === 0 && fileInfo.tempFileURL) {
+            // 添加时间戳防止CDN缓存
+            const finalUrl = fileInfo.tempFileURL + '?t=' + timestamp
+            console.log('Returning temp URL with cache bust:', finalUrl)
+            return finalUrl
+          }
+          console.log('File status not 0 or no tempURL, status:', fileInfo.status)
+        }
+      } catch (e) {
+        console.error('获取云存储头像失败', e)
       }
-    })
-  },
-
-  refreshAdmin() {
-    this.loadUserList()
+      return '/images/icon_user_white.png'
+    }
+    
+    // 本地默认头像
+    console.log('Unknown avatar type, returning default')
+    return avatarUrl || '/images/icon_user_white.png'
   },
 
   // ===== 通用功能 =====
@@ -290,6 +431,15 @@ Page({
     const m = String(date.getMonth() + 1).padStart(2, '0')
     const d = String(date.getDate()).padStart(2, '0')
     return y + '-' + m + '-' + d
+  },
+
+  formatDateTime(date) {
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
+    const h = String(date.getHours()).padStart(2, '0')
+    const min = String(date.getMinutes()).padStart(2, '0')
+    return `${y}-${m}-${d} ${h}:${min}`
   },
 
   calculateCacheSize() {
@@ -328,7 +478,7 @@ Page({
   showAbout() {
     wx.showModal({
       title: '关于条码扫描器',
-      content: '版本：1.0.0\n功能：快速扫描条码、二维码，智能解码，历史记录管理\n开发者：条码扫描器团队',
+      content: '版本：4.0.0\n功能：快速扫描条码、二维码，智能解码，历史记录管理\n开发者：条码扫描器团队',
       showCancel: false,
       confirmText: '知道了'
     })

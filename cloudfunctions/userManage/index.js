@@ -116,60 +116,72 @@ async function updateProfile(openid, nickName, avatarUrl, usersCollection) {
 }
 
 // 管理员设置用户角色
-async function setRole(callerOpenid, targetOpenid, role, usersCollection) {
-  if (!targetOpenid || !role || !ROLES[role]) {
+async function setRole(callerOpenid, targetOpenid, newRole, usersCollection) {
+  // 参数验证：targetOpenid 和 newRole 是必须的
+  if (!targetOpenid || !newRole || !ROLES[newRole]) {
     return { success: false, error: '参数无效' }
   }
 
+  // 验证调用者是否是管理员
   const { data: callerData } = await usersCollection.where({ openid: callerOpenid }).get()
   if (!callerData.length || callerData[0].role !== 'admin') {
     return { success: false, error: '权限不足，仅管理员可操作' }
   }
 
-  if (callerOpenid === targetOpenid && role !== 'admin') {
-    return { success: false, error: '不能修改自己的角色' }
+  // 获取目标用户当前信息
+  const { data: targetData } = await usersCollection.where({ openid: targetOpenid }).get()
+  if (!targetData.length) {
+    return { success: false, error: '目标用户不存在' }
   }
+  const targetUser = targetData[0]
+  const currentRole = targetUser.role || 'user'
 
-  // 防止最后一个管理员被降级
-  if (role !== 'admin') {
+  // 防止把最后一个管理员降级（无论是谁操作的）
+  if (newRole !== 'admin' && currentRole === 'admin') {
     const adminCount = (await usersCollection.where({ role: 'admin' }).count()).total
-    const { data: targetData } = await usersCollection.where({ openid: targetOpenid }).get()
-    if (adminCount <= 1 && targetData.length && targetData[0].role === 'admin') {
+    if (adminCount <= 1) {
       return { success: false, error: '不能降级最后一个管理员' }
     }
   }
 
+  // 执行角色更新
   await usersCollection.where({ openid: targetOpenid }).update({
-    data: { role }
+    data: { role: newRole }
   })
 
-  return { success: true, message: `已将用户角色设为${ROLES[role].label}` }
+  return { success: true, message: `已将用户角色设为${ROLES[newRole].label}` }
 }
 
 // 管理员列出所有用户
 async function listUsers(callerOpenid, page, pageSize, usersCollection) {
+  // 验证管理员权限
   const { data: callerData } = await usersCollection.where({ openid: callerOpenid }).get()
   if (!callerData.length || callerData[0].role !== 'admin') {
     return { success: false, error: '权限不足，仅管理员可查看' }
   }
 
   const skip = (page - 1) * pageSize
-  const { data: users } = await usersCollection.where({
-    openid: db.RegExp({ regexp: '.+' })
-  }).skip(skip).limit(pageSize).get()
-  const countResult = await usersCollection.where({
-    openid: db.RegExp({ regexp: '.+' })
-  }).count()
+  
+  // 并行执行查询和统计
+  const [usersResult, countResult] = await Promise.all([
+    usersCollection.where({
+      openid: db.RegExp({ regexp: '.+' })
+    }).skip(skip).limit(pageSize).get(),
+    usersCollection.where({
+      openid: db.RegExp({ regexp: '.+' })
+    }).count()
+  ])
 
   return {
     success: true,
     total: countResult.total,
-    users: users.map(u => ({
+    users: usersResult.data.map(u => ({
       openid: u.openid,
       role: u.role || 'user',
       roleLabel: ROLES[u.role]?.label || '普通用户',
       nickName: u.nickName || '',
-      createdAt: u.createdAt
+      avatarUrl: u.avatarUrl || '',
+      createdAt: u.createdAt || ''
     }))
   }
 }

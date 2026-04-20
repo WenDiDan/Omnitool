@@ -38,6 +38,7 @@
           </view>
         </view>
         <text class="user-desc">ID: {{openidShort || '---'}}</text>
+        <text class="login-time-text" wx:if="{{loginTime}}">登录: {{loginTime}}</text>
       </view>
     </view>
   </view>
@@ -53,6 +54,10 @@
         <text class="identity-value">{{roleLabel}} · 权限等级 {{userInfo.level || 1}}</text>
       </view>
       <view class="identity-status-dot {{isAdmin ? 'dot-admin' : ''}}"></view>
+    </view>
+    <view class="identity-time-row" wx:if="{{lastActiveTime}}">
+      <text class="identity-time-label">最近活跃:</text>
+      <text class="identity-time-value">{{lastActiveTime}}</text>
     </view>
   </view>
 
@@ -77,15 +82,15 @@
   <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-group">
-      <view class="menu-item" wx:if="{{isAdmin}}" bindtap="toggleAdminPanel">
+      <view class="menu-item" wx:if="{{isAdmin}}" bindtap="goToUserManage">
         <view class="menu-icon-circle" style="background: #0D1B2A;">
           <image class="menu-icon" src="/images/icon_settings_white.png" mode="aspectFit"/>
         </view>
         <view class="menu-body">
           <text class="menu-name">用户管理</text>
-          <text class="menu-hint">{{userTotal}} 位用户</text>
+          <text class="menu-hint">管理员专用</text>
         </view>
-        <text class="menu-arrow">{{showAdminPanel ? '▾' : '›'}}</text>
+        <text class="menu-arrow">›</text>
       </view>
 
       <view class="menu-item" bindtap="goToHistory">
@@ -140,103 +145,40 @@
         </view>
         <view class="menu-body">
           <text class="menu-name">关于</text>
-          <text class="menu-hint">版本 1.0.0</text>
+          <text class="menu-hint">版本 4.0.0</text>
         </view>
         <text class="menu-arrow">›</text>
       </view>
     </view>
   </view>
 
-  <!-- 管理员面板 -->
-  <view class="admin-panel" wx:if="{{showAdminPanel && isAdmin}}">
-    <!-- 面板头部 -->
-    <view class="admin-header">
-      <view class="admin-header-left">
-        <text class="admin-title">用户管理</text>
-        <text class="admin-count">{{userTotal}} 人</text>
-      </view>
-      <view class="admin-refresh" bindtap="refreshAdmin">
-        <text class="admin-refresh-text">刷新</text>
-      </view>
-    </view>
-
-    <!-- 角色统计 -->
-    <view class="admin-stats">
-      <view class="admin-stat-item">
-        <text class="admin-stat-num admin-stat-admin">{{adminStatAdmin}}</text>
-        <text class="admin-stat-lbl">管理员</text>
-      </view>
-      <view class="admin-stat-item">
-        <text class="admin-stat-num admin-stat-vip">{{adminStatVip}}</text>
-        <text class="admin-stat-lbl">VIP</text>
-      </view>
-      <view class="admin-stat-item">
-        <text class="admin-stat-num admin-stat-user">{{adminStatUser}}</text>
-        <text class="admin-stat-lbl">用户</text>
-      </view>
-      <view class="admin-stat-item">
-        <text class="admin-stat-num admin-stat-blocked">{{adminStatBlocked}}</text>
-        <text class="admin-stat-lbl">封禁</text>
-      </view>
-    </view>
-
-    <!-- 加载中 -->
-    <view class="admin-loading" wx:if="{{adminLoading}}">
-      <view class="admin-loading-spinner"></view>
-      <text class="admin-loading-text">加载中...</text>
-    </view>
-
-    <!-- 用户列表 -->
-    <view class="user-list" wx:if="{{!adminLoading}}">
-      <view class="user-row" wx:for="{{userList}}" wx:key="openid">
-        <view class="user-avatar-sm">
-          <image class="user-avatar-img" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
-          <view class="user-online-dot role-dot-{{item.role}}" wx:if="{{item.role !== 'blocked'}}"></view>
-        </view>
-        <view class="user-info-sm">
-          <view class="user-name-row">
-            <text class="user-name-sm">{{item.nickName || '微信用户'}}</text>
-          </view>
-          <text class="user-meta-sm">ID: {{item.openid.slice(-8).toUpperCase()}} · {{item.createdAt ? item.createdAt.slice(0,10) : '未知'}}</text>
-        </view>
-        <view class="user-role-tag role-{{item.role}}" bindtap="onSetRole" data-openid="{{item.openid}}" data-role="{{item.role}}">
-          <text class="user-role-text">{{item.roleLabel}}</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 空状态 -->
-    <view class="admin-empty" wx:if="{{!adminLoading && userList.length === 0}}">
-      <text class="admin-empty-icon">👥</text>
-      <text class="admin-empty-text">暂无用户数据</text>
-      <text class="admin-empty-hint">用户登录后将自动出现在这里</text>
-    </view>
-  </view>
-
   <!-- 底部 -->
   <view class="footer">
-    <text class="footer-text">条码扫描器 v1.0.0</text>
+    <text class="footer-text">条码扫描器 v4.0.0</text>
   </view>
 
   <view class="modal-mask" wx:if="{{showProfileModal}}" bindtap="closeProfileModal">
-    <view class="modal-box" catchtap="">
+    <view class="modal-box" catchtap="stopTap">
       <view class="modal-header">
         <view class="modal-accent-bar"></view>
-        <text class="modal-title">编辑资料</text>
+        <text class="modal-title">{{isFirstLogin ? '设置头像昵称' : '编辑资料'}}</text>
+      </view>
+      <view class="profile-edit-tip" wx:if="{{isFirstLogin}}">
+        <text class="profile-tip-text">获取微信头像和昵称，提升个性化体验</text>
       </view>
       <view class="profile-edit-row">
         <text class="profile-edit-label">头像</text>
         <button class="profile-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onEditChooseAvatar">
           <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
-          <text class="profile-avatar-hint">点击更换</text>
+          <text class="profile-avatar-hint">{{editAvatarUrl ? '更换' : '选择头像'}}</text>
         </button>
       </view>
       <view class="profile-edit-row">
         <text class="profile-edit-label">昵称</text>
-        <input class="profile-nick-input" type="nickname" value="{{editNickName}}" placeholder="请输入昵称" bindinput="onEditNickInput"/>
+        <input class="profile-nick-input" type="nickname" value="{{editNickName}}" placeholder="点击此处获取微信昵称" bindinput="onEditNickInput"/>
       </view>
       <view class="modal-btns">
-        <view class="modal-btn modal-cancel" bindtap="closeProfileModal">取消</view>
+        <view class="modal-btn modal-cancel" bindtap="closeProfileModal">{{isFirstLogin ? '跳过' : '取消'}}</view>
         <view class="modal-btn modal-confirm" bindtap="confirmProfile">保存</view>
       </view>
     </view>
