@@ -5,10 +5,7 @@
         "pages/index/index",
         "pages/my/my",
         "pages/history/history",
-        "pages/userManage/userManage",
-        "utils/user.js",
-        "config/user.js",
-        "config/user"
+        "pages/userManage/userManage"
     ],
     "lazyCodeLoading": "requiredComponents",
     "entryPagePath": "pages/scan/scan",

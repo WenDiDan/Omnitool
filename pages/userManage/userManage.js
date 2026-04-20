@@ -29,97 +29,126 @@ Page({
     this.setData({
       currentOpenid: wx.getStorageSync('userOpenid') || ''
     })
+    // 先加载缓存数据，再后台刷新
+    this.loadCachedData()
     this.checkAdminAndLoad()
   },
 
-  onShow() {
-    if (!this.data.loading) {
-      this.loadUserList()
+  // 加载缓存数据（秒开）
+  loadCachedData() {
+    const cached = wx.getStorageSync('cachedUserList')
+    const cachedStats = wx.getStorageSync('cachedUserStats')
+    if (cached && cachedStats) {
+      this.setData({
+        userList: cached,
+        userTotal: cachedStats.userTotal || 0,
+        adminStatAdmin: cachedStats.adminStatAdmin || 0,
+        adminStatVip: cachedStats.adminStatVip || 0,
+        adminStatUser: cachedStats.adminStatUser || 0,
+        adminStatBlocked: cachedStats.adminStatBlocked || 0
+      })
     }
   },
 
-  // 检查管理员权限并加载数据
+  // 保存到缓存
+  saveToCache(userList, stats) {
+    wx.setStorageSync('cachedUserList', userList)
+    wx.setStorageSync('cachedUserStats', stats)
+  },
+
+  onShow() {
+    // 每次显示时检查登录状态并刷新
+    if (this.data.userList.length === 0) {
+      this.checkAdminAndLoad()
+    }
+  },
+
+  // 手动刷新数据
+  onRefresh() {
+    this.checkAdminAndLoad()
+  },
+
+  // 检查管理员权限并加载数据（优化：先显示缓存，后台并行加载）
   checkAdminAndLoad() {
+    console.log('checkAdminAndLoad 开始执行')
+    const cached = wx.getStorageSync('cachedUserList')
+    if (cached && cached.length > 0) {
+      console.log('使用缓存数据，缓存数量:', cached.length)
+      this.loadCachedData()
+    }
     this.setData({ loading: true })
     
-    wx.cloud.callFunction({
-      name: 'userManage',
-      data: { action: 'checkPermission', requiredLevel: 3 },
-      success: (res) => {
-        if (res.result && res.result.hasPermission) {
-          this.loadUserList()
-        } else {
-          this.setData({ loading: false })
-          wx.showToast({ title: '权限不足', icon: 'none' })
-          setTimeout(() => {
-            wx.navigateBack()
-          }, 1500)
-        }
-      },
-      fail: () => {
+    // 优化：并行调用权限检查和用户列表
+    Promise.all([
+      wx.cloud.callFunction({ name: 'userManage', data: { action: 'checkPermission', requiredLevel: 3 } }),
+      wx.cloud.callFunction({ name: 'userManage', data: { action: 'listUsers', page: 1, pageSize: 50 } })
+    ]).then(([permRes, listRes]) => {
+      console.log('云函数调用完成')
+      console.log('权限检查结果:', JSON.stringify(permRes.result))
+      console.log('用户列表返回:', JSON.stringify(listRes.result).substring(0, 300))
+      console.log('准备调用 processUserList')
+      if (permRes.result && permRes.result.hasPermission) {
+        this.processUserList(listRes)
+      } else {
         this.setData({ loading: false })
-        wx.showToast({ title: '加载失败', icon: 'none' })
+        wx.showToast({ title: '权限不足', icon: 'none' })
+        setTimeout(() => wx.navigateBack(), 1500)
       }
+    }).catch((err) => {
+      console.error('云函数调用失败:', err)
+      this.setData({ loading: false })
+      wx.showToast({ title: '加载失败', icon: 'none' })
     })
   },
 
-  // 加载用户列表
-  loadUserList() {
-    this.setData({ loading: true })
-    
-    wx.cloud.callFunction({
-      name: 'userManage',
-      data: { action: 'listUsers', page: 1, pageSize: 50 },
-      success: async (res) => {
-        if (res.result && res.result.success) {
-          const usersData = res.result.users || []
-          const currentOpenid = this.data.currentOpenid
-          
-          // 预处理用户数据 - 完整显示ID，标记当前用户
-          const preparedUsers = usersData.map(user => {
-            const openid = user.openid || user._openid || ''
-            const isCurrentUser = openid === currentOpenid
-            return {
-              openid: openid,
-              openidDisplay: openid || '---',
-              nickName: user.nickName || '微信用户',
-              avatarUrl: user.avatarUrl || '',
-              role: user.role || 'user',
-              roleLabel: this.getRoleLabel(user.role || 'user'),
-              createdAt: user.createdAt || user.createTime || '',
-              isCurrentUser: isCurrentUser  // 标记当前用户
-            }
-          })
-          
-          // 批量获取头像URL
-          const users = await this.batchGetAvatarUrls(preparedUsers)
-          
-          // 统计各角色数量
-          const statAdmin = users.filter(u => u.role === 'admin').length
-          const statVip = users.filter(u => u.role === 'vip').length
-          const statUser = users.filter(u => u.role === 'user').length
-          const statBlocked = users.filter(u => u.role === 'blocked').length
-          
-          this.setData({
-            userList: users,
-            userTotal: res.result.total || users.length,
-            adminStatAdmin: statAdmin,
-            adminStatVip: statVip,
-            adminStatUser: statUser,
-            adminStatBlocked: statBlocked,
-            loading: false
-          })
-        } else {
-          this.setData({ loading: false })
-          wx.showToast({ title: res.result?.error || '加载失败', icon: 'none' })
-        }
-      },
-      fail: () => {
-        this.setData({ loading: false })
-        wx.showToast({ title: '网络异常', icon: 'none' })
-      }
-    })
+  // 处理用户列表数据
+  processUserList(res) {
+    if (res.result && res.result.success) {
+      const usersData = res.result.users || []
+      const currentOpenid = this.data.currentOpenid
+      
+      // 预处理用户数据
+      const users = usersData.map(user => ({
+        openid: user.openid,
+        openidDisplay: user.openid || '---',
+        nickName: user.nickName || '微信用户',
+        avatarUrl: user.avatarUrl || '',
+        role: user.role || 'user',
+        roleLabel: this.getRoleLabel(user.role || 'user'),
+        createdAt: user.createdAt || '',
+        isCurrentUser: user.openid === currentOpenid
+      }))
+      
+      // 统计各角色数量
+      const statAdmin = users.filter(u => u.role === 'admin').length
+      const statVip = users.filter(u => u.role === 'vip').length
+      const statUser = users.filter(u => u.role === 'user').length
+      const statBlocked = users.filter(u => u.role === 'blocked').length
+      
+      this.setData({
+        userList: users,
+        userTotal: res.result.total || users.length,
+        adminStatAdmin: statAdmin,
+        adminStatVip: statVip,
+        adminStatUser: statUser,
+        adminStatBlocked: statBlocked,
+        loading: false
+      })
+      
+      // 保存到缓存
+      this.saveToCache(users, {
+        userTotal: res.result.total || users.length,
+        adminStatAdmin: statAdmin,
+        adminStatVip: statVip,
+        adminStatUser: statUser,
+        adminStatBlocked: statBlocked
+      })
+    } else {
+      this.setData({ loading: false })
+      wx.showToast({ title: res.result?.error || '加载失败', icon: 'none' })
+    }
   },
+
 
   // 获取角色标签
   getRoleLabel(role) {
@@ -132,69 +161,9 @@ Page({
     return labels[role] || '普通用户'
   },
 
-  // 批量获取头像URL - 使用与my.js相同的逻辑
-  async batchGetAvatarUrls(userList) {
-    // 先检查是否有本地缓存的头像
-    const localAvatar = wx.getStorageSync('userAvatar') || ''
-    
-    // 为每个用户获取头像URL
-    for (let i = 0; i < userList.length; i++) {
-      const user = userList[i]
-      const originalUrl = user.avatarUrl
-      
-      // 如果是当前用户，优先使用本地缓存的头像
-      if (user.isCurrentUser && localAvatar) {
-        user.avatarUrl = await this.getAvatarUrl(localAvatar)
-      } else {
-        user.avatarUrl = await this.getAvatarUrl(originalUrl)
-      }
-      
-      console.log(`用户 ${user.nickName} 头像: ${originalUrl} -> ${user.avatarUrl}`)
-    }
-    return userList
-  },
-
-  // 获取头像URL - 使用云函数获取（绕过权限限制）
-  async getAvatarUrl(avatarUrl) {
-    if (!avatarUrl) return '/images/icon_user_white.png'
-    
-    // 已经是https链接，直接返回
-    if (avatarUrl.startsWith('https://')) {
-      return avatarUrl
-    }
-    
-    // 微信头像链接
-    if (avatarUrl.startsWith('http://thirdwx.qlogo.cn') || avatarUrl.startsWith('http://wx.qlogo.cn')) {
-      return avatarUrl.replace('http://', 'https://')
-    }
-    
-    // 云存储cloud://链接 - 通过云函数获取临时URL
-    if (avatarUrl.startsWith('cloud://')) {
-      try {
-        const res = await wx.cloud.callFunction({
-          name: 'adminStorage',
-          data: {
-            action: 'getTempUrl',
-            cloudPath: avatarUrl
-          }
-        })
-        console.log('头像获取结果:', res)
-        if (res.result && res.result.success && res.result.url) {
-          return res.result.url
-        } else {
-          console.error('头像获取失败:', res.result ? res.result.error : '未知错误')
-        }
-      } catch (e) {
-        console.error('获取头像URL失败:', e)
-      }
-    }
-    
-    return '/images/icon_user_white.png'
-  },
-
   // 下拉刷新
   onPullDownRefresh() {
-    this.loadUserList()
+    this.checkAdminAndLoad()
     setTimeout(() => {
       wx.stopPullDownRefresh()
     }, 500)
@@ -245,7 +214,7 @@ Page({
         if (res.result && res.result.success) {
           wx.showToast({ title: res.result.message || '修改成功', icon: 'success' })
           // 刷新列表
-          this.loadUserList()
+          this.checkAdminAndLoad()
         } else {
           wx.showToast({ title: res.result?.error || '修改失败', icon: 'none' })
         }
@@ -292,7 +261,7 @@ Page({
           wx.showToast({ title: '删除成功', icon: 'success' })
           this.closeDeleteModal()
           // 刷新列表
-          this.loadUserList()
+          this.checkAdminAndLoad()
         } else {
           wx.showToast({ title: res.result?.error || '删除失败', icon: 'none' })
         }

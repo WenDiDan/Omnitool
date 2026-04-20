@@ -56,7 +56,8 @@
     <view class="user-item {{item.role}} {{item.isCurrentUser ? 'current-user' : ''}}" wx:for="{{userList}}" wx:key="openid">
       <view class="user-info">
         <view class="user-avatar">
-          <image class="avatar-img" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill" lazy-load="{{true}}"/>
+          <image class="avatar-img" src="{{item.avatarUrl}}" mode="aspectFill" wx:if="{{item.avatarUrl}}"/>
+          <view class="avatar-default" wx:if="{{!item.avatarUrl}}"></view>
           <view class="online-dot role-dot-{{item.role}}" wx:if="{{item.role !== 'blocked'}}"></view>
         </view>
         <view class="user-detail">

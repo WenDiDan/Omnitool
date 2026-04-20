@@ -64,31 +64,56 @@ Page({
         success: async (res) => {
           if (res.result && res.result.success) {
             const user = res.result.user
+            
+            // 简化：直接使用云端数据更新
             const avatarUrl = await this.getAvatarUrl(user.avatarUrl)
+            const nickName = user.nickName || this.data.nickName || '微信用户'
+            const isAdminUser = user.role === 'admin' || user.level >= 3
+            
+            // 更新时间
+            const now = new Date()
+            const activeTime = this.formatDateTime(now)
+            
             this.setData({
               avatarUrl: avatarUrl,
-              nickName: user.nickName || this.data.nickName,
+              nickName: nickName,
               roleLabel: user.roleLabel,
+              isAdmin: isAdminUser,
+              lastActiveTime: activeTime,
               userInfo: user
             })
+            
+            // 同步到本地存储
             wx.setStorageSync('userAvatar', avatarUrl)
-            if (user.nickName) {
-              wx.setStorageSync('userNickName', user.nickName)
+            if (nickName) {
+              wx.setStorageSync('userNickName', nickName)
             }
+            wx.setStorageSync('lastActiveTime', activeTime)
+            
+            // 同步到全局
+            app.globalData.userInfo = user
+            
+            // 刷新统计
+            this.loadData()
+            this.calculateCacheSize()
           }
         },
         fail: (err) => {
           console.error('刷新用户信息失败', err)
+          wx.showToast({ title: '刷新失败', icon: 'none' })
+        },
+        complete: () => {
+          wx.stopPullDownRefresh()
+          wx.showToast({
+            title: '刷新完成',
+            icon: 'none',
+            duration: 800
+          })
         }
       })
+    } else {
+      wx.stopPullDownRefresh()
     }
-    
-    wx.stopPullDownRefresh()
-    wx.showToast({
-      title: '刷新完成',
-      icon: 'none',
-      duration: 1000
-    })
   },
 
   // ===== 登录流程 =====
@@ -144,12 +169,13 @@ Page({
             return
           }
 
+          const isAdminUser = user.role === 'admin' || user.level >= 3
           this.setData({
             isLoggedIn: true,
             userInfo: user,
             roleLabel: user.roleLabel,
             openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
-            isAdmin: user.role === 'admin',
+            isAdmin: isAdminUser,
             loginTime: loginTime,
             lastActiveTime: loginTime,
             avatarVersion: user.avatarVersion || 1
@@ -224,11 +250,12 @@ Page({
           this.setData({ avatarUrl: avatarUrl })
           wx.setStorageSync('userAvatar', avatarUrl)
           
+          const isAdminUser = user.role === 'admin' || user.level >= 3
           this.setData({
             userInfo: user,
             roleLabel: user.roleLabel,
             openidShort,
-            isAdmin: user.role === 'admin',
+            isAdmin: isAdminUser,
             lastActiveTime: activeTime,
             avatarVersion: user.avatarVersion || 1
           })

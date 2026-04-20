@@ -4,6 +4,7 @@
   "description": "代理获取网页内容",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "latest"
+    "wx-server-sdk": "latest",
+    "iconv-lite": "latest"
   }
 }

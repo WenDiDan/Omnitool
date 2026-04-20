@@ -241,18 +241,59 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
     }).count()
   ])
 
+  // 收集需要转换的云存储头像
+  const cloudAvatars = []
+  usersResult.data.forEach(u => {
+    if (u.avatarUrl && u.avatarUrl.startsWith('cloud://')) {
+      cloudAvatars.push({ openid: u.openid, fileID: u.avatarUrl })
+    }
+  })
+
+  // 批量获取云存储临时URL
+  let cloudUrls = {}
+  if (cloudAvatars.length > 0) {
+    try {
+      const fileList = cloudAvatars.map(item => ({ fileID: item.fileID, maxAge: 0 }))
+      const urlRes = await cloud.getTempFileURL({ fileList })
+      if (urlRes.fileList) {
+        urlRes.fileList.forEach(f => {
+          if (f.status === 0 && f.tempFileURL) {
+            cloudUrls[f.fileID] = f.tempFileURL
+          }
+        })
+      }
+    } catch (e) {
+      console.error('获取头像URL失败', e)
+    }
+  }
+
+  // 处理头像URL
+  const processAvatarUrl = (url) => {
+    if (!url) return ''
+    // cloud:// 转临时URL
+    if (url.startsWith('cloud://') && cloudUrls[url]) {
+      return cloudUrls[url]
+    }
+    // http 转 https
+    if (url.startsWith('http://thirdwx.qlogo.cn') || url.startsWith('http://wx.qlogo.cn')) {
+      return url.replace('http://', 'https://')
+    }
+    return url
+  }
+
+  const users = usersResult.data.map(u => ({
+    openid: u.openid,
+    role: u.role || 'user',
+    roleLabel: ROLES[u.role]?.label || '普通用户',
+    nickName: u.nickName || '',
+    avatarUrl: processAvatarUrl(u.avatarUrl),
+    createdAt: u.createdAt || ''
+  }))
+
   return {
     success: true,
     total: countResult.total,
-    users: usersResult.data.map(u => ({
-      openid: u.openid,
-      role: u.role || 'user',
-      roleLabel: ROLES[u.role]?.label || '普通用户',
-      nickName: u.nickName || '',
-      avatarUrl: u.avatarUrl || '',
-      avatarVersion: u.avatarVersion || 1,
-      createdAt: u.createdAt || ''
-    }))
+    users: users
   }
 }
 
