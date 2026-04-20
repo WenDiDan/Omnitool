@@ -12,6 +12,17 @@ const ROLES = {
   blocked: { label: '已封禁', level: 0 }
 }
 
+// 检查用户是否被封禁
+async function isBlocked(openid, usersCollection) {
+  try {
+    const { data } = await usersCollection.where({ openid }).get()
+    if (data.length === 0) return false
+    return data[0].role === 'blocked'
+  } catch (e) {
+    return false
+  }
+}
+
 exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
   const { action } = event
@@ -23,6 +34,14 @@ exports.main = async (event, context) => {
 
   const usersCollection = db.collection('users')
 
+  // 封禁用户检查：只有getInfo允许被封禁用户访问
+  if (action !== 'getInfo' && action !== 'checkPermission') {
+    const blocked = await isBlocked(OPENID, usersCollection)
+    if (blocked) {
+      return { success: false, error: '您的账号已被封禁，仅能登录' }
+    }
+  }
+
   switch (action) {
     case 'getInfo':
       return await getUserInfo(OPENID, usersCollection)
@@ -30,6 +49,8 @@ exports.main = async (event, context) => {
       return await updateProfile(OPENID, event.nickName, event.avatarUrl, usersCollection)
     case 'setRole':
       return await setRole(OPENID, event.targetOpenid, event.role, usersCollection)
+    case 'deleteUser':
+      return await deleteUser(OPENID, event.targetOpenid, usersCollection)
     case 'listUsers':
       return await listUsers(OPENID, event.page || 1, event.pageSize || 20, usersCollection)
     case 'checkPermission':
@@ -51,10 +72,12 @@ async function getUserInfo(openid, usersCollection) {
           openid,
           role: user.role || 'user',
           roleLabel: ROLES[user.role]?.label || '普通用户',
-          level: ROLES[user.role]?.level || 1,
+          level: ROLES[user.role]?.level ?? 1,
           nickName: user.nickName || '',
           avatarUrl: user.avatarUrl || '',
-          createdAt: user.createdAt
+          avatarVersion: user.avatarVersion || 1,
+          createdAt: user.createdAt,
+          isBlocked: user.role === 'blocked'
         }
       }
     }
@@ -75,7 +98,7 @@ async function createUser(openid, usersCollection) {
 
   // 创建用户记录
   await usersCollection.add({
-    data: { openid, role: 'user', nickName: '', avatarUrl: '', createdAt: now }
+    data: { openid, role: 'user', nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
   })
 
   // 检查是否是第一个用户，自动设为管理员
@@ -88,7 +111,7 @@ async function createUser(openid, usersCollection) {
       await usersCollection.where({ openid }).update({ data: { role: 'admin' } })
       return {
         success: true,
-        user: { openid, role: 'admin', roleLabel: '管理员', level: 3, nickName: '', avatarUrl: '', createdAt: now }
+        user: { openid, role: 'admin', roleLabel: '管理员', level: 3, nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
       }
     }
   } catch (e) {
@@ -98,7 +121,7 @@ async function createUser(openid, usersCollection) {
 
   return {
     success: true,
-    user: { openid, role: 'user', roleLabel: '普通用户', level: 1, nickName: '', avatarUrl: '', createdAt: now }
+    user: { openid, role: 'user', roleLabel: '普通用户', level: 1, nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
   }
 }
 
@@ -106,7 +129,15 @@ async function createUser(openid, usersCollection) {
 async function updateProfile(openid, nickName, avatarUrl, usersCollection) {
   const data = {}
   if (nickName !== undefined) data.nickName = nickName
-  if (avatarUrl !== undefined) data.avatarUrl = avatarUrl
+  if (avatarUrl !== undefined) {
+    data.avatarUrl = avatarUrl
+    // 如果更新了头像，递增版本号
+    const { data: userData } = await usersCollection.where({ openid }).get()
+    if (userData.length > 0) {
+      const currentVersion = userData[0].avatarVersion || 1
+      data.avatarVersion = currentVersion + 1
+    }
+  }
   if (Object.keys(data).length === 0) {
     return { success: false, error: '无更新内容' }
   }
@@ -152,6 +183,44 @@ async function setRole(callerOpenid, targetOpenid, newRole, usersCollection) {
   return { success: true, message: `已将用户角色设为${ROLES[newRole].label}` }
 }
 
+// 管理员删除用户
+async function deleteUser(callerOpenid, targetOpenid, usersCollection) {
+  // 参数验证
+  if (!targetOpenid) {
+    return { success: false, error: '参数无效' }
+  }
+
+  // 验证调用者是否是管理员
+  const { data: callerData } = await usersCollection.where({ openid: callerOpenid }).get()
+  if (!callerData.length || callerData[0].role !== 'admin') {
+    return { success: false, error: '权限不足，仅管理员可删除用户' }
+  }
+
+  // 不能删除自己
+  if (callerOpenid === targetOpenid) {
+    return { success: false, error: '不能删除自己' }
+  }
+
+  // 获取目标用户信息
+  const { data: targetData } = await usersCollection.where({ openid: targetOpenid }).get()
+  if (!targetData.length) {
+    return { success: false, error: '目标用户不存在' }
+  }
+
+  // 如果要删除的是管理员，检查是否是最后一个管理员
+  if (targetData[0].role === 'admin') {
+    const adminCount = (await usersCollection.where({ role: 'admin' }).count()).total
+    if (adminCount <= 1) {
+      return { success: false, error: '不能删除最后一个管理员' }
+    }
+  }
+
+  // 执行删除
+  await usersCollection.where({ openid: targetOpenid }).remove()
+
+  return { success: true, message: '用户已删除' }
+}
+
 // 管理员列出所有用户
 async function listUsers(callerOpenid, page, pageSize, usersCollection) {
   // 验证管理员权限
@@ -181,6 +250,7 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
       roleLabel: ROLES[u.role]?.label || '普通用户',
       nickName: u.nickName || '',
       avatarUrl: u.avatarUrl || '',
+      avatarVersion: u.avatarVersion || 1,
       createdAt: u.createdAt || ''
     }))
   }

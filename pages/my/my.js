@@ -21,19 +21,35 @@ Page({
     openidShort: '',
     isAdmin: false,
     loginTime: '',      // 登录时间
-    lastActiveTime: ''  // 最后活跃时间
+    lastActiveTime: '',  // 最后活跃时间
+    appVersion: '4.0.0' // 小程序版本号
   },
 
   onLoad() {
+    this.getAppVersion()
     this.checkLoginStatus()
+  },
+  
+  // 获取小程序版本号
+  getAppVersion() {
+    try {
+      const info = wx.getAccountInfoSync()
+      console.log('【版本号】账户信息:', info)
+      // 优先使用version
+      let version = info.miniProgram?.version || '4.0.0'
+      console.log('【版本号】获取结果:', version)
+      this.setData({ appVersion: version })
+    } catch (e) {
+      console.log('【版本号】获取失败，使用默认值4.0.0', e)
+      this.setData({ appVersion: '4.0.0' })
+    }
   },
 
   onShow() {
     this.loadData()
     this.calculateCacheSize()
-    if (this.data.isLoggedIn) {
-      this.loadUserIdentity()
-    }
+    // onShow 时不调用云函数，只使用本地缓存数据
+    // 云函数只在登录时或下拉刷新时调用
   },
 
   // 下拉刷新
@@ -104,6 +120,30 @@ Page({
           const now = new Date()
           const loginTime = this.formatDateTime(now)
 
+          // 检查是否被封禁
+          if (user.isBlocked) {
+            this.setData({
+              isLoggedIn: true,
+              userInfo: user,
+              roleLabel: user.roleLabel,
+              openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
+              isAdmin: false,
+              loginTime: loginTime,
+              lastActiveTime: loginTime
+            })
+            wx.setStorageSync('isLoggedIn', true)
+            wx.setStorageSync('userOpenid', user.openid)
+            // 同步到全局
+            app.globalData.userInfo = user
+            wx.showModal({
+              title: '账号提示',
+              content: '您的账号已被封禁，仅能登录，无法使用其他功能',
+              showCancel: false,
+              confirmText: '知道了'
+            })
+            return
+          }
+
           this.setData({
             isLoggedIn: true,
             userInfo: user,
@@ -111,7 +151,8 @@ Page({
             openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
             isAdmin: user.role === 'admin',
             loginTime: loginTime,
-            lastActiveTime: loginTime
+            lastActiveTime: loginTime,
+            avatarVersion: user.avatarVersion || 1
           })
 
           wx.setStorageSync('isLoggedIn', true)
@@ -120,6 +161,8 @@ Page({
           if (user.openid) {
             wx.setStorageSync('userOpenid', user.openid)
           }
+          // 同步到全局，确保其他页面能获取最新状态
+          app.globalData.userInfo = user
 
           // 检查云端是否有头像昵称
           const hasProfile = user.avatarUrl || user.nickName
@@ -186,9 +229,12 @@ Page({
             roleLabel: user.roleLabel,
             openidShort,
             isAdmin: user.role === 'admin',
-            lastActiveTime: activeTime
+            lastActiveTime: activeTime,
+            avatarVersion: user.avatarVersion || 1
           })
           wx.setStorageSync('lastActiveTime', activeTime)
+          // 同步到全局
+          app.globalData.userInfo = user
         }
       },
       fail: (err) => {
@@ -205,6 +251,15 @@ Page({
 
   onEditProfile() {
     if (!this.data.isLoggedIn) return
+    // 封禁用户不能编辑资料
+    if (this.data.userInfo?.isBlocked) {
+      wx.showModal({
+        title: '无法操作',
+        content: '您的账号已被封禁，无法编辑资料',
+        showCancel: false
+      })
+      return
+    }
     this.setData({
       showProfileModal: true,
       editAvatarUrl: this.data.avatarUrl,

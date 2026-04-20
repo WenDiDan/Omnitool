@@ -15,7 +15,13 @@ Page({
       { label: 'VIP用户', value: 'vip' },
       { label: '普通用户', value: 'user' },
       { label: '已封禁', value: 'blocked' }
-    ]
+    ],
+    // 删除确认弹窗
+    showDeleteModal: false,
+    deleteTarget: {
+      openid: '',
+      nickName: ''
+    }
   },
 
   onLoad() {
@@ -126,50 +132,64 @@ Page({
     return labels[role] || '普通用户'
   },
 
-  // 批量获取头像URL - 强制刷新避免缓存
+  // 批量获取头像URL - 使用与my.js相同的逻辑
   async batchGetAvatarUrls(userList) {
-    const cloudFiles = []
-    const idxMap = {}
-    const timestamp = Date.now()
+    // 先检查是否有本地缓存的头像
+    const localAvatar = wx.getStorageSync('userAvatar') || ''
     
-    userList.forEach((user, idx) => {
-      let url = user.avatarUrl || ''
+    // 为每个用户获取头像URL
+    for (let i = 0; i < userList.length; i++) {
+      const user = userList[i]
+      const originalUrl = user.avatarUrl
       
-      if (url.startsWith('https://')) {
-        user.avatarUrl = url
-      } else if (url.startsWith('http://thirdwx.qlogo.cn') || url.startsWith('http://wx.qlogo.cn')) {
-        user.avatarUrl = url.replace('http://', 'https://')
-      } else if (url.startsWith('cloud://')) {
-        cloudFiles.push(url)
-        idxMap[url] = idx
+      // 如果是当前用户，优先使用本地缓存的头像
+      if (user.isCurrentUser && localAvatar) {
+        user.avatarUrl = await this.getAvatarUrl(localAvatar)
       } else {
-        user.avatarUrl = '/images/icon_user_white.png'
+        user.avatarUrl = await this.getAvatarUrl(originalUrl)
       }
-    })
+      
+      console.log(`用户 ${user.nickName} 头像: ${originalUrl} -> ${user.avatarUrl}`)
+    }
+    return userList
+  },
+
+  // 获取头像URL - 使用云函数获取（绕过权限限制）
+  async getAvatarUrl(avatarUrl) {
+    if (!avatarUrl) return '/images/icon_user_white.png'
     
-    if (cloudFiles.length > 0) {
+    // 已经是https链接，直接返回
+    if (avatarUrl.startsWith('https://')) {
+      return avatarUrl
+    }
+    
+    // 微信头像链接
+    if (avatarUrl.startsWith('http://thirdwx.qlogo.cn') || avatarUrl.startsWith('http://wx.qlogo.cn')) {
+      return avatarUrl.replace('http://', 'https://')
+    }
+    
+    // 云存储cloud://链接 - 通过云函数获取临时URL
+    if (avatarUrl.startsWith('cloud://')) {
       try {
-        const fileListWithOptions = cloudFiles.map(fileID => ({
-          fileID: fileID,
-          maxAge: 0
-        }))
-        const res = await wx.cloud.getTempFileURL({ fileList: fileListWithOptions })
-        if (res.fileList) {
-          res.fileList.forEach(fileInfo => {
-            const idx = idxMap[fileInfo.fileID]
-            if (idx !== undefined && fileInfo.status === 0 && fileInfo.tempFileURL) {
-              userList[idx].avatarUrl = fileInfo.tempFileURL + '?t=' + timestamp
-            } else if (idx !== undefined) {
-              userList[idx].avatarUrl = '/images/icon_user_white.png'
-            }
-          })
+        const res = await wx.cloud.callFunction({
+          name: 'adminStorage',
+          data: {
+            action: 'getTempUrl',
+            cloudPath: avatarUrl
+          }
+        })
+        console.log('头像获取结果:', res)
+        if (res.result && res.result.success && res.result.url) {
+          return res.result.url
+        } else {
+          console.error('头像获取失败:', res.result ? res.result.error : '未知错误')
         }
       } catch (e) {
-        console.error('批量获取头像失败', e)
+        console.error('获取头像URL失败:', e)
       }
     }
     
-    return userList
+    return '/images/icon_user_white.png'
   },
 
   // 下拉刷新
@@ -235,5 +255,55 @@ Page({
         wx.showToast({ title: '网络异常', icon: 'none' })
       }
     })
-  }
+  },
+
+  // 删除用户按钮点击
+  onDeleteUser(e) {
+    const openid = e.currentTarget.dataset.openid
+    const nickName = e.currentTarget.dataset.nickname || '该用户'
+    
+    this.setData({
+      showDeleteModal: true,
+      deleteTarget: { openid, nickName }
+    })
+  },
+
+  // 关闭删除弹窗
+  closeDeleteModal() {
+    this.setData({
+      showDeleteModal: false,
+      deleteTarget: { openid: '', nickName: '' }
+    })
+  },
+
+  // 确认删除用户
+  confirmDelete() {
+    const { openid } = this.data.deleteTarget
+    if (!openid) return
+
+    wx.showLoading({ title: '删除中...', mask: true })
+
+    wx.cloud.callFunction({
+      name: 'userManage',
+      data: { action: 'deleteUser', targetOpenid: openid },
+      success: (res) => {
+        wx.hideLoading()
+        if (res.result && res.result.success) {
+          wx.showToast({ title: '删除成功', icon: 'success' })
+          this.closeDeleteModal()
+          // 刷新列表
+          this.loadUserList()
+        } else {
+          wx.showToast({ title: res.result?.error || '删除失败', icon: 'none' })
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+        wx.showToast({ title: '网络异常', icon: 'none' })
+      }
+    })
+  },
+
+  // 阻止事件冒泡
+  stopTap() {}
 })

@@ -22,6 +22,34 @@ Page({
   },
 
   onShow() {
+    // 检查登录状态
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    if (!isLoggedIn) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后再使用扫码功能',
+        showCancel: false,
+        success: () => {
+          wx.switchTab({ url: '/pages/my/my' });
+        }
+      });
+      return;
+    }
+
+    // 检查是否被封禁
+    const userInfo = app.globalData.userInfo;
+    if (userInfo && userInfo.isBlocked) {
+      wx.showModal({
+        title: '无法使用',
+        content: '您的账号已被封禁，无法使用扫码功能',
+        showCancel: false,
+        success: () => {
+          wx.switchTab({ url: '/pages/my/my' });
+        }
+      });
+      return;
+    }
+
     if (app.globalData.pendingScanCode) {
       const code = app.globalData.pendingScanCode;
       delete app.globalData.pendingScanCode;
@@ -77,6 +105,17 @@ Page({
   },
 
   startScan() {
+    // 检查是否被封禁
+    const userInfo = app.globalData.userInfo;
+    if (userInfo?.isBlocked) {
+      wx.showModal({
+        title: '无法使用',
+        content: '您的账号已被封禁，无法使用扫码功能',
+        showCancel: false
+      });
+      return;
+    }
+
     wx.getSetting({
       success: (res) => {
         if (res.authSetting['scope.camera']) {
