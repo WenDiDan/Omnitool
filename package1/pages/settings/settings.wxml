@@ -22,4 +22,371 @@
       </picker>
     </view>
   </view>
+
+  <!-- 自定义解码规则 -->
+  <view class="card rules-card">
+    <view class="card-header flex-between">
+      <text class="card-title">解码规则</text>
+      <view class="header-right">
+        <text class="rule-count" wx:if="{{customRules.length > 0}}">{{customRules.length}}条</text>
+        <text class="add-btn" bindtap="showAddForm">+ 新建</text>
+      </view>
+    </view>
+    
+
+
+    <!-- 规则列表 -->
+    <view wx:if="{{customRules.length === 0}}" class="empty-rules">
+      <view class="empty-icon">📋</view>
+      <text class="empty-text">暂无解码规则</text>
+      <text class="empty-hint">点击「新建」创建您的第一条规则</text>
+    </view>
+
+    <view wx:if="{{customRules.length > 0}}" class="rule-list">
+      <view class="rule-item {{!item.enabled ? 'disabled' : ''}}" wx:for="{{customRules}}" wx:key="id">
+        <view class="rule-main" bindtap="showEditForm" data-rule="{{item}}">
+          <view class="rule-header">
+            <text class="rule-name">{{item.name}}</text>
+            <view class="rule-badge {{item.enabled ? 'active' : ''}}">{{item.enabled ? '启用' : '禁用'}}</view>
+          </view>
+          <view class="rule-details">
+            <text class="rule-pattern">{{item.pattern}}</text>
+            <text class="rule-separator">•</text>
+            <text class="rule-label">{{item.label || item.name}}</text>
+          </view>
+          <view class="rule-tags" wx:if="{{item.dateMapping && item.dateMapping.enabled || item.lengthEnabled}}">
+            <text class="rule-tag date-tag" wx:if="{{item.dateMapping && item.dateMapping.enabled}}">📅 日期转换</text>
+            <text class="rule-tag length-tag" wx:if="{{item.lengthEnabled}}">📏 {{item.minLength}}-{{item.maxLength || '∞'}}位</text>
+          </view>
+        </view>
+        <view class="rule-actions">
+          <view class="rule-delete-btn" catchtap="deleteRule" data-rule="{{item}}">🗑️</view>
+          <switch checked="{{item.enabled}}" bindchange="toggleRule" data-rule="{{item}}" color="#3D8B7A"/>
+        </view>
+      </view>
+    </view>
+
+    <!-- 预设规则 -->
+    <view class="rule-presets">
+      <view class="preset-header">
+        <text class="preset-title">快速添加</text>
+        <text class="preset-hint">点击直接添加，点击名称可编辑后添加</text>
+      </view>
+      <view class="preset-grid">
+        <view class="preset-item" data-rule="顺丰|SF\\d{10,}|匹配的全部|顺丰单号" bindtap="addPreset">
+          <text class="preset-icon">📦</text>
+          <text class="preset-name">顺丰快递</text>
+        </view>
+        <view class="preset-item" data-rule="圆通|YT\\d{12,}|匹配的全部|圆通单号" bindtap="addPreset">
+          <text class="preset-icon">📮</text>
+          <text class="preset-name">圆通快递</text>
+        </view>
+        <view class="preset-item" data-rule="韵达|YD\\d{12,}|匹配的全部|韵达单号" bindtap="addPreset">
+          <text class="preset-icon">✉️</text>
+          <text class="preset-name">韵达快递</text>
+        </view>
+        <view class="preset-item" data-rule="中通|ZTO\\d{12,}|匹配的全部|中通单号" bindtap="addPreset">
+          <text class="preset-icon">📫</text>
+          <text class="preset-name">中通快递</text>
+        </view>
+        <view class="preset-item" data-rule="京东|JD[A-Z0-9]{10,}|匹配的全部|京东单号" bindtap="addPreset">
+          <text class="preset-icon">🛒</text>
+          <text class="preset-name">京东快递</text>
+        </view>
+        <view class="preset-item" data-rule="EMS|EA\\d{9,}EB|匹配的全部|EMS单号" bindtap="addPreset">
+          <text class="preset-icon">✈️</text>
+          <text class="preset-name">EMS快递</text>
+        </view>
+        <view class="preset-item" data-rule="极兔|JTX\\d{12,}|匹配的全部|极兔单号" bindtap="addPreset">
+          <text class="preset-icon">🐰</text>
+          <text class="preset-name">极兔快递</text>
+        </view>
+        <view class="preset-item" data-rule="德邦|DPK\\d{12,}|匹配的全部|德邦单号" bindtap="addPreset">
+          <text class="preset-icon">🚚</text>
+          <text class="preset-name">德邦快递</text>
+        </view>
+        <view class="preset-item" data-rule="手机号|1\\d{10}|匹配的全部|手机号" bindtap="addPreset">
+          <text class="preset-icon">📱</text>
+          <text class="preset-name">手机号码</text>
+        </view>
+        <view class="preset-item" data-rule="身份证|\\d{17}[\\dXx]|匹配的全部|身份证" bindtap="addPreset">
+          <text class="preset-icon">🪪</text>
+          <text class="preset-name">身份证号</text>
+        </view>
+        <view class="preset-item" data-rule="URL|https?://|匹配的全部|网址" bindtap="addPreset">
+          <text class="preset-icon">🔗</text>
+          <text class="preset-name">网址链接</text>
+        </view>
+        <view class="preset-item" data-rule="邮箱|@|匹配的全部|邮箱" bindtap="addPreset">
+          <text class="preset-icon">📧</text>
+          <text class="preset-name">邮箱地址</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 日期代码对照表 -->
+    <view class="date-code-helper">
+      <view class="helper-toggle" bindtap="toggleDateHelper">
+        <view class="toggle-left">
+          <text class="toggle-icon">🔤</text>
+          <text class="toggle-title">日期代码对照表</text>
+        </view>
+        <text class="toggle-arrow">{{showDateHelper ? '收起' : '展开'}}</text>
+      </view>
+      
+      <view class="helper-content" wx:if="{{showDateHelper}}">
+        <!-- 映射说明 -->
+        <view class="mapping-info">
+          <view class="info-item">
+            <text class="info-label">月份映射</text>
+            <text class="info-desc">数字1-9 → 01-09</text>
+            <text class="info-desc">字母 A=10, B=11, C=12</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">日期映射</text>
+            <text class="info-desc">数字1-9 → 01-09</text>
+            <text class="info-desc">字母 A=10, B=11...</text>
+          </view>
+        </view>
+
+        <!-- 年份对照表 -->
+        <view class="mapping-section">
+          <text class="mapping-title">字母 → 年份偏移</text>
+          <view class="mapping-grid">
+            <view class="mapping-item" wx:for="{{['A','B','C','D','E','F','G','H','J','K','L','M','N','P','R','S','T','U','V','W','X','Y','Z']}}" wx:key="{{item}}">
+              <text class="mapping-letter">{{item}}</text>
+              <input class="mapping-input" type="number" value="{{customMapping.yearLetters[item]}}" data-type="yearLetters" data-letter="{{item}}" bindchange="onLetterMappingInput"/>
+            </view>
+          </view>
+        </view>
+
+        <!-- 月份对照表 -->
+        <view class="mapping-section">
+          <text class="mapping-title">字母 → 月份</text>
+          <view class="mapping-grid small">
+            <view class="mapping-item" wx:for="{{['A','B','C']}}" wx:key="{{item}}">
+              <text class="mapping-letter">{{item}}</text>
+              <input class="mapping-input" type="number" value="{{customMapping.monthLetters[item]}}" data-type="monthLetters" data-letter="{{item}}" bindchange="onLetterMappingInput"/>
+            </view>
+          </view>
+        </view>
+
+        <!-- 日期对照表 -->
+        <view class="mapping-section">
+          <text class="mapping-title">字母 → 日期</text>
+          <view class="mapping-grid day-grid">
+            <view class="mapping-item" wx:for="{{['A','B','C','D','E','F','G','H','J','K','L','M','N','P','R','S','T','U','V','W','X','Y','Z']}}" wx:key="{{item}}">
+              <text class="mapping-letter">{{item}}</text>
+              <input class="mapping-input" type="number" value="{{customMapping.dayLetters[item]}}" data-type="dayLetters" data-letter="{{item}}" bindchange="onLetterMappingInput"/>
+            </view>
+          </view>
+          <text class="mapping-note">注：跳过 I、O、Q 避免与数字混淆</text>
+        </view>
+
+        <!-- 基准年份 -->
+        <view class="mapping-section base-year">
+          <text class="mapping-title">基准年份</text>
+          <view class="base-year-row">
+            <input class="base-year-input" type="number" value="{{customMapping.baseYear}}" placeholder="2020" bindinput="onBaseYearInput"/>
+            <text class="base-year-hint">年份偏移以此为基准计算</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑规则弹窗 -->
+  <view class="modal-mask" wx:if="{{isEditing}}" bindtap="cancelEdit"></view>
+  <view class="modal-container" wx:if="{{isEditing}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-icon">{{editingRule.id ? '✏️' : '➕'}}</text>
+        <text class="modal-title">{{editingRule.id ? '编辑规则' : '新建规则'}}</text>
+        <view class="modal-close" bindtap="cancelEdit">✕</view>
+      </view>
+      
+      <scroll-view class="modal-body" scroll-y>
+        <view class="form-section">
+          <view class="form-item">
+            <text class="form-label">规则名称</text>
+            <input class="form-input" value="{{formData.name}}" placeholder="如：顺丰快递" bindinput="onFormInput" data-field="name"/>
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">匹配关键词</text>
+            <input class="form-input regex-input" value="{{formData.pattern}}" placeholder="如：SF 或 1 或 http" bindinput="onFormInput" data-field="pattern"/>
+            <text class="form-hint">直接写关键词即可，如"SF"匹配所有含SF的内容</text>
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">显示名称</text>
+            <input class="form-input" value="{{formData.label}}" placeholder="如：快递单号" bindinput="onFormInput" data-field="label"/>
+            <text class="form-hint">扫码结果中显示的标签</text>
+          </view>
+        </view>
+        
+        <view class="form-section">
+          <view class="section-title">提取设置</view>
+          
+          <view class="form-item">
+            <text class="form-label">提取方式</text>
+            <picker mode="selector" range="{{extractOptions}}" bindchange="onExtractChange">
+              <view class="form-picker">
+                <text>{{formData.extract || '请选择'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          
+          <view class="form-item">
+            <text class="form-label">长度匹配</text>
+            <view class="flex-row-center">
+              <switch checked="{{formData.lengthEnabled}}" bindchange="onLengthToggle" color="#3D8B7A"/>
+              <text class="form-hint-inline" wx:if="{{formData.lengthEnabled}}">开启长度限制</text>
+            </view>
+          </view>
+          
+          <view class="form-item" wx:if="{{formData.lengthEnabled}}">
+            <text class="form-label">长度范围</text>
+            <view class="position-row">
+              <view class="position-item">
+                <text class="position-label">最小</text>
+                <input class="position-input" type="number" value="{{formData.minLength}}" placeholder="10" bindinput="onFormInput" data-field="minLength"/>
+              </view>
+              <text class="range-separator">~</text>
+              <view class="position-item">
+                <text class="position-label">最大</text>
+                <input class="position-input" type="number" value="{{formData.maxLength}}" placeholder="20" bindinput="onFormInput" data-field="maxLength"/>
+              </view>
+            </view>
+          </view>
+          
+          <view class="form-item" wx:if="{{formData.extract === '提取位置'}}">
+            <text class="form-label">提取位置</text>
+            <view class="position-row">
+              <view class="position-item">
+                <text class="position-label">起始</text>
+                <input class="position-input" type="number" value="{{formData.startPos}}" placeholder="1" bindinput="onFormInput" data-field="startPos"/>
+              </view>
+              <text class="range-separator">~</text>
+              <view class="position-item">
+                <text class="position-label">结束</text>
+                <input class="position-input" type="number" value="{{formData.endPos}}" placeholder="1" bindinput="onFormInput" data-field="endPos"/>
+              </view>
+            </view>
+            <text class="form-hint">示例：位置1-3提取前3位</text>
+          </view>
+        </view>
+        
+        <view class="form-section">
+          <view class="section-title">日期转换</view>
+          
+          <view class="form-item">
+            <text class="form-label">启用日期转换</text>
+            <switch checked="{{formData.dateMapping.enabled}}" bindchange="onDateMappingToggle" color="#3D8B7A"/>
+          </view>
+          
+          <view class="form-item date-positions" wx:if="{{formData.dateMapping.enabled}}">
+            <text class="form-label">日期位置（从1开始）</text>
+            <view class="date-pos-row">
+              <view class="date-pos-item">
+                <text class="date-pos-icon year-icon">年</text>
+                <input class="date-pos-input" type="number" value="{{formData.dateMapping.yearPos}}" placeholder="15" bindinput="onDateMappingInput" data-field="yearPos"/>
+              </view>
+              <view class="date-pos-item">
+                <text class="date-pos-icon month-icon">月</text>
+                <input class="date-pos-input" type="number" value="{{formData.dateMapping.monthPos}}" placeholder="16" bindinput="onDateMappingInput" data-field="monthPos"/>
+              </view>
+              <view class="date-pos-item">
+                <text class="date-pos-icon day-icon">日</text>
+                <input class="date-pos-input" type="number" value="{{formData.dateMapping.dayPos}}" placeholder="17" bindinput="onDateMappingInput" data-field="dayPos"/>
+              </view>
+            </view>
+            <text class="form-hint">填写条码中代表年/月/日的字符位置</text>
+          </view>
+        </view>
+        
+        <!-- 规则测试区域 -->
+        <view class="form-section test-section">
+          <view class="section-title">实时测试</view>
+          <view class="test-input-row">
+            <input class="test-input" value="{{testInput}}" placeholder="输入测试内容..." bindinput="onTestInput" bindconfirm="runTest"/>
+            <view class="test-buttons">
+              <view class="test-btn primary" bindtap="runTest">测试</view>
+              <view class="test-btn" bindtap="clearTest" wx:if="{{testInput || testResult || testSteps}}">清除</view>
+            </view>
+          </view>
+          
+          <view class="test-hint" wx:if="{{formData.pattern && !testSteps}}">
+            <text class="hint-icon">💡</text>
+            <text class="hint-text">输入内容后点击「测试」查看匹配结果</text>
+          </view>
+          
+          <view class="test-steps" wx:if="{{testSteps && testSteps.length > 0}}">
+            <view class="steps-title">
+              <text class="steps-icon">📋</text>
+              <text class="steps-text">匹配过程</text>
+            </view>
+            <view class="step-item {{step.status}}" wx:for="{{testSteps}}" wx:key="index">
+              <view class="step-header">
+                <text class="step-num">{{index + 1}}</text>
+                <text class="step-name">{{step.name}}</text>
+                <text class="step-status-icon">{{step.status === 'success' ? '✓' : (step.status === 'error' ? '✗' : '→')}}</text>
+              </view>
+              <view class="step-detail" wx:if="{{step.input}}">
+                <text class="step-label">输入：</text>
+                <text class="step-value">{{step.input}}</text>
+              </view>
+              <view class="step-detail" wx:if="{{step.output}}">
+                <text class="step-label">输出：</text>
+                <text class="step-value highlight">{{step.output}}</text>
+              </view>
+              <view class="step-error" wx:if="{{step.error}}">
+                <text>{{step.error}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="test-result" wx:if="{{testResult}}">
+            <view class="result-header">
+              <text class="result-icon">🎯</text>
+              <text class="result-title">最终结果</text>
+            </view>
+            <view class="result-main-content">
+              <view class="result-label-row">
+                <text class="result-label-text">{{testResult.label || '测试结果'}}</text>
+              </view>
+              <view class="result-value-row">
+                <text class="result-value">{{testResult.value}}</text>
+              </view>
+              <view class="result-raw" wx:if="{{testResult.rawValue && testResult.rawValue !== testResult.value}}">
+                <text class="raw-label">原始值：</text>
+                <text class="raw-value">{{testResult.rawValue}}</text>
+              </view>
+            </view>
+            <view class="result-badges">
+              <text class="result-badge success-badge" wx:if="{{testResult.matched}}">✓ 匹配成功</text>
+              <text class="result-badge date-badge" wx:if="{{testResult.isDate}}">📅 日期转换</text>
+              <text class="result-badge length-badge" wx:if="{{testResult.lengthChecked}}">📏 长度校验</text>
+            </view>
+          </view>
+          
+          <view class="test-no-match" wx:if="{{testNoMatch}}">
+            <text class="no-match-icon">❌</text>
+            <text class="no-match-text">{{testNoMatch}}</text>
+          </view>
+          
+          <view class="test-error" wx:if="{{testError}}">
+            <text>⚠️ {{testError}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      
+      <view class="modal-footer">
+        <view class="cancel-btn delete-rule-btn" bindtap="deleteCurrentRule" wx:if="{{editingRule && editingRule.id}}">删除</view>
+        <view class="cancel-btn" bindtap="cancelEdit">取消</view>
+        <view class="save-btn" bindtap="saveRule">保存规则</view>
+      </view>
+    </view>
+  </view>
 </view>

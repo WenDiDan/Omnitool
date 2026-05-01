@@ -14,10 +14,12 @@ Page({
     editAvatarUrl: '',
     editNickName: '',
     isFirstLogin: false,  // 是否首次登录
+    hasShownProfilePrompt: false,  // 是否已显示过资料设置提示（防止重复弹窗）
     // 登录状态
     isLoggedIn: false,
     userInfo: null,
     roleLabel: '未识别',
+    openid: '',
     openidShort: '',
     isAdmin: false,
     loginTime: '',      // 登录时间
@@ -48,6 +50,14 @@ Page({
   onShow() {
     this.loadData()
     this.calculateCacheSize()
+    // 从 storage 同步 openid
+    const savedOpenid = wx.getStorageSync('userOpenid')
+    if (savedOpenid) {
+      this.setData({
+        openid: savedOpenid,
+        openidShort: savedOpenid.slice(-8).toUpperCase()
+      })
+    }
     // onShow 时不调用云函数，只使用本地缓存数据
     // 云函数只在登录时或下拉刷新时调用
   },
@@ -78,6 +88,8 @@ Page({
               avatarUrl: avatarUrl,
               nickName: nickName,
               roleLabel: user.roleLabel,
+              openid: user.openid || '',
+              openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
               isAdmin: isAdminUser,
               lastActiveTime: activeTime,
               userInfo: user
@@ -128,7 +140,62 @@ Page({
         lastActiveTime: savedLastActive || savedLoginTime || ''
       })
       this.loadUserProfile()
-      this.loadUserIdentity()
+      // 检查是否需要弹出资料设置框
+      this.checkProfileSetup()
+    }
+  },
+
+  // 检查是否需要设置资料（首次登录或未设置头像昵称）
+  checkProfileSetup() {
+    // 防止重复弹窗
+    if (this.data.hasShownProfilePrompt) return
+    
+    const avatarUrl = wx.getStorageSync('userAvatar') || ''
+    const nickName = wx.getStorageSync('userNickName') || ''
+    
+    // 如果本地没有头像或昵称，从云端获取后判断
+    if (!avatarUrl || !nickName) {
+      // 调用云函数获取用户信息
+      wx.cloud.callFunction({
+        name: 'userManage',
+        data: { action: 'getInfo' },
+        success: (res) => {
+          if (res.result && res.result.success) {
+            const user = res.result.user
+            const hasCloudProfile = user.avatarUrl || user.nickName
+            
+            if (!hasCloudProfile) {
+              // 云端也没有资料，弹出设置框
+              this.setData({
+                showProfileModal: true,
+                hasShownProfilePrompt: true,
+                editAvatarUrl: '/images/icon_user_white.png',
+                editNickName: '',
+                isFirstLogin: true
+              })
+              wx.setStorageSync('hasShownProfilePrompt', true)
+            } else {
+              // 云端有资料，更新本地缓存
+              if (user.nickName) {
+                wx.setStorageSync('userNickName', user.nickName)
+              }
+              // 获取云端头像
+              this.getAvatarUrl(user.avatarUrl).then(url => {
+                wx.setStorageSync('userAvatar', url)
+              })
+              this.setData({ hasShownProfilePrompt: true })
+              wx.setStorageSync('hasShownProfilePrompt', true)
+            }
+          }
+        },
+        fail: () => {
+          console.error('检查资料设置状态失败')
+        }
+      })
+    } else {
+      // 本地有资料，确保标记已设置
+      this.setData({ hasShownProfilePrompt: true })
+      wx.setStorageSync('hasShownProfilePrompt', true)
     }
   },
 
@@ -151,13 +218,16 @@ Page({
               isLoggedIn: true,
               userInfo: user,
               roleLabel: user.roleLabel,
+              openid: user.openid || '',
               openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
               isAdmin: false,
               loginTime: loginTime,
-              lastActiveTime: loginTime
+              lastActiveTime: loginTime,
+              hasShownProfilePrompt: true
             })
             wx.setStorageSync('isLoggedIn', true)
             wx.setStorageSync('userOpenid', user.openid)
+            wx.setStorageSync('hasShownProfilePrompt', true)
             // 同步到全局
             app.globalData.userInfo = user
             wx.showModal({
@@ -174,6 +244,7 @@ Page({
             isLoggedIn: true,
             userInfo: user,
             roleLabel: user.roleLabel,
+            openid: user.openid || '',
             openidShort: user.openid ? user.openid.slice(-8).toUpperCase() : '',
             isAdmin: isAdminUser,
             loginTime: loginTime,
@@ -196,21 +267,24 @@ Page({
             // 云端有资料，转换头像URL为HTTPS后使用
             this.getAvatarUrl(user.avatarUrl).then(avatarUrl => {
               const nickName = user.nickName || '微信用户'
-              this.setData({ avatarUrl, nickName })
+              this.setData({ avatarUrl, nickName, hasShownProfilePrompt: true })
               wx.setStorageSync('userAvatar', avatarUrl)
               wx.setStorageSync('userNickName', nickName)
+              wx.setStorageSync('hasShownProfilePrompt', true)
               wx.showToast({ title: '登录成功', icon: 'success' })
             })
           } else {
-            // 云端无资料，弹出编辑框让用户设置微信头像昵称
+            // 云端无资料，弹出编辑框让用户设置头像昵称
             wx.showToast({ title: '请设置头像昵称', icon: 'none' })
             setTimeout(() => {
               this.setData({
                 showProfileModal: true,
+                hasShownProfilePrompt: true,
                 editAvatarUrl: '/images/icon_user_white.png',
                 editNickName: '',
                 isFirstLogin: true
               })
+              wx.setStorageSync('hasShownProfilePrompt', true)
             }, 500)
           }
         } else {
@@ -262,6 +336,12 @@ Page({
           wx.setStorageSync('lastActiveTime', activeTime)
           // 同步到全局
           app.globalData.userInfo = user
+          
+          // 检查资料设置标记
+          const hasShown = wx.getStorageSync('hasShownProfilePrompt')
+          if (hasShown) {
+            this.setData({ hasShownProfilePrompt: true })
+          }
         }
       },
       fail: (err) => {
@@ -384,7 +464,63 @@ Page({
   },
 
   closeProfileModal() {
-    this.setData({ showProfileModal: false, isFirstLogin: false })
+    this.setData({ 
+      showProfileModal: false, 
+      isFirstLogin: false,
+      hasShownProfilePrompt: true  // 关闭弹窗后标记已显示过，防止下次重复弹出
+    })
+    wx.setStorageSync('hasShownProfilePrompt', true)
+  },
+
+  // 跳过/取消（保持登录状态但不设置资料）
+  cancelLogin() {
+    this.setData({ 
+      showProfileModal: false, 
+      isFirstLogin: false,
+      hasShownProfilePrompt: true
+    })
+    wx.setStorageSync('hasShownProfilePrompt', true)
+    wx.showToast({ title: '可稍后设置', icon: 'none', duration: 1500 })
+  },
+
+  // 取消登录（退出登录状态）
+  cancelLoginAndLogout() {
+    wx.showModal({
+      title: '提示',
+      content: '确定要取消登录吗？',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 清除所有登录相关数据
+          wx.clearStorageSync()
+          // 重置页面状态为未登录
+          this.setData({
+            isLoggedIn: false,
+            showProfileModal: false,
+            isFirstLogin: false,
+            hasShownProfilePrompt: false,
+            userInfo: null,
+            nickName: '',
+            avatarUrl: '',
+            roleLabel: '',
+            openid: '',
+    openidShort: '',
+            isAdmin: false,
+            loginTime: '',
+            lastActiveTime: '',
+            // 菜单数据重置
+            todayCount: 0,
+            totalCount: 0,
+            historyCount: 0,
+            adminCount: 0
+          })
+          // 重置全局数据
+          app.globalData.userInfo = null
+          wx.showToast({ title: '已取消登录', icon: 'none', duration: 1500 })
+        }
+      }
+    })
   },
 
   // 阻止事件冒泡
@@ -418,7 +554,8 @@ Page({
             avatarUrl: '',
             nickName: '',
             roleLabel: '未登录',
-            openidShort: '',
+            openid: '',
+    openidShort: '',
             isAdmin: false,
             loginTime: '',
             lastActiveTime: ''
@@ -560,7 +697,7 @@ Page({
   showAbout() {
     wx.showModal({
       title: '关于条码扫描器',
-      content: '版本：4.0.0\n功能：快速扫描条码、二维码，智能解码，历史记录管理\n开发者：条码扫描器团队',
+      content: '功能：快速扫描条码、二维码，智能解码，历史记录管理\n开发者：条码扫描器团队',
       showCancel: false,
       confirmText: '知道了'
     })

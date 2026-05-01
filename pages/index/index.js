@@ -1,5 +1,6 @@
 const barcode = require('../../utils/barcode.js')
 const qrcode = require('../../utils/qrcode.js')
+const app = getApp()
 
 Page({
   data: {
@@ -9,13 +10,43 @@ Page({
     showEncodeTools: false,
     encodeResults: {},
     qrImagePath: '',
-    showQrCode: false
+    showQrCode: false,
+    // 登录弹窗
+    showLoginModal: false,
+    showProfileModal: false,
+    editAvatarUrl: '',
+    editNickName: '',
+    isFirstLogin: false,
+    hasShownProfilePrompt: false,
+    isLoggedIn: false,
+    pendingDecodeAction: null  // 待处理的解密操作
   },
 
   onLoad(options) {
+    this.checkLoginStatus()
     if (options.code) {
       this.setData({ inputCode: decodeURIComponent(options.code) })
       this.decode()
+    }
+  },
+
+  onShow() {
+    // 检查登录状态（仅用于UI展示，不阻止使用）
+    const isLoggedIn = wx.getStorageSync('isLoggedIn')
+    this.setData({ isLoggedIn: !!isLoggedIn })
+  },
+
+  // 检查登录状态
+  checkLoginStatus() {
+    const isLoggedIn = wx.getStorageSync('isLoggedIn')
+    const hasShown = wx.getStorageSync('hasShownProfilePrompt')
+    this.setData({
+      isLoggedIn: !!isLoggedIn,
+      hasShownProfilePrompt: !!hasShown
+    })
+    // 如果未登录且未弹窗，显示登录提示
+    if (!isLoggedIn && !this.data.showLoginModal && !this.data.showProfileModal) {
+      this.setData({ showLoginModal: true })
     }
   },
 
@@ -47,6 +78,23 @@ Page({
     const code = this.data.inputCode.trim()
     if (!code) {
       wx.showToast({ title: '请输入内容', icon: 'none' })
+      return
+    }
+
+    // 检查登录状态
+    if (!this.data.isLoggedIn) {
+      this.setData({ showLoginModal: true, pendingDecodeAction: 'decode' })
+      return
+    }
+
+    // 检查是否被封禁
+    const userInfo = app.globalData.userInfo
+    if (userInfo?.isBlocked) {
+      wx.showModal({
+        title: '无法使用',
+        content: '您的账号已被封禁，无法使用解密功能',
+        showCancel: false
+      })
       return
     }
 
@@ -190,13 +238,6 @@ Page({
     })
   },
 
-  searchResult() {
-    const code = this.data.inputCode.trim()
-    wx.navigateTo({
-      url: `/package1/pages/browser/browser?url=${encodeURIComponent('https://www.baidu.com/s?wd=' + code)}&type=search`
-    })
-  },
-
   // ===== 生成二维码 =====
 
   generateQrCode() {
@@ -246,5 +287,105 @@ Page({
 
   goRegCode() {
     wx.navigateTo({ url: '/package1/pages/regcode/regcode' })
+  },
+
+  // ===== 登录相关 =====
+  goLogin() {
+    // 关闭弹窗，跳转到我的页面进行登录
+    this.setData({ showLoginModal: false })
+    wx.switchTab({ url: '/pages/my/my' })
+  },
+
+  // 取消登录
+  cancelLogin() {
+    this.setData({
+      showLoginModal: false,
+      pendingDecodeAction: null
+    })
+  },
+
+  // 执行待处理的解密操作
+  executePendingDecodeAction() {
+    const action = this.data.pendingDecodeAction
+    this.setData({ pendingDecodeAction: null })
+    if (action === 'decode') {
+      this.decode()
+    }
+  },
+
+  // 选择头像
+  onEditChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl
+    this.setData({ editAvatarUrl: avatarUrl })
+  },
+
+  // 输入昵称
+  onEditNickInput(e) {
+    this.setData({ editNickName: e.detail.value })
+  },
+
+  // 保存资料
+  confirmProfile() {
+    const { editAvatarUrl, editNickName } = this.data
+    const avatarUrl = editAvatarUrl || '/images/icon_user_white.png'
+    const nickName = editNickName.trim() || '微信用户'
+
+    wx.showLoading({ title: '保存中...', mask: true })
+    wx.cloud.callFunction({
+      name: 'userManage',
+      data: {
+        action: 'updateInfo',
+        avatarUrl: avatarUrl,
+        nickName: nickName
+      },
+      success: (res) => {
+        wx.hideLoading()
+        if (res.result.success) {
+          // 更新本地缓存
+          wx.setStorageSync('userAvatar', avatarUrl)
+          wx.setStorageSync('userNickName', nickName)
+          wx.setStorageSync('hasShownProfilePrompt', true)
+          
+          this.setData({
+            showProfileModal: false,
+            isFirstLogin: false,
+            hasShownProfilePrompt: true
+          })
+
+          wx.showToast({ title: '保存成功', icon: 'success' })
+          // 执行待处理的解密操作
+          this.executePendingDecodeAction()
+        } else {
+          wx.showToast({ title: '保存失败', icon: 'none' })
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+        wx.showToast({ title: '保存失败', icon: 'none' })
+      }
+    })
+  },
+
+  // 跳过设置
+  skipProfile() {
+    this.setData({
+      showProfileModal: false,
+      isFirstLogin: false,
+      hasShownProfilePrompt: true
+    })
+    wx.setStorageSync('hasShownProfilePrompt', true)
+    // 执行待处理的解密操作
+    this.executePendingDecodeAction()
+  },
+
+  // 格式化时间
+  formatDateTime(date) {
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
+    const h = String(date.getHours()).padStart(2, '0')
+    const mi = String(date.getMinutes()).padStart(2, '0')
+    const s = String(date.getSeconds()).padStart(2, '0')
+    return `${y}-${m}-${d} ${h}:${mi}:${s}`
   }
 })

@@ -110,6 +110,7 @@ function decodeBarcode(code, wxScanType) {
   const result = {
     type: identifyBarcodeType(code, wxScanType),
     data: code,
+    length: code.length,
     valid: true
   };
 
@@ -198,7 +199,112 @@ function decodeBarcode(code, wxScanType) {
     result.type = '数字条码';
   }
 
+  // 应用自定义规则
+  const customRules = getCustomRules();
+  for (const rule of customRules) {
+    if (rule.enabled !== false && applyCustomRule(code, rule, result)) {
+      break;
+    }
+  }
+
+  // 确保length和valid属性始终存在
+  result.length = code.length;
+  if (result.valid === undefined) {
+    result.valid = true;
+  }
+
   return result;
+}
+
+/**
+ * 获取自定义规则（需要从 app.globalData 获取）
+ */
+function getCustomRules() {
+  try {
+    const app = getApp();
+    return app.globalData.customRules || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+/**
+ * 应用自定义规则
+ * @param {string} code - 条码内容
+ * @param {object} rule - 规则配置
+ * @param {object} result - 当前解码结果
+ * @returns {boolean} - 是否匹配并应用了规则
+ */
+function applyCustomRule(code, rule, result) {
+  if (!rule.pattern) return false;
+
+  try {
+    const regex = new RegExp(rule.pattern, rule.flags || 'i');
+    const match = code.match(regex);
+    
+    if (match) {
+      // 更新类型
+      if (rule.type) {
+        result.type = rule.type;
+      }
+
+      // 应用自定义解析
+      if (rule.extract) {
+        try {
+          // 支持 {1}, {2} 等占位符替换
+          let extracted = rule.extract;
+          for (let i = 1; i <= match.length; i++) {
+            extracted = extracted.replace(new RegExp(`\\{${i}\\}`, 'g'), match[i] || '');
+          }
+          result.customData = extracted;
+          result.customLabel = rule.label || '自定义';
+          
+          // 如果有日期转换，复用 app.decodeWithRule 的结果
+          if (rule.dateMapping && rule.dateMapping.enabled) {
+            try {
+              const app = getApp();
+              if (app && typeof app.decodeWithRule === 'function') {
+                const dateResults = app.decodeWithRule(code);
+                if (dateResults && dateResults.length > 0) {
+                  const dateResult = dateResults[0];
+                  if (dateResult.value) {
+                    result.customData = dateResult.value;
+                    result.customRuleResults = dateResults;
+                  }
+                }
+              }
+            } catch (e) {
+              // 忽略日期转换错误，使用原有的 extracted 值
+              console.log('日期转换跳过', e);
+            }
+          }
+        } catch (e) {
+          console.error('自定义规则提取失败', e);
+        }
+      }
+
+      // 添加额外字段
+      if (rule.fields) {
+        for (const [key, value] of Object.entries(rule.fields)) {
+          if (typeof value === 'string') {
+            // 支持引用匹配组
+            let fieldValue = value;
+            for (let i = 1; i <= match.length; i++) {
+              fieldValue = fieldValue.replace(new RegExp(`\\{${i}\\}`, 'g'), match[i] || '');
+            }
+            result[key] = fieldValue;
+          } else {
+            result[key] = value;
+          }
+        }
+      }
+
+      return true;
+    }
+  } catch (e) {
+    console.error('自定义规则应用失败', e);
+  }
+  return false;
 }
 
 /**
@@ -353,5 +459,7 @@ module.exports = {
   validateEAN8,
   validateUPC,
   getCountry,
-  encodeTools
+  encodeTools,
+  getCustomRules,
+  applyCustomRule
 };

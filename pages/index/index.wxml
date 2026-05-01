@@ -188,10 +188,7 @@
           <image class="action-icon" src="/images/icon_album_white.png" mode="aspectFit"/>
           <text>复制</text>
         </view>
-        <view class="action-btn" bindtap="searchResult">
-          <image class="action-icon" src="/images/icon_search.png" mode="aspectFit"/>
-          <text>搜索</text>
-        </view>
+
         <view class="action-btn" wx:if="{{decodedResult.domain}}" bindtap="openUrl">
           <image class="action-icon" src="/images/icon_info.png" mode="aspectFit"/>
           <text>打开</text>
@@ -250,4 +247,49 @@
 
   <!-- 隐藏的 Canvas -->
   <canvas canvas-id="qrCanvas" style="width:200px;height:200px;position:fixed;left:-9999px;top:-9999px;"></canvas>
+
+  <!-- 登录提示弹窗 -->
+  <view class="modal-mask" wx:if="{{showLoginModal}}" catchtap="cancelLogin">
+    <view class="modal-box login-modal" catchtap="stopTap">
+      <view class="modal-header">
+        <view class="modal-accent-bar"></view>
+        <text class="modal-title">提示</text>
+      </view>
+      <view class="login-tip">
+        <text class="login-tip-text">解密功能需要登录才能使用</text>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="cancelLogin">取消</view>
+        <view class="modal-btn modal-confirm" bindtap="goLogin">去登录</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 资料设置弹窗 -->
+  <view class="modal-mask" wx:if="{{showProfileModal}}" catchtap="skipProfile">
+    <view class="modal-box" catchtap="stopTap">
+      <view class="modal-header">
+        <view class="modal-accent-bar"></view>
+        <text class="modal-title">{{isFirstLogin ? '设置头像昵称' : '编辑资料'}}</text>
+      </view>
+      <view class="profile-edit-tip" wx:if="{{isFirstLogin}}">
+        <text class="profile-tip-text">获取微信头像和昵称，提升个性化体验</text>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">头像</text>
+        <button class="profile-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onEditChooseAvatar">
+          <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+          <text class="profile-avatar-hint">{{editAvatarUrl ? '更换' : '选择头像'}}</text>
+        </button>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">昵称</text>
+        <input class="profile-nick-input" type="nickname" value="{{editNickName}}" placeholder="点击此处获取微信昵称" bindinput="onEditNickInput"/>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="skipProfile">跳过</view>
+        <view class="modal-btn modal-confirm" bindtap="confirmProfile">保存</view>
+      </view>
+    </view>
+  </view>
 </view>

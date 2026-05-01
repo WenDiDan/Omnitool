@@ -480,3 +480,150 @@
   color: #0D1B2A;
   border: 2rpx solid #0D1B2A;
 }
+
+/* ===== 登录提示弹窗 ===== */
+.login-modal {
+  max-width: 560rpx;
+}
+
+.login-tip {
+  padding: 40rpx 32rpx;
+  text-align: center;
+}
+
+.login-tip-text {
+  font-size: 30rpx;
+  color: #0D1B2A;
+  line-height: 1.6;
+}
+
+/* ===== 资料设置弹窗 ===== */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 24rpx;
+  width: 600rpx;
+  max-width: 90%;
+  overflow: hidden;
+  box-shadow: 0 8rpx 40rpx rgba(0,0,0,0.15);
+}
+
+.modal-header {
+  padding: 32rpx 32rpx 0;
+  display: flex;
+  align-items: center;
+}
+
+.modal-accent-bar {
+  width: 8rpx;
+  height: 32rpx;
+  background: #E07A5F;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #0D1B2A;
+}
+
+.profile-edit-tip {
+  padding: 20rpx 32rpx 0;
+}
+
+.profile-tip-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+.profile-edit-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx 0;
+}
+
+.profile-edit-label {
+  width: 80rpx;
+  font-size: 28rpx;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.profile-avatar-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  flex: 1;
+}
+
+.profile-avatar-btn::after {
+  border: none;
+}
+
+.profile-avatar-preview {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 16rpx;
+  background: #F0EDE0;
+}
+
+.profile-avatar-hint {
+  font-size: 26rpx;
+  color: #E07A5F;
+}
+
+.profile-nick-input {
+  flex: 1;
+  height: 80rpx;
+  border: 2rpx solid #E8E4D8;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #0D1B2A;
+  background: #FAFAF5;
+  box-sizing: border-box;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 20rpx;
+  margin: 36rpx 32rpx 32rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  border-radius: 42rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.modal-cancel {
+  background: #F0EDE0;
+  color: #6B6B6B;
+}
+
+.modal-confirm {
+  background: #0D1B2A;
+  color: #fff;
+}

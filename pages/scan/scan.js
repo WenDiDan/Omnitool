@@ -8,9 +8,13 @@ Page({
     showResult: false,
     scanResult: {},
     decodedInfo: {},    // 解码详情
+    encodeResults: {},  // 编码转换结果
+    showEncodeTools: false,  // 是否显示编码转换
     recentScans: [],
     hideRecentScans: false,
-    continuousMode: false  // 连续扫码模式
+    continuousMode: false,  // 连续扫码模式
+    customRuleResults: []  // 自定义规则提取结果
+
   },
 
   onLoad(options) {
@@ -22,34 +26,6 @@ Page({
   },
 
   onShow() {
-    // 检查登录状态
-    const isLoggedIn = wx.getStorageSync('isLoggedIn');
-    if (!isLoggedIn) {
-      wx.showModal({
-        title: '提示',
-        content: '请先登录后再使用扫码功能',
-        showCancel: false,
-        success: () => {
-          wx.switchTab({ url: '/pages/my/my' });
-        }
-      });
-      return;
-    }
-
-    // 检查是否被封禁
-    const userInfo = app.globalData.userInfo;
-    if (userInfo && userInfo.isBlocked) {
-      wx.showModal({
-        title: '无法使用',
-        content: '您的账号已被封禁，无法使用扫码功能',
-        showCancel: false,
-        success: () => {
-          wx.switchTab({ url: '/pages/my/my' });
-        }
-      });
-      return;
-    }
-
     if (app.globalData.pendingScanCode) {
       const code = app.globalData.pendingScanCode;
       delete app.globalData.pendingScanCode;
@@ -66,7 +42,7 @@ Page({
 
   loadRecentScans() {
     const history = app.globalData.scanHistory || [];
-    this.setData({ recentScans: history.slice(0, 5) });
+    this.setData({ recentScans: history.slice(0, 10) });
   },
 
   loadRecentScansSetting() {
@@ -75,17 +51,8 @@ Page({
   },
 
   closeRecentScans() {
-    wx.showModal({
-      title: '提示',
-      content: '关闭后可以通过点击提示条重新显示，确定要关闭吗？',
-      success: (res) => {
-        if (res.confirm) {
-          this.setData({ hideRecentScans: true });
-          wx.setStorageSync('hideRecentScans', true);
-          wx.showToast({ title: '已关闭', icon: 'success', duration: 1000 });
-        }
-      }
-    });
+    this.setData({ hideRecentScans: true });
+    wx.setStorageSync('hideRecentScans', true);
   },
 
   showRecentScans() {
@@ -105,34 +72,15 @@ Page({
   },
 
   startScan() {
-    // 检查是否被封禁
-    const userInfo = app.globalData.userInfo;
-    if (userInfo?.isBlocked) {
-      wx.showModal({
-        title: '无法使用',
-        content: '您的账号已被封禁，无法使用扫码功能',
-        showCancel: false
-      });
-      return;
-    }
-
-    wx.getSetting({
+    wx.scanCode({
+      onlyFromCamera: true,
+      scanType: ['barCode', 'qrCode', 'datamatrix', 'pdf417'],
       success: (res) => {
-        if (res.authSetting['scope.camera']) {
-          this.setData({ showPreview: true });
-        } else {
-          wx.authorize({
-            scope: 'scope.camera',
-            success: () => { this.setData({ showPreview: true }); },
-            fail: () => {
-              wx.showModal({
-                title: '需要相机权限',
-                content: '请在设置中开启相机权限以使用扫码功能',
-                confirmText: '去设置',
-                success: (res) => { if (res.confirm) wx.openSetting(); }
-              });
-            }
-          });
+        this.handleScanResult(res.result, res.scanType);
+      },
+      fail: (err) => {
+        if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
+          wx.showToast({ title: '扫码失败，请重试', icon: 'none' });
         }
       }
     });
@@ -151,6 +99,20 @@ Page({
   },
 
   handleScanResult(code, wxScanType) {
+    // 检查重复扫码
+    const history = app.globalData.scanHistory || [];
+    const existingRecord = history.find(item => item.code === code);
+    const count = existingRecord ? existingRecord.count + 1 : 1;
+
+    // 显示重复扫码提示
+    if (count > 1) {
+      wx.showToast({
+        title: `第 ${count} 次扫码`,
+        icon: 'none',
+        duration: 1500
+      });
+    }
+
     // 音效
     if (app.globalData.settings.soundEnabled) {
       try {
@@ -175,12 +137,28 @@ Page({
 
     const type = barcode.identifyBarcodeType(code, wxScanType);
     const decoded = barcode.decodeBarcode(code, wxScanType);
+    const encodeResults = this.computeEncodeResults(code);
+    const customRuleResults = app.decodeWithRule(code);
+
+    // 整合自定义规则结果到 decoded 对象中
+    // 优先使用 app.decodeWithRule 的结果（支持日期转换）
+    if (customRuleResults && customRuleResults.length > 0) {
+      const firstResult = customRuleResults[0];
+      if (firstResult.value) {
+        decoded.customData = firstResult.value;
+        decoded.customLabel = firstResult.label || '自定义';
+      }
+      // 保存完整结果供显示使用
+      decoded.customRuleResults = customRuleResults;
+    }
 
     const scanData = {
       code,
       type,
       time: this.formatTime(new Date()),
-      wxScanType: wxScanType || ''
+      wxScanType: wxScanType || '',
+      count: count,
+      decodedInfo: decoded
     };
 
     app.saveScanHistory(scanData);
@@ -188,7 +166,10 @@ Page({
     this.setData({
       showResult: true,
       scanResult: scanData,
-      decodedInfo: decoded
+      decodedInfo: decoded,
+      encodeResults,
+      customRuleResults,
+      showEncodeTools: false
     });
 
     this.loadRecentScans();
@@ -201,31 +182,63 @@ Page({
   showScanDetail(code) {
     const history = app.globalData.scanHistory || [];
     const record = history.find(item => item.code === code);
+    const encodeResults = this.computeEncodeResults(code);
+    const customRuleResults = app.decodeWithRule(code);
+    
+    // 始终重新解码，确保显示最新的解析结果
     const type = barcode.identifyBarcodeType(code, record ? record.wxScanType : '');
     const decoded = barcode.decodeBarcode(code, record ? record.wxScanType : '');
+    
+    // 整合自定义规则结果到 decoded 对象中
+    if (customRuleResults && customRuleResults.length > 0) {
+      const firstResult = customRuleResults[0];
+      if (firstResult.value) {
+        decoded.customData = firstResult.value;
+        decoded.customLabel = firstResult.label || '自定义';
+      }
+      decoded.customRuleResults = customRuleResults;
+    }
+    
     const scanData = {
       code,
-      type,
-      time: record ? record.time : this.formatTime(new Date())
+      type: decoded.type || type,
+      time: record ? record.time : this.formatTime(new Date()),
+      count: record ? record.count : 1
     };
     this.setData({
       showResult: true,
       scanResult: scanData,
-      decodedInfo: decoded
+      decodedInfo: decoded,
+      encodeResults,
+      customRuleResults,
+      showEncodeTools: false
     });
   },
 
-  // 相册扫码 — 保留微信API的scanType
+  // 相册扫码 — 直接打开相册选择图片
   selectFromAlbum() {
-    wx.scanCode({
-      onlyFromCamera: false,
-      scanType: ['barCode', 'qrCode'],
+    wx.chooseImage({
+      count: 1,
+      sourceType: ['album'],
       success: (res) => {
-        this.handleScanResult(res.result, res.scanType);
+        const tempFilePath = res.tempFilePaths[0];
+        wx.showLoading({ title: '正在识别...' });
+        wx.scanCode({
+          onlyFromCamera: false,
+          imageFile: tempFilePath,
+          success: (scanRes) => {
+            wx.hideLoading();
+            this.handleScanResult(scanRes.result, scanRes.scanType);
+          },
+          fail: () => {
+            wx.hideLoading();
+            wx.showToast({ title: '未识别到条码/二维码', icon: 'none' });
+          }
+        });
       },
       fail: (err) => {
         if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
-          wx.showToast({ title: '未识别到条码，请重试', icon: 'none' });
+          wx.showToast({ title: '无法访问相册', icon: 'none' });
         }
       }
     });
@@ -234,7 +247,6 @@ Page({
   manualInput() {
     wx.showModal({
       title: '手动输入',
-      content: '请输入条码内容',
       editable: true,
       placeholderText: '输入条码数字或文本',
       success: (res) => {
@@ -289,33 +301,6 @@ Page({
     });
   },
 
-  searchResult() {
-    const code = this.data.scanResult.code;
-    wx.showActionSheet({
-      itemList: ['百度搜索', '商品搜索(淘宝)', '复制内容'],
-      success: (res) => {
-        switch (res.tapIndex) {
-          case 0:
-            wx.navigateTo({
-              url: `/package1/pages/browser/browser?url=${encodeURIComponent('https://www.baidu.com/s?wd=' + code)}&type=search`
-            });
-            break;
-          case 1:
-            wx.navigateTo({
-              url: `/package1/pages/browser/browser?url=${encodeURIComponent('https://s.taobao.com/search?q=' + code)}&type=search`
-            });
-            break;
-          case 2:
-            wx.setClipboardData({
-              data: code,
-              success: () => { wx.showToast({ title: '已复制', icon: 'success' }); }
-            });
-            break;
-        }
-      }
-    });
-  },
-
   decodeResult() {
     this.closeResult();
     wx.navigateTo({
@@ -358,7 +343,68 @@ Page({
       confirmText: '去设置',
       success: (res) => { if (res.confirm) wx.openSetting(); }
     });
-    this.closePreview();
+  },
+
+  // 关闭相机预览
+  closePreview() {
+    this.setData({ showPreview: false, flashOn: false });
+  },
+
+  // 计算编码转换结果
+  computeEncodeResults(code) {
+    const tools = barcode.encodeTools;
+    const results = {};
+
+    // Base64
+    try {
+      results.base64Encode = tools.base64Encode(code);
+      if (tools.isBase64(code)) {
+        results.base64Decode = tools.base64Decode(code);
+      }
+    } catch (e) {}
+
+    // URL
+    results.urlEncode = tools.urlEncode(code);
+    if (tools.hasUrlEncode(code)) {
+      results.urlDecode = tools.urlDecode(code);
+    }
+
+    // Unicode
+    results.unicodeEncode = tools.unicodeEncode(code);
+    if (tools.hasUnicode(code)) {
+      results.unicodeDecode = tools.unicodeDecode(code);
+    }
+
+    // HTML
+    results.htmlEncode = tools.htmlEncode(code);
+    if (tools.hasHtmlEntity(code)) {
+      results.htmlDecode = tools.htmlDecode(code);
+    }
+
+    return results;
+  },
+
+  // 切换编码工具展开
+  toggleEncodeTools() {
+    this.setData({ showEncodeTools: !this.data.showEncodeTools });
+  },
+
+  // 跳转到历史记录
+  goToHistory() {
+    this.setData({ showResult: false });
+    wx.navigateTo({ url: '/pages/history/history' });
+  },
+
+  // 复制编码结果
+  copyEncodeResult(e) {
+    const key = e.currentTarget.dataset.key;
+    const value = this.data.encodeResults[key];
+    if (value) {
+      wx.setClipboardData({
+        data: value,
+        success: () => { wx.showToast({ title: '已复制', icon: 'success' }); }
+      });
+    }
   },
 
   formatTime(date) {
