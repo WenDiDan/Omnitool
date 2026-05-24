@@ -38,12 +38,12 @@ Page({
       const info = wx.getAccountInfoSync()
       console.log('【版本号】账户信息:', info)
       // 优先使用version
-      let version = info.miniProgram?.version || '4.0.0'
+      let version = info.miniProgram?.version || '1.0.0'
       console.log('【版本号】获取结果:', version)
       this.setData({ appVersion: version })
     } catch (e) {
-      console.log('【版本号】获取失败，使用默认值4.0.0', e)
-      this.setData({ appVersion: '4.0.0' })
+      console.log('【版本号】获取失败，使用默认值1.0.0', e)
+      this.setData({ appVersion: '1.0.0' })
     }
   },
 
@@ -58,8 +58,16 @@ Page({
         openidShort: savedOpenid.slice(-8).toUpperCase()
       })
     }
-    // onShow 时不调用云函数，只使用本地缓存数据
-    // 云函数只在登录时或下拉刷新时调用
+    // 初次进入时从云端刷新用户数据（头像、昵称、角色）
+    if (this.data.isLoggedIn) {
+      const cachedAvatar = wx.getStorageSync('userAvatar')
+      const cachedNick = wx.getStorageSync('userNickName')
+      if (!cachedAvatar || !cachedNick || !this.data.roleLabel || this.data.roleLabel === '未识别') {
+        this.loadUserIdentity()
+      } else {
+        this.loadUserProfile()
+      }
+    }
   },
 
   // 下拉刷新
@@ -571,9 +579,39 @@ Page({
     })
   },
 
+  // 复制用户ID
+  copyOpenid() {
+    const openid = wx.getStorageSync('userOpenid') || this.data.openid
+    if (!openid) {
+      wx.showToast({ title: '暂无用户ID', icon: 'none' })
+      return
+    }
+    wx.setClipboardData({
+      data: openid,
+      success: () => {
+        wx.showToast({ title: 'ID已复制', icon: 'success' })
+      }
+    })
+  },
+
+  // 开通正式版
+  onUpgrade() {
+    wx.showModal({
+      title: '开通正式版',
+      content: '正式版功能正在开发中，敬请期待！',
+      showCancel: false,
+      confirmText: '知道了'
+    })
+  },
+
   // 跳转到用户管理页面
   goToUserManage() {
     wx.navigateTo({ url: '/pages/userManage/userManage' })
+  },
+
+  // 跳转到日志页面
+  goToLog() {
+    wx.navigateTo({ url: '/pages/log/log' })
   },
 
   // ===== 通用功能 =====
@@ -701,5 +739,14 @@ Page({
       showCancel: false,
       confirmText: '知道了'
     })
+  },
+
+  // 分享
+  onShareAppMessage() {
+    return {
+      title: '条码扫描器 - 快速扫码识别工具',
+      path: '/pages/scan/scan',
+      imageUrl: '/images/icon_scan.png'
+    }
   }
 })

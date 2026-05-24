@@ -4,52 +4,52 @@
   "packOptions": {
     "ignore": [
       {
-        "type": "folder",
-        "value": ".codebuddy"
+        "value": ".codebuddy",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".cloudbase"
+        "value": ".cloudbase",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".vscode"
+        "value": ".vscode",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".rules"
+        "value": ".rules",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "codebuddy-plugin"
+        "value": "codebuddy-plugin",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "rules"
+        "value": "rules",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": ".git"
+        "value": ".git",
+        "type": "folder"
       },
       {
-        "type": "file",
-        "value": ".mcp.json"
+        "value": ".mcp.json",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": ".eslintrc.js"
+        "value": ".eslintrc.js",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": ".env.local"
+        "value": ".env.local",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "cloudbaserc.json"
+        "value": "cloudbaserc.json",
+        "type": "file"
       },
       {
-        "type": "file",
-        "value": "CODEBUDDY.md"
+        "value": "CODEBUDDY.md",
+        "type": "file"
       }
     ],
     "include": []
@@ -102,7 +102,7 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.7.5",
+  "libVersion": "3.15.1",
   "projectname": "条码扫描器",
   "isGameTourist": false,
   "condition": {

@@ -11,7 +11,6 @@ Page({
     encodeResults: {},  // 编码转换结果
     showEncodeTools: false,  // 是否显示编码转换
     recentScans: [],
-    hideRecentScans: false,
     continuousMode: false,  // 连续扫码模式
     customRuleResults: []  // 自定义规则提取结果
 
@@ -22,10 +21,15 @@ Page({
       this.handleScanResult(options.code);
     }
     this.loadRecentScans();
-    this.loadRecentScansSetting();
   },
 
   onShow() {
+    // 每次小程序启动后首次进入扫码页时，刷新为初始状态
+    if (app.globalData.isFirstShow) {
+      app.globalData.isFirstShow = false;
+      this.loadRecentScans();
+      return;
+    }
     if (app.globalData.pendingScanCode) {
       const code = app.globalData.pendingScanCode;
       delete app.globalData.pendingScanCode;
@@ -43,22 +47,6 @@ Page({
   loadRecentScans() {
     const history = app.globalData.scanHistory || [];
     this.setData({ recentScans: history.slice(0, 10) });
-  },
-
-  loadRecentScansSetting() {
-    const hideRecentScans = wx.getStorageSync('hideRecentScans') || false;
-    this.setData({ hideRecentScans });
-  },
-
-  closeRecentScans() {
-    this.setData({ hideRecentScans: true });
-    wx.setStorageSync('hideRecentScans', true);
-  },
-
-  showRecentScans() {
-    this.setData({ hideRecentScans: false });
-    wx.setStorageSync('hideRecentScans', false);
-    wx.showToast({ title: '已显示', icon: 'success', duration: 1000 });
   },
 
   // 切换连续扫码模式
@@ -239,19 +227,6 @@ Page({
       fail: (err) => {
         if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
           wx.showToast({ title: '无法访问相册', icon: 'none' });
-        }
-      }
-    });
-  },
-
-  manualInput() {
-    wx.showModal({
-      title: '手动输入',
-      editable: true,
-      placeholderText: '输入条码数字或文本',
-      success: (res) => {
-        if (res.confirm && res.content) {
-          this.handleScanResult(res.content.trim());
         }
       }
     });

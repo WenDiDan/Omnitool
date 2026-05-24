@@ -246,7 +246,7 @@
   </view>
 
   <!-- 隐藏的 Canvas -->
-  <canvas canvas-id="qrCanvas" style="width:200px;height:200px;position:fixed;left:-9999px;top:-9999px;"></canvas>
+  <canvas type="2d" id="qrCanvas" style="width:200px;height:200px;position:fixed;left:-9999px;top:-9999px;"></canvas>
 
   <!-- 登录提示弹窗 -->
   <view class="modal-mask" wx:if="{{showLoginModal}}" catchtap="cancelLogin">

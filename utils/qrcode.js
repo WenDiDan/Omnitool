@@ -31,8 +31,8 @@ function getMinVersion(textLen, ecl) {
  * @param {Object} options
  * @param {string} options.text - 要编码的文本
  * @param {number} options.width - 二维码宽度（px）
- * @param {string} options.canvasId - Canvas ID
- * @param {Object} options.ctx - 页面 context (this)
+ * @param {Object} options.canvasNode - Canvas 2D 节点
+ * @param {Object} options.ctx - Canvas 2D context
  * @param {number} options.colorDark - 前景色
  * @param {number} options.colorLight - 背景色
  * @param {Function} options.callback - 完成回调
@@ -41,7 +41,7 @@ function makeQrCode(options) {
   const {
     text = '',
     width = 200,
-    canvasId = 'qrcode',
+    canvasNode,
     ctx,
     colorDark = '#0D1B2A',
     colorLight = '#FFFFFF',
@@ -58,7 +58,7 @@ function makeQrCode(options) {
   const moduleCount = getModuleCount(text.length)
   const matrix = generateMatrix(text, moduleCount)
 
-  drawCanvas(ctx, canvasId, matrix, moduleCount, width, colorDark, colorLight, callback)
+  drawCanvas(canvasNode, ctx, matrix, moduleCount, width, colorDark, colorLight, callback)
 }
 
 function getModuleCount(textLen) {
@@ -171,37 +171,35 @@ function simpleHash(text) {
   return bytes
 }
 
-function drawCanvas(ctx, canvasId, matrix, moduleCount, width, colorDark, colorLight, callback) {
-  const canvasCtx = wx.createCanvasContext(canvasId, ctx)
+function drawCanvas(canvasNode, ctx, matrix, moduleCount, width, colorDark, colorLight, callback) {
   const cellSize = width / moduleCount
 
   // 背景
-  canvasCtx.setFillStyle(colorLight)
-  canvasCtx.fillRect(0, 0, width, width)
+  ctx.fillStyle = colorLight
+  ctx.fillRect(0, 0, width, width)
 
   // 绘制模块
-  canvasCtx.setFillStyle(colorDark)
+  ctx.fillStyle = colorDark
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
       if (matrix[row][col] === 1) {
-        canvasCtx.fillRect(col * cellSize, row * cellSize, cellSize + 0.5, cellSize + 0.5)
+        ctx.fillRect(col * cellSize, row * cellSize, cellSize + 0.5, cellSize + 0.5)
       }
     }
   }
 
-  canvasCtx.draw(false, () => {
-    setTimeout(() => {
-      wx.canvasToTempFilePath({
-        canvasId,
-        success: (res) => {
-          callback && callback({ tempFilePath: res.tempFilePath })
-        },
-        fail: (err) => {
-          callback && callback({ errMsg: 'canvasToTempFilePath fail' })
-        }
-      }, ctx)
-    }, 300)
-  })
+  // Canvas 2D 需要延迟以确保渲染完成
+  setTimeout(() => {
+    wx.canvasToTempFilePath({
+      canvas: canvasNode,
+      success: (res) => {
+        callback && callback({ tempFilePath: res.tempFilePath })
+      },
+      fail: () => {
+        callback && callback({ errMsg: 'canvasToTempFilePath fail' })
+      }
+    })
+  }, 300)
 }
 
 module.exports = { makeQrCode }

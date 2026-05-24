@@ -28,62 +28,31 @@
       <text class="scan-subtitle">扫描二维码或条码</text>
     </view>
     
-    <!-- 主扫码按钮 -->
-    <view class="scan-btn" bindtap="startScan">
-      <view class="scan-btn-inner">
-        <image class="scan-icon" src="/images/icon_scan.png" mode="aspectFit"/>
-        <text class="scan-text">点击扫码</text>
+    <!-- 白色卡片面板 -->
+    <view class="card-panel">
+      <view class="card-grid">
+        <view class="grid-card" bindtap="startScan">
+          <image class="grid-icon" src="/images/icon_scan_white.png" mode="aspectFit"/>
+          <text class="grid-title">单次扫码</text>
+          <text class="grid-desc">拍照识别条码/二维码</text>
+        </view>
+        <view class="grid-card {{continuousMode ? 'grid-active' : ''}}" bindtap="toggleContinuous">
+          <image class="grid-icon" src="/images/icon_camera_white.png" mode="aspectFit"/>
+          <text class="grid-title">{{continuousMode ? '连续模式' : '连续扫码'}}</text>
+          <text class="grid-desc">适合高频操作</text>
+        </view>
+        <view class="grid-card" bindtap="selectFromAlbum">
+          <image class="grid-icon" src="/images/icon_album_white.png" mode="aspectFit"/>
+          <text class="grid-title">图片解码</text>
+          <text class="grid-desc">从相册识别条码</text>
+        </view>
+        <view class="grid-card" bindtap="goToHistory">
+          <image class="grid-icon" src="/images/icon_history_white.png" mode="aspectFit"/>
+          <text class="grid-title">扫码记录</text>
+          <text class="grid-desc">{{recentScans.length > 0 ? '共' + recentScans.length + '条记录' : '暂无记录'}}</text>
+        </view>
       </view>
     </view>
-    
-    <!-- 选项卡片 -->
-    <view class="scan-options">
-      <view class="option-card {{continuousMode ? 'option-active' : ''}}" bindtap="toggleContinuous">
-        <view class="option-icon-wrap">
-          <image class="option-icon" src="/images/icon_scan_white.png" mode="aspectFit"/>
-        </view>
-        <text class="option-text">{{continuousMode ? '连续模式' : '连续扫码'}}</text>
-      </view>
-      <view class="option-card" bindtap="selectFromAlbum">
-        <view class="option-icon-wrap">
-          <image class="option-icon" src="/images/icon_album_white.png" mode="aspectFit"/>
-        </view>
-        <text class="option-text">相册选择</text>
-      </view>
-      <view class="option-card" bindtap="manualInput">
-        <view class="option-icon-wrap">
-          <image class="option-icon" src="/images/icon_edit_white.png" mode="aspectFit"/>
-        </view>
-        <text class="option-text">手动输入</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 最近扫描记录 -->
-  <view class="recent-scans" wx:if="{{recentScans.length > 0 && !showPreview && !hideRecentScans}}">
-    <view class="recent-header">
-      <view class="recent-title-area">
-        <text class="recent-title">最近扫描</text>
-        <text class="recent-count">{{recentScans.length}}条</text>
-      </view>
-      <view class="recent-actions">
-        <text class="recent-close" bindtap="closeRecentScans">关闭</text>
-        <text class="recent-more" bindtap="goToHistory">查看全部 ></text>
-      </view>
-    </view>
-    <scroll-view scroll-y class="recent-list">
-      <view class="recent-item" wx:for="{{recentScans}}" wx:key="index" bindtap="viewDetail" data-code="{{item.code}}">
-        <image class="recent-icon" src="/images/icon_device.png" mode="aspectFit"/>
-        <text class="recent-code">{{item.code}}</text>
-        <text class="recent-type">{{item.type}}</text>
-      </view>
-    </scroll-view>
-  </view>
-
-  <!-- 关闭后的提示条 -->
-  <view class="recent-closed-tip" wx:if="{{hideRecentScans && recentScans.length > 0 && !showPreview}}" bindtap="showRecentScans">
-    <image class="tip-icon" src="/images/icon_history_white.png" mode="aspectFit"/>
-    <text>最近扫描已关闭，点击重新显示</text>
   </view>
 </view>
 

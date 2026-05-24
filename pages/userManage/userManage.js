@@ -29,8 +29,9 @@ Page({
     this.setData({
       currentOpenid: wx.getStorageSync('userOpenid') || ''
     })
-    // 先加载缓存数据，再后台刷新
-    this.loadCachedData()
+    // 清除旧缓存，强制加载最新数据
+    wx.removeStorageSync('cachedUserList')
+    wx.removeStorageSync('cachedUserStats')
     this.checkAdminAndLoad()
   },
 
@@ -68,14 +69,8 @@ Page({
     this.checkAdminAndLoad()
   },
 
-  // 检查管理员权限并加载数据（优化：先显示缓存，后台并行加载）
+  // 检查管理员权限并加载数据
   checkAdminAndLoad() {
-    console.log('checkAdminAndLoad 开始执行')
-    const cached = wx.getStorageSync('cachedUserList')
-    if (cached && cached.length > 0) {
-      console.log('使用缓存数据，缓存数量:', cached.length)
-      this.loadCachedData()
-    }
     this.setData({ loading: true })
     
     // 优化：并行调用权限检查和用户列表
@@ -83,10 +78,6 @@ Page({
       wx.cloud.callFunction({ name: 'userManage', data: { action: 'checkPermission', requiredLevel: 3 } }),
       wx.cloud.callFunction({ name: 'userManage', data: { action: 'listUsers', page: 1, pageSize: 50 } })
     ]).then(([permRes, listRes]) => {
-      console.log('云函数调用完成')
-      console.log('权限检查结果:', JSON.stringify(permRes.result))
-      console.log('用户列表返回:', JSON.stringify(listRes.result).substring(0, 300))
-      console.log('准备调用 processUserList')
       if (permRes.result && permRes.result.hasPermission) {
         this.processUserList(listRes)
       } else {
@@ -108,16 +99,20 @@ Page({
       const currentOpenid = this.data.currentOpenid
       
       // 预处理用户数据
-      const users = usersData.map(user => ({
-        openid: user.openid,
-        openidDisplay: user.openid || '---',
-        nickName: user.nickName || '微信用户',
-        avatarUrl: user.avatarUrl || '',
-        role: user.role || 'user',
-        roleLabel: this.getRoleLabel(user.role || 'user'),
-        createdAt: user.createdAt || '',
-        isCurrentUser: user.openid === currentOpenid
-      }))
+      const users = usersData.map(user => {
+        const createdAt = user.createdAt || ''
+        return {
+          openid: user.openid,
+          openidDisplay: user.openid || '---',
+          nickName: user.nickName || '微信用户',
+          avatarUrl: user.avatarUrl || '',
+          role: user.role || 'user',
+          roleLabel: this.getRoleLabel(user.role || 'user'),
+          createdAt: createdAt,
+          joinDate: createdAt ? createdAt.substring(0, 10) : '未知',
+          isCurrentUser: user.openid === currentOpenid
+        }
+      })
       
       // 统计各角色数量
       const statAdmin = users.filter(u => u.role === 'admin').length
@@ -205,7 +200,7 @@ Page({
   // 更新用户角色
   updateUserRole(openid, newRole) {
     wx.showLoading({ title: '处理中...', mask: true })
-    
+
     wx.cloud.callFunction({
       name: 'userManage',
       data: { action: 'setRole', targetOpenid: openid, role: newRole },
@@ -213,6 +208,8 @@ Page({
         wx.hideLoading()
         if (res.result && res.result.success) {
           wx.showToast({ title: res.result.message || '修改成功', icon: 'success' })
+          // 记录操作日志
+          this.addAdminLog('修改角色', `将用户 ${openid.slice(-8)} 设为 ${this.getRoleLabel(newRole)}`)
           // 刷新列表
           this.checkAdminAndLoad()
         } else {
@@ -224,6 +221,17 @@ Page({
         wx.showToast({ title: '网络异常', icon: 'none' })
       }
     })
+  },
+
+  // 添加管理操作日志
+  addAdminLog(title, desc) {
+    const logs = wx.getStorageSync('adminLogs') || []
+    const now = new Date()
+    const time = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+    logs.unshift({ type: 'admin', title, desc, time })
+    // 最多保留 100 条
+    if (logs.length > 100) logs.length = 100
+    wx.setStorageSync('adminLogs', logs)
   },
 
   // 删除用户按钮点击
@@ -247,7 +255,7 @@ Page({
 
   // 确认删除用户
   confirmDelete() {
-    const { openid } = this.data.deleteTarget
+    const { openid, nickName } = this.data.deleteTarget
     if (!openid) return
 
     wx.showLoading({ title: '删除中...', mask: true })
@@ -260,6 +268,8 @@ Page({
         if (res.result && res.result.success) {
           wx.showToast({ title: '删除成功', icon: 'success' })
           this.closeDeleteModal()
+          // 记录操作日志
+          this.addAdminLog('删除用户', `删除用户「${nickName || '未知'}」(${openid.slice(-8)})`)
           // 刷新列表
           this.checkAdminAndLoad()
         } else {

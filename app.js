@@ -8,7 +8,8 @@ App({
         autoCopy: false,
         historyLimit: 100
       },
-      customRules: []  // 自定义解码规则
+      customRules: [],  // 自定义解码规则
+      isFirstShow: true  // 小程序启动后首次进入页面标记
     },
   
     onLaunch() {
@@ -19,6 +20,7 @@ App({
       }
       this.initStorage();
       this.checkUpdate();
+      this.refreshUserFromCloud();  // 启动时自动刷新用户数据
     },
   
     initStorage() {
@@ -336,5 +338,62 @@ App({
       }
 
       return results;
+    },
+
+    // 启动时从云端刷新用户数据，缓存到本地
+    refreshUserFromCloud() {
+      const loggedIn = wx.getStorageSync('isLoggedIn')
+      if (!loggedIn) return
+
+      wx.cloud.callFunction({
+        name: 'userManage',
+        data: { action: 'getInfo' },
+        success: async (res) => {
+          if (res.result && res.result.success) {
+            const user = res.result.user
+            const now = new Date()
+            const activeTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+
+            if (user.nickName) {
+              wx.setStorageSync('userNickName', user.nickName)
+            }
+            if (user.avatarUrl) {
+              const avatarUrl = await this.getAvatarUrl(user.avatarUrl)
+              wx.setStorageSync('userAvatar', avatarUrl)
+            }
+            if (user.openid) {
+              wx.setStorageSync('userOpenid', user.openid)
+            }
+            wx.setStorageSync('lastActiveTime', activeTime)
+            this.globalData.userInfo = user
+          }
+        },
+        fail: (err) => {
+          console.error('启动刷新用户数据失败', err)
+        }
+      })
+    },
+
+    // 获取头像URL（cloud:// 转 https://）
+    async getAvatarUrl(avatarUrl) {
+      if (!avatarUrl) return '/images/icon_user_white.png'
+      if (avatarUrl.startsWith('https://')) return avatarUrl
+      if (avatarUrl.startsWith('http://thirdwx.qlogo.cn') || avatarUrl.startsWith('http://wx.qlogo.cn')) {
+        return avatarUrl.replace('http://', 'https://')
+      }
+      if (avatarUrl.startsWith('cloud://')) {
+        try {
+          const res = await wx.cloud.getTempFileURL({
+            fileList: [{ fileID: avatarUrl, maxAge: 0 }]
+          })
+          if (res.fileList && res.fileList[0] && res.fileList[0].tempFileURL) {
+            return res.fileList[0].tempFileURL + '?t=' + Date.now()
+          }
+        } catch (e) {
+          console.error('获取云存储头像失败', e)
+        }
+        return '/images/icon_user_white.png'
+      }
+      return avatarUrl || '/images/icon_user_white.png'
     }
   });

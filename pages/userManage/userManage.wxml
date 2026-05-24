@@ -75,7 +75,7 @@
             <text class="user-id-value">{{item.openidDisplay || '---'}}</text>
             <text class="user-id-copy">复制</text>
           </view>
-          <text class="user-meta">加入: {{item.createdAt ? item.createdAt.slice(0,10) : '未知'}}</text>
+          <text class="user-meta">加入: {{item.joinDate}}</text>
         </view>
       </view>
       <view class="user-actions" wx:if="{{!item.isCurrentUser}}">

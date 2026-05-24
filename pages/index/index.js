@@ -245,22 +245,41 @@ Page({
     if (!code) return
 
     wx.showLoading({ title: '生成中...' })
-    qrcode.makeQrCode({
-      text: code,
-      width: 200,
-      canvasId: 'qrCanvas',
-      ctx: this,
-      colorDark: '#0D1B2A',
-      colorLight: '#FFFFFF',
-      callback: (res) => {
-        wx.hideLoading()
-        if (res.tempFilePath) {
-          this.setData({ qrImagePath: res.tempFilePath, showQrCode: true })
-        } else {
-          wx.showToast({ title: '生成失败', icon: 'none' })
+
+    const query = wx.createSelectorQuery()
+    query.select('#qrCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res[0] || !res[0].node) {
+          wx.hideLoading()
+          wx.showToast({ title: 'Canvas初始化失败', icon: 'none' })
+          return
         }
-      }
-    })
+
+        const canvas = res[0].node
+        const ctx = canvas.getContext('2d')
+        const dpr = wx.getWindowInfo().pixelRatio
+        canvas.width = 200 * dpr
+        canvas.height = 200 * dpr
+        ctx.scale(dpr, dpr)
+
+        qrcode.makeQrCode({
+          text: code,
+          width: 200,
+          canvasNode: canvas,
+          ctx: ctx,
+          colorDark: '#0D1B2A',
+          colorLight: '#FFFFFF',
+          callback: (res) => {
+            wx.hideLoading()
+            if (res.tempFilePath) {
+              this.setData({ qrImagePath: res.tempFilePath, showQrCode: true })
+            } else {
+              wx.showToast({ title: '生成失败', icon: 'none' })
+            }
+          }
+        })
+      })
   },
 
   saveQrCode() {

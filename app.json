@@ -5,7 +5,8 @@
         "pages/index/index",
         "pages/my/my",
         "pages/history/history",
-        "pages/userManage/userManage"
+        "pages/userManage/userManage",
+        "pages/log/log"
     ],
     "lazyCodeLoading": "requiredComponents",
     "entryPagePath": "pages/scan/scan",
@@ -67,11 +68,6 @@
             ]
         }
     ],
-    "permission": {
-        "scope.camera": {
-            "desc": "用于扫码功能，需要访问您的相机"
-        }
-    },
     "requiredPrivateInfos": [],
     "debug": false,
     "networkTimeout": {

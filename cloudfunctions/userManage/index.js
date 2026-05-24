@@ -4,6 +4,27 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
 
+// 辅助：获取用户创建时间（优先级：createdAt > _createTime > _id 中的时间戳）
+function getCreateTime(doc) {
+  if (doc.createdAt) return doc.createdAt
+  if (doc._createTime) {
+    try {
+      const d = new Date(doc._createTime)
+      if (!isNaN(d.getTime())) return d.toISOString()
+    } catch (e) { /* 忽略 */ }
+  }
+  // 从 _id 提取时间戳（ObjectId 前 4 字节 = 创建时间）
+  if (doc._id) {
+    try {
+      const oid = typeof doc._id === 'string' ? doc._id : String(doc._id)
+      const ts = parseInt(oid.substring(0, 8), 16)
+      const d = new Date(ts * 1000)
+      if (!isNaN(d.getTime())) return d.toISOString()
+    } catch (e) { /* 忽略 */ }
+  }
+  return ''
+}
+
 // 角色定义
 const ROLES = {
   admin: { label: '管理员', level: 3 },
@@ -60,12 +81,23 @@ exports.main = async (event, context) => {
   }
 }
 
+// 缺失 createdAt 时，自动写入数据库（仅写入一次）
+async function ensureCreatedAt(openid, doc, usersCollection) {
+  if (doc.createdAt) return doc.createdAt
+  const ts = getCreateTime(doc) || new Date().toISOString()
+  try {
+    await usersCollection.where({ openid }).update({ data: { createdAt: ts } })
+  } catch (e) { /* 静默失败 */ }
+  return ts
+}
+
 // 获取当前用户信息，不存在则自动创建
 async function getUserInfo(openid, usersCollection) {
   try {
     const { data } = await usersCollection.where({ openid }).get()
     if (data.length > 0) {
       const user = data.find(u => u.openid === openid) || data[0]
+      const createdAt = await ensureCreatedAt(openid, user, usersCollection)
       return {
         success: true,
         user: {
@@ -76,7 +108,7 @@ async function getUserInfo(openid, usersCollection) {
           nickName: user.nickName || '',
           avatarUrl: user.avatarUrl || '',
           avatarVersion: user.avatarVersion || 1,
-          createdAt: user.createdAt,
+          createdAt,
           isBlocked: user.role === 'blocked'
         }
       }
@@ -103,9 +135,7 @@ async function createUser(openid, usersCollection) {
 
   // 检查是否是第一个用户，自动设为管理员
   try {
-    const countResult = await usersCollection.where({
-      openid: db.RegExp({ regexp: '.+' })
-    }).count()
+    const countResult = await usersCollection.count()
 
     if (countResult.total <= 1) {
       await usersCollection.where({ openid }).update({ data: { role: 'admin' } })
@@ -233,12 +263,8 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
   
   // 并行执行查询和统计
   const [usersResult, countResult] = await Promise.all([
-    usersCollection.where({
-      openid: db.RegExp({ regexp: '.+' })
-    }).skip(skip).limit(pageSize).get(),
-    usersCollection.where({
-      openid: db.RegExp({ regexp: '.+' })
-    }).count()
+    usersCollection.skip(skip).limit(pageSize).get(),
+    usersCollection.count()
   ])
 
   // 收集需要转换的云存储头像
@@ -281,13 +307,18 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
     return url
   }
 
+  // 后台修复缺失的 createdAt（不阻塞响应）
+  usersResult.data
+    .filter(u => !u.createdAt)
+    .forEach(u => ensureCreatedAt(u.openid, u, usersCollection))
+
   const users = usersResult.data.map(u => ({
     openid: u.openid,
     role: u.role || 'user',
     roleLabel: ROLES[u.role]?.label || '普通用户',
     nickName: u.nickName || '',
     avatarUrl: processAvatarUrl(u.avatarUrl),
-    createdAt: u.createdAt || ''
+    createdAt: getCreateTime(u) || new Date().toISOString()
   }))
 
   return {
