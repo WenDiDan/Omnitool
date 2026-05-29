@@ -1,0 +1,395 @@
+/* ==================== 页面容器 ==================== */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #F5F5F5;
+}
+
+/* ==================== 顶部栏 ==================== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28rpx;
+  height: 88rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.header-title {
+  font-size: 34rpx;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.scanning-dot {
+  color: #E03E3E;
+  font-size: 20rpx;
+  animation: blink-dot 1s infinite;
+  line-height: 1;
+}
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.header-action {
+  font-size: 24rpx;
+  color: #5B7FFF;
+  padding: 10rpx 16rpx;
+}
+
+.header-clear {
+  color: #FF4757;
+}
+
+/* ==================== 扫码记录区域 ==================== */
+.record-area {
+  flex: 1;
+  padding: 24rpx 28rpx;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.record-border {
+  flex: 1;
+  border: 4rpx solid #E03E3E;
+  border-radius: 16rpx;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 400rpx;
+}
+
+/* 记录列表 */
+.record-list {
+  flex: 1;
+  height: 0;
+}
+
+.record-item {
+  padding: 28rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  background: #fff;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-item:active {
+  background: #fafafa;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.type-tag {
+  font-size: 22rpx;
+  color: #fff;
+  padding: 4rpx 18rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.tag-default { background: #5B7FFF; }
+.tag-QR_CODE { background: #E03E3E; }
+.tag-EAN_13 { background: #0DA960; }
+.tag-EAN_8 { background: #0DA960; }
+.tag-CODE_128 { background: #E67E22; }
+.tag-CODE_39 { background: #9B59B6; }
+.tag-CODE_93 { background: #1ABC9C; }
+.tag-CODABAR { background: #34495E; }
+.tag-ITF { background: #F39C12; }
+.tag-PDF417 { background: #D35400; }
+tag-AZTEC { background: #C0392B; }
+tag-DATA_MATRIX { background: #7F8C8D; }
+
+.item-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+.item-code {
+  font-size: 28rpx;
+  color: #1a1a1a;
+  line-height: 1.5;
+  display: block;
+  word-break: break-all;
+  margin-bottom: 16rpx;
+}
+
+.item-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  color: #5B7FFF;
+  padding: 8rpx 28rpx;
+  border: 1rpx solid #5B7FFF;
+  border-radius: 8rpx;
+}
+
+.action-open {
+  color: #0DA960;
+  border-color: #0DA960;
+}
+
+/* 空状态 */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 计数栏 */
+.count-bar {
+  padding: 16rpx 8rpx 4rpx;
+  text-align: center;
+}
+
+.count-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* ==================== 底部扫码按钮区 ==================== */
+.bottom-area {
+  padding: 24rpx 40rpx calc(36rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #eee;
+}
+
+.scan-btn {
+  height: 96rpx;
+  background: #E03E3E;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 8rpx 24rpx rgba(224,62,62,0.35);
+  transition: all 0.2s ease;
+}
+
+.scan-btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.scan-btn.btn-active {
+  background: #555;
+  box-shadow: 0 8rpx 24rpx rgba(85,85,85,0.35);
+}
+
+.scan-btn-icon {
+  font-size: 36rpx;
+}
+
+.scan-btn-text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+/* ==================== 详情弹窗 ==================== */
+.detail-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+}
+
+.detail-panel {
+  width: 100%;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 28rpx 28rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 18rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.detail-type-tag {
+  background: #E03E3E;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+.detail-close {
+  font-size: 32rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.detail-body {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  max-height: 55vh;
+}
+
+.detail-code-box {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
+}
+
+.detail-code {
+  font-size: 30rpx;
+  color: #1a1a1a;
+  font-weight: 600;
+  word-break: break-all;
+  line-height: 1.6;
+  display: block;
+}
+
+/* 高亮结果 */
+.detail-highlight {
+  background: linear-gradient(135deg, #FFF5F5, #FFE8E8);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.highlight-label {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.highlight-value {
+  font-size: 30rpx;
+  color: #E03E3E;
+  font-weight: 700;
+  word-break: break-all;
+}
+
+/* 信息行 */
+.detail-info-list {
+  margin-top: 8rpx;
+}
+
+.d-info-row {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.d-label {
+  font-size: 26rpx;
+  color: #999;
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+.d-value {
+  font-size: 26rpx;
+  color: #1a1a1a;
+  flex: 1;
+  word-break: break-all;
+}
+
+/* 底部操作 */
+.detail-footer {
+  display: flex;
+  gap: 12rpx;
+  padding: 18rpx 28rpx;
+  padding-bottom: calc(18rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.d-btn {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  font-size: 26rpx;
+  border-radius: 36rpx;
+  text-align: center;
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+  background: none;
+
+}
+
+.d-copy::after { border: none; }
+.d-url::after { border: none; }
+.d-deep::after { border: none; }
+
+.d-copy {
+  background: #F5F5F5;
+  color: #666;
+}
+
+.d-url {
+  background: #EEF2FF;
+  color: #5B7FFF;
+}
+
+.d-deep {
+  background: #FFF5EB;
+  color: #E67E22;
+}

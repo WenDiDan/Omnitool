@@ -1,3 +1,12 @@
+/* 隐藏的图片解码 Canvas */
+.decode-canvas {
+  position: fixed;
+  top: -9999rpx;
+  left: -9999rpx;
+  width: 800rpx;
+  height: 800rpx;
+}
+
 /* 扫码按钮区域 */
 .scan-button-area {
   position: fixed;
@@ -99,9 +108,9 @@
 
 /* 连续模式激活态 */
 .grid-active {
-  background: #A5D6A7 !important;
-  border: 2rpx solid #2E7D32;
-  box-shadow: 0 2rpx 12rpx rgba(46,125,50,0.18) !important;
+  background: #7B9FFF !important;
+  border: 2rpx solid #5B7FFF;
+  box-shadow: 0 2rpx 12rpx rgba(91,127,255,0.25) !important;
 }
   
   /* 预览区域 */
@@ -197,8 +206,8 @@
     left: 20rpx;
     right: 20rpx;
     height: 4rpx;
-    background: linear-gradient(90deg, transparent, #fff, #3D8B7A, #fff, transparent);
-    box-shadow: 0 0 20rpx rgba(61,139,122,0.5);
+    background: linear-gradient(90deg, transparent, #fff, #5B7FFF, #fff, transparent);
+    box-shadow: 0 0 20rpx rgba(91,127,255,0.5);
     animation: scan 2s ease-in-out infinite;
   }
   
@@ -299,7 +308,7 @@
   .modal-type-tag {
     font-size: 24rpx;
     color: white;
-    background: #3D8B7A;
+    background: #5B7FFF;
     padding: 8rpx 24rpx;
     border-radius: 20rpx;
     font-weight: 500;
@@ -366,11 +375,11 @@
   /* 解码详情标题 */
   .detail-section-title {
     font-size: 28rpx;
-    color: #3D8B7A;
+    color: #5B7FFF;
     font-weight: 600;
     margin-bottom: 16rpx;
     padding-bottom: 12rpx;
-    border-bottom: 2rpx solid #EFF5F3;
+    border-bottom: 2rpx solid #EEF2FF;
   }
   
   .detail-row {
@@ -411,7 +420,7 @@
   }
   
   .detail-value.valid {
-    color: #3D8B7A;
+    color: #5B7FFF;
     font-weight: 600;
   }
   
@@ -421,15 +430,15 @@
   }
   
   .detail-link {
-    color: #3D8B7A;
+    color: #5B7FFF;
     text-decoration: underline;
   }
   
   .detail-copy {
     font-size: 24rpx;
-    color: #3D8B7A;
+    color: #5B7FFF;
     padding: 6rpx 20rpx;
-    background: #EFF5F3;
+    background: #EEF2FF;
     border-radius: 16rpx;
     margin-left: 16rpx;
     flex-shrink: 0;
@@ -441,7 +450,7 @@
     padding: 16rpx 20rpx;
     background: #F8F9FA;
     border-radius: 12rpx;
-    border-left: 4rpx solid #3D8B7A;
+    border-left: 4rpx solid #5B7FFF;
   }
   
   .structure-label {
@@ -460,23 +469,25 @@
   }
   
   .detail-copy:active {
-    background: #D5EDE8;
+    background: #D6DEFF;
   }
   
   /* 底部按钮 */
   .modal-footer {
     display: flex;
+    flex-wrap: wrap;
     padding: 20rpx 32rpx;
     padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-    gap: 16rpx;
+    gap: 12rpx;
     border-top: 1rpx solid #F0EDE0;
   }
-  
-  .btn-copy, .btn-history, .btn-continue {
+
+  .btn-copy, .btn-decode, .btn-history, .btn-continue {
     flex: 1;
+    min-width: calc(50% - 12rpx);
     height: 76rpx;
     line-height: 76rpx;
-    font-size: 28rpx;
+    font-size: 26rpx;
     border-radius: 38rpx;
     text-align: center;
     padding: 0;
@@ -488,16 +499,21 @@
     background: #F5F5F0;
     color: #666;
   }
-  
-  .btn-history {
-    background: #E8F4F0;
-    color: #3D8B7A;
+
+  .btn-decode {
+    background: #FFF7ED;
+    color: #E67E22;
   }
-  
+
+  .btn-history {
+    background: #EEF2FF;
+    color: #5B7FFF;
+  }
+
   .btn-continue {
-    background: linear-gradient(135deg, #3D8B7A, #2D7A6A);
+    background: linear-gradient(135deg, #5B7FFF, #4A6FE0);
     color: white;
-    box-shadow: 0 4rpx 16rpx rgba(61,139,122,0.3);
+    box-shadow: 0 4rpx 16rpx rgba(91,127,255,0.3);
   }
 
 /* 自定义规则结果行 - 高亮样式 */

@@ -26,8 +26,14 @@ Page({
   },
 
   goToScan() {
-    wx.switchTab({
-      url: '/pages/scan/scan'
-    });
+    wx.switchTab({ url: '/pages/scan/scan' });
+  },
+
+  goToDecode() {
+    wx.switchTab({ url: '/pages/index/index' });
+  },
+
+  goToHistory() {
+    wx.navigateTo({ url: '/pages/history/history' });
   }
 });

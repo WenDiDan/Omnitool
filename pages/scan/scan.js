@@ -1,5 +1,7 @@
 const app = getApp();
 const barcode = require('../../utils/barcode.js');
+const imageDecoder = require('../../utils/image-decoder.js');
+const { computeAllEncodeResults } = require('../../utils/encode-utils.js');
 
 Page({
   data: {
@@ -11,7 +13,6 @@ Page({
     encodeResults: {},  // 编码转换结果
     showEncodeTools: false,  // 是否显示编码转换
     recentScans: [],
-    continuousMode: false,  // 连续扫码模式
     customRuleResults: []  // 自定义规则提取结果
 
   },
@@ -49,13 +50,10 @@ Page({
     this.setData({ recentScans: history.slice(0, 10) });
   },
 
-  // 切换连续扫码模式
-  toggleContinuous() {
-    this.setData({ continuousMode: !this.data.continuousMode });
-    wx.showToast({
-      title: this.data.continuousMode ? '连续扫码已开启' : '连续扫码已关闭',
-      icon: 'none',
-      duration: 1000
+  // 进入连续扫码独立页面
+  goToContinuousScan() {
+    wx.navigateTo({
+      url: '/pages/continuousScan/continuousScan'
     });
   },
 
@@ -203,31 +201,17 @@ Page({
     });
   },
 
-  // 相册扫码 — 直接打开相册选择图片
+  // 图片解码 — 从相册识别条码/二维码
   selectFromAlbum() {
-    wx.chooseImage({
-      count: 1,
-      sourceType: ['album'],
-      success: (res) => {
-        const tempFilePath = res.tempFilePaths[0];
-        wx.showLoading({ title: '正在识别...' });
-        wx.scanCode({
-          onlyFromCamera: false,
-          imageFile: tempFilePath,
-          success: (scanRes) => {
-            wx.hideLoading();
-            this.handleScanResult(scanRes.result, scanRes.scanType);
-          },
-          fail: () => {
-            wx.hideLoading();
-            wx.showToast({ title: '未识别到条码/二维码', icon: 'none' });
-          }
-        });
+    imageDecoder.decodeFromAlbum({
+      onStart: () => wx.showLoading({ title: '正在识别...' }),
+      onSuccess: (code, scanType) => {
+        wx.hideLoading();
+        this.handleScanResult(code, scanType);
       },
-      fail: (err) => {
-        if (err.errMsg && err.errMsg.indexOf('cancel') === -1) {
-          wx.showToast({ title: '无法访问相册', icon: 'none' });
-        }
+      onFail: (errMsg) => {
+        wx.hideLoading();
+        wx.showToast({ title: errMsg, icon: 'none' });
       }
     });
   },
@@ -283,7 +267,7 @@ Page({
     });
   },
 
-  // 继续扫码（连续模式）
+  // 继续扫码
   continueScan() {
     this.setData({ showResult: false });
     this.startScan();
@@ -291,17 +275,9 @@ Page({
 
   closeResult() {
     this.setData({ showResult: false });
-    // 连续扫码模式下关闭弹窗自动重新扫码
-    if (this.data.continuousMode) {
-      setTimeout(() => { this.startScan(); }, 300);
-    }
   },
 
   stopPropagation() {},
-
-  goToHistory() {
-    wx.navigateTo({ url: '/pages/history/history' });
-  },
 
   viewDetail(e) {
     const code = e.currentTarget.dataset.code;
@@ -320,43 +296,9 @@ Page({
     });
   },
 
-  // 关闭相机预览
-  closePreview() {
-    this.setData({ showPreview: false, flashOn: false });
-  },
-
   // 计算编码转换结果
   computeEncodeResults(code) {
-    const tools = barcode.encodeTools;
-    const results = {};
-
-    // Base64
-    try {
-      results.base64Encode = tools.base64Encode(code);
-      if (tools.isBase64(code)) {
-        results.base64Decode = tools.base64Decode(code);
-      }
-    } catch (e) {}
-
-    // URL
-    results.urlEncode = tools.urlEncode(code);
-    if (tools.hasUrlEncode(code)) {
-      results.urlDecode = tools.urlDecode(code);
-    }
-
-    // Unicode
-    results.unicodeEncode = tools.unicodeEncode(code);
-    if (tools.hasUnicode(code)) {
-      results.unicodeDecode = tools.unicodeDecode(code);
-    }
-
-    // HTML
-    results.htmlEncode = tools.htmlEncode(code);
-    if (tools.hasHtmlEntity(code)) {
-      results.htmlDecode = tools.htmlDecode(code);
-    }
-
-    return results;
+    return computeAllEncodeResults(code);
   },
 
   // 切换编码工具展开

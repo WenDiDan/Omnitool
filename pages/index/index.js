@@ -1,5 +1,6 @@
 const barcode = require('../../utils/barcode.js')
 const qrcode = require('../../utils/qrcode.js')
+const { computeAllEncodeResults, encodeResultsToList } = require('../../utils/encode-utils.js')
 const app = getApp()
 
 Page({
@@ -7,6 +8,8 @@ Page({
     inputCode: '',
     decodedResult: null,
     detectType: '',
+    typeIconLabel: '?',
+    typeIconClass: '',
     showEncodeTools: false,
     encodeResults: {},
     qrImagePath: '',
@@ -102,23 +105,17 @@ Page({
     const detectType = barcode.identifyBarcodeType(code)
 
     // 自动计算编码转换
-    const encodeResults = this.computeEncodeResults(code)
+    const encodeResults = computeAllEncodeResults(code)
 
     // 计算是否有详情
     const r = result
     const hasDetails = !!(r.country || r.isbn || r.manufacturerCode || r.productCode || r.checkDigit || r.domain || r.ssid || r.vcardName || r.email || r.phone || r.smsPhone)
 
     // 编码列表（用于 wxml 循环）
-    const encodeList = [
-      { key: 'base64Encode', label: 'Base64 编码', value: encodeResults.base64Encode },
-      { key: 'base64Decode', label: 'Base64 解码', value: encodeResults.base64Decode },
-      { key: 'urlEncode', label: 'URL 编码', value: encodeResults.urlEncode },
-      { key: 'urlDecode', label: 'URL 解码', value: encodeResults.urlDecode },
-      { key: 'unicodeEncode', label: 'Unicode 编码', value: encodeResults.unicodeEncode },
-      { key: 'unicodeDecode', label: 'Unicode 解码', value: encodeResults.unicodeDecode },
-      { key: 'htmlEncode', label: 'HTML 实体编码', value: encodeResults.htmlEncode },
-      { key: 'htmlDecode', label: 'HTML 实体解码', value: encodeResults.htmlDecode },
-    ].filter(item => item.value)
+    const encodeList = encodeResultsToList(encodeResults)
+
+    // 计算类型图标缩写和样式类
+    const typeIconInfo = this.getTypeIconInfo(detectType)
 
     this.setData({
       decodedResult: result,
@@ -126,42 +123,39 @@ Page({
       encodeResults,
       encodeList,
       hasDetails,
-      qrImagePath: ''
+      qrImagePath: '',
+      typeIconLabel: typeIconInfo.label,
+      typeIconClass: typeIconInfo.cls
     })
   },
 
-  // 计算编码转换结果
-  computeEncodeResults(code) {
-    const tools = barcode.encodeTools
-    const results = {}
-
-    // Base64
-    try {
-      results.base64Encode = tools.base64Encode(code)
-      if (tools.isBase64(code)) {
-        results.base64Decode = tools.base64Decode(code)
-      }
-    } catch (e) {}
-
-    // URL
-    results.urlEncode = tools.urlEncode(code)
-    if (tools.hasUrlEncode(code)) {
-      results.urlDecode = tools.urlDecode(code)
+  // 根据类型返回图标缩写和 CSS 类
+  getTypeIconInfo(detectType) {
+    const t = (detectType || '').toLowerCase()
+    if (t.includes('ean') || t.includes('isbn') || t.includes('条形码') || t.includes('barcode') || t.includes('upc')) {
+      return { label: 'EAN', cls: 'type-ean' }
     }
-
-    // Unicode
-    results.unicodeEncode = tools.unicodeEncode(code)
-    if (tools.hasUnicode(code)) {
-      results.unicodeDecode = tools.unicodeDecode(code)
+    if (t.includes('二维码') || t.includes('qr')) {
+      return { label: 'QR', cls: 'type-qr' }
     }
-
-    // HTML
-    results.htmlEncode = tools.htmlEncode(code)
-    if (tools.hasHtmlEntity(code)) {
-      results.htmlDecode = tools.htmlDecode(code)
+    if (t.includes('url') || t.includes('网址') || t.includes('http')) {
+      return { label: 'URL', cls: 'type-url' }
     }
-
-    return results
+    if (t.includes('wifi') || t.includes('wi-fi')) {
+      return { label: 'WiFi', cls: 'type-wifi' }
+    }
+    if (t.includes('vcard') || t.includes('联系人')) {
+      return { label: 'Card', cls: 'type-vcard' }
+    }
+    if (t.includes('tel') || t.includes('电话') || t.includes('phone')) {
+      return { label: 'TEL', cls: 'type-tel' }
+    }
+    if (t.includes('email') || t.includes('邮箱') || t.includes('mail')) {
+      return { label: 'Mail', cls: 'type-email' }
+    }
+    // 默认：取前3个字符大写
+    const label = (detectType || '?').slice(0, 3).toUpperCase()
+    return { label, cls: '' }
   },
 
   // 切换编码工具展开

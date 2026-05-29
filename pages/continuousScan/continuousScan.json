@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "连续扫码",
+  "navigationBarBackgroundColor": "#0D1B2A",
+  "navigationBarTextStyle": "white",
+  "disableScroll": true,
+  "usingComponents": {}
+}

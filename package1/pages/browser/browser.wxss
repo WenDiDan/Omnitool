@@ -1,6 +1,6 @@
 .browser-page {
   min-height: 100vh;
-  background: #F4F1DE;
+  background: #F2F3F7;
   display: flex;
   flex-direction: column;
   padding-bottom: 120rpx;
@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   padding: 16rpx 20rpx;
-  background: #0D1B2A;
+  background: #1a2a4a;
   gap: 16rpx;
 }
 
@@ -79,14 +79,14 @@
 /* ===== 进度条 ===== */
 .progress-bar {
   height: 4rpx;
-  background: rgba(13,27,42,0.1);
+  background: rgba(91, 127, 255, 0.1);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   width: 40%;
-  background: linear-gradient(90deg, #3D8B7A, #E07A5F);
+  background: linear-gradient(90deg, #5B7FFF, #818CF8);
   animation: progress 1.5s ease-in-out infinite;
 }
 
@@ -115,7 +115,7 @@
   width: 16rpx;
   height: 16rpx;
   border-radius: 50%;
-  background: #3D8B7A;
+  background: #5B7FFF;
   animation: dotBounce 1.4s ease-in-out infinite;
 }
 
@@ -136,7 +136,7 @@
 
 .loading-text {
   font-size: 26rpx;
-  color: #999;
+  color: #9CA3AF;
 }
 
 /* ===== 错误提示 ===== */
@@ -157,7 +157,7 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background: rgba(224,122,95,0.12);
+  background: rgba(230, 57, 70, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,7 +166,7 @@
 .error-mark {
   font-size: 52rpx;
   font-weight: bold;
-  color: #E07A5F;
+  color: #E63946;
 }
 
 .error-title {
@@ -178,7 +178,7 @@
 
 .error-msg {
   font-size: 26rpx;
-  color: #999;
+  color: #9CA3AF;
   text-align: center;
   line-height: 1.6;
   margin-bottom: 50rpx;
@@ -195,10 +195,11 @@
   align-items: center;
   gap: 8rpx;
   padding: 18rpx 36rpx;
-  background: #0D1B2A;
+  background: linear-gradient(135deg, #5B7FFF, #3D5FD9);
   color: white;
   font-size: 26rpx;
   border-radius: 36rpx;
+  box-shadow: 0 4rpx 16rpx rgba(91, 127, 255, 0.3);
 }
 
 .error-btn:active {
@@ -207,8 +208,9 @@
 
 .error-btn-outline {
   background: transparent;
-  color: #0D1B2A;
-  border: 2rpx solid #0D1B2A;
+  color: #5B7FFF;
+  border: 2rpx solid #5B7FFF;
+  box-shadow: none;
 }
 
 .error-btn-icon {
@@ -237,7 +239,7 @@
 
 .search-count {
   font-size: 22rpx;
-  color: #999;
+  color: #9CA3AF;
 }
 
 .search-list {
@@ -253,7 +255,7 @@
 }
 
 .search-card:active {
-  background: #FAFAF5;
+  background: #f8f9ff;
 }
 
 .search-card-header {
@@ -266,7 +268,7 @@
 .search-card-index {
   font-size: 24rpx;
   font-weight: bold;
-  color: #3D8B7A;
+  color: #5B7FFF;
   min-width: 32rpx;
   margin-top: 2rpx;
 }
@@ -306,7 +308,7 @@
 
 .search-link-text {
   font-size: 20rpx;
-  color: #999;
+  color: #9CA3AF;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -316,7 +318,7 @@
 /* ===== 文章阅读模式 ===== */
 .article-header {
   padding: 36rpx 30rpx 24rpx;
-  border-bottom: 1rpx solid #F0EDE0;
+  border-bottom: 1rpx solid #EAECF0;
 }
 
 .article-title {
@@ -342,7 +344,7 @@
 
 .article-meta-text {
   font-size: 22rpx;
-  color: #999;
+  color: #9CA3AF;
 }
 
 .article-images {
@@ -397,7 +399,7 @@
 
 .quote-bar {
   width: 6rpx;
-  background: #3D8B7A;
+  background: #5B7FFF;
   border-radius: 3rpx;
   flex-shrink: 0;
 }
@@ -410,7 +412,7 @@
 }
 
 .para-code {
-  background: #0D1B2A;
+  background: #1a2a4a;
   border-radius: 12rpx;
   padding: 24rpx;
   margin: 20rpx 0;
@@ -419,7 +421,7 @@
 
 .code-text {
   font-size: 24rpx;
-  color: #3D8B7A;
+  color: #818CF8;
   font-family: monospace;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -437,7 +439,7 @@
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background: #3D8B7A;
+  background: #5B7FFF;
   margin-top: 18rpx;
   flex-shrink: 0;
 }
@@ -487,7 +489,7 @@
 
 .doc-line {
   height: 8rpx;
-  background: #F0EDE0;
+  background: #EAECF0;
   border-radius: 4rpx;
 }
 
@@ -504,7 +506,7 @@
 
 .empty-desc {
   font-size: 26rpx;
-  color: #999;
+  color: #9CA3AF;
   margin-bottom: 40rpx;
 }
 
@@ -514,10 +516,11 @@
 
 .empty-btn {
   padding: 18rpx 48rpx;
-  background: #0D1B2A;
+  background: linear-gradient(135deg, #5B7FFF, #3D5FD9);
   color: white;
   font-size: 26rpx;
   border-radius: 36rpx;
+  box-shadow: 0 4rpx 16rpx rgba(91, 127, 255, 0.3);
 }
 
 .empty-btn:active {
@@ -532,12 +535,13 @@
   right: 0;
   height: 110rpx;
   background: white;
-  border-top: 1rpx solid #F0EDE0;
+  border-top: 1rpx solid #EAECF0;
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 100;
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.04);
 }
 
 .bottom-btn {
@@ -559,5 +563,5 @@
 
 .bottom-label {
   font-size: 20rpx;
-  color: #666;
+  color: #6B7280;
 }

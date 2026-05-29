@@ -36,10 +36,10 @@
           <text class="grid-title">单次扫码</text>
           <text class="grid-desc">拍照识别条码/二维码</text>
         </view>
-        <view class="grid-card {{continuousMode ? 'grid-active' : ''}}" bindtap="toggleContinuous">
+        <view class="grid-card" bindtap="goToContinuousScan">
           <image class="grid-icon" src="/images/icon_camera_white.png" mode="aspectFit"/>
-          <text class="grid-title">{{continuousMode ? '连续模式' : '连续扫码'}}</text>
-          <text class="grid-desc">适合高频操作</text>
+          <text class="grid-title">连续扫码</text>
+          <text class="grid-desc">独立页面·高效批量扫描</text>
         </view>
         <view class="grid-card" bindtap="selectFromAlbum">
           <image class="grid-icon" src="/images/icon_album_white.png" mode="aspectFit"/>
@@ -55,6 +55,9 @@
     </view>
   </view>
 </view>
+
+<!-- 隐藏的 Canvas 节点，供图片解码器使用（type="2d" 标准接口） -->
+<canvas type="2d" id="decode-canvas" class="decode-canvas"></canvas>
 
 <!-- 增强版结果弹窗 -->
 <view class="result-modal" wx:if="{{showResult}}" bindtap="closeResult">
@@ -453,8 +456,9 @@
     <!-- 操作按钮 -->
     <view class="modal-footer">
       <button class="btn-copy" bindtap="copyResult">复制</button>
-      <button class="btn-history" bindtap="goToHistory">历史记录</button>
-      <button class="btn-continue" bindtap="continueScan">继续扫码</button>
+      <button class="btn-decode" bindtap="decodeResult">深度解密</button>
+      <button class="btn-history" bindtap="goToHistory">历史</button>
+      <button class="btn-continue" bindtap="continueScan">继续</button>
     </view>
   </view>
 </view>

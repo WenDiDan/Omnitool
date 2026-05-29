@@ -6,7 +6,8 @@
         "pages/my/my",
         "pages/history/history",
         "pages/userManage/userManage",
-        "pages/log/log"
+        "pages/log/log",
+        "pages/continuousScan/continuousScan"
     ],
     "lazyCodeLoading": "requiredComponents",
     "entryPagePath": "pages/scan/scan",

@@ -10,9 +10,23 @@ Page({
   },
 
   loadHistory() {
-    this.setData({
-      historyList: app.globalData.scanHistory || []
-    });
+    const raw = app.globalData.scanHistory || []
+    const historyList = raw.map(item => ({
+      ...item,
+      typeLabel: this.getTypeLabel(item.type)
+    }))
+    this.setData({ historyList })
+  },
+
+  getTypeLabel(type) {
+    const t = (type || '').toLowerCase()
+    if (t.includes('ean') || t.includes('条形码') || t.includes('barcode') || t.includes('isbn') || t.includes('upc')) return 'EAN'
+    if (t.includes('二维码') || t.includes('qr')) return 'QR'
+    if (t.includes('url') || t.includes('网址') || t.includes('http')) return 'URL'
+    if (t.includes('wifi') || t.includes('wi-fi')) return 'WiFi'
+    if (t.includes('vcard') || t.includes('联系人')) return 'Card'
+    if (t.includes('tel') || t.includes('电话')) return 'TEL'
+    return (type || '?').slice(0, 3).toUpperCase()
   },
 
   clearHistory() {
