@@ -1,73 +1,138 @@
+/* =============================================
+   全局设计令牌 · 墨绿设计体系
+   主色 #C0553D / 强调 #E8A44C / 深色 #2B1D18
+   底色 #F9F4EB / 卡片 #FFFFFF
+   ============================================= */
 page {
-    background-color: #F4F1DE;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  }
-  
-  .container {
-    padding: 20rpx;
-    min-height: 100vh;
-  }
-  
-  .btn-primary {
-    background-color: #0D1B2A;
-    color: white;
-    border-radius: 16rpx;
-    padding: 24rpx;
-    text-align: center;
-    font-size: 32rpx;
-    font-weight: 500;
-  }
-  
-  .btn-primary:active {
-    background-color: #1B3A4B;
-  }
-  
-  .card {
-    background-color: white;
-    border-radius: 20rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 2rpx 16rpx rgba(13,27,42,0.05);
-  }
-  
-  .text-primary {
-    color: #E07A5F;
-  }
-  
-  .text-secondary {
-    color: #666666;
-  }
-  
-  .text-muted {
-    color: #999999;
-    font-size: 24rpx;
-  }
-  
-  .divider {
-    height: 1rpx;
-    background-color: #F0EDE0;
-    margin: 20rpx 0;
-  }
-  
-  .flex-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-  
-  .flex-column {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .flex-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  background-color: #F9F4EB;
+  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  /* ===== 品牌色 ===== */
+  --brand-primary: #C0553D;
+  --brand-strong: #E8A44C;
+  --brand-deep: #2B1D18;
+  --brand-mid: #3A2A20;
+  --brand-accent: #F2B04E;
+  --brand-tint: #F3E7D8;
+  --brand-tint-2: #F7EDE2;
+  --brand-line: #EFE3D5;
+  --bg-page: #F9F4EB;
+
+  /* ===== 文字层级 ===== */
+  --text-1: #2B1D18;
+  --text-2: #5C4A40;
+  --text-3: #7D695F;
+  --text-4: #B3A29A;
+
+  /* ===== 圆角体系 ===== */
+  --r-sm: 12rpx;
+  --r-md: 16rpx;
+  --r-lg: 24rpx;
+  --r-xl: 32rpx;
+  --r-full: 999rpx;
+
+  /* ===== 阴影体系（三层） ===== */
+  --shadow-sm: 0 2rpx 8rpx rgba(43, 29, 24, 0.05);
+  --shadow-md: 0 6rpx 24rpx rgba(43, 29, 24, 0.08);
+  --shadow-lg: 0 12rpx 36rpx rgba(43, 29, 24, 0.16);
+  --shadow-brand: 0 10rpx 28rpx rgba(192, 85, 61, 0.28);
+
+  /* ===== TDesign 主题定制 ===== */
+  --td-brand-color: #C0553D;
+  --td-brand-color-hover: #CB5F47;
+  --td-brand-color-active: #A8452F;
+  --td-brand-color-focus: #C0553D;
+  --td-brand-color-disabled: #B3A29A;
+  --td-brand-color-light: #F3E7D8;
+  --td-brand-color-light-hover: #E9D5BF;
+  --td-brand-color-light-active: #DFC4A8;
+  --td-brand-color-1: #F7EDE2;
+  --td-brand-color-2: #F3E7D8;
+  --td-brand-color-3: #DFC4A8;
+  --td-brand-color-4: #F0C89A;
+  --td-brand-color-5: #E9B168;
+  --td-brand-color-6: #C97A45;
+  --td-brand-color-7: #CB5F47;
+  --td-brand-color-8: #C0553D;
+  --td-brand-color-9: #A8452F;
+  --td-brand-color-10: #2B1D18;
+  --td-warning-color: #C8952C;
+  --td-error-color: #D63031;
+  --td-success-color: #3E9B6E;
+}
+
+/* ===== 通用组件 ===== */
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #CB5F47 0%, #C0553D 100%);
+  color: white;
+  border-radius: var(--r-md);
+  padding: 24rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary:active {
+  opacity: 0.88;
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #A8452F 0%, #9E3F2B 100%);
+}
+
+.card {
+  background-color: white;
+  border-radius: var(--r-lg);
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow-md);
+}
+
+.text-primary {
+  color: #E07A5F;
+}
+
+.text-secondary {
+  color: var(--text-2);
+}
+
+.text-muted {
+  color: var(--text-3);
+  font-size: 24rpx;
+}
+
+.divider {
+  height: 1rpx;
+  background-color: var(--brand-line);
+  margin: 20rpx 0;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

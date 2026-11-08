@@ -1,5 +1,9 @@
 {
-  "navigationBarTitleText": "扫码",
-  "navigationBarBackgroundColor": "#0D1B2A",
-  "navigationBarTextStyle": "white"
+  "navigationBarTitleText": "扫一扫 · 解码",
+  "navigationBarBackgroundColor": "#2B1D18",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "scan-panel": "/components/scan-panel/scan-panel",
+    "decode-panel": "/components/decode-panel/decode-panel"
+  }
 }

@@ -1,3 +1,6 @@
+<!-- 连续扫码页面 - 支持持续扫描条码/二维码，记录扫描历史，提供整体复制、导出和详情查看功能 -->
+<!-- 页面结构：顶部标题栏（返回、标题、操作按钮） → 扫码记录列表/空状态 → 底部扫码按钮 -->
+<!-- 关键数据：scanList 扫码记录列表，continuousActive 是否持续扫描中，expandedIndex/expandedDetail 内联展开详情 -->
 <view class="container">
   <!-- 顶部标题栏 -->
   <view class="header">
@@ -16,36 +19,75 @@
   <!-- 扫码记录区域 -->
   <view class="record-area">
     <view class="record-border">
-      <!-- 有记录时显示列表 -->
-      <scroll-view class="record-list" scroll-y wx:if="{{scanList.length > 0}}">
-        <view 
-          class="record-item" 
-          wx:for="{{scanList}}" 
-          wx:key="index"
-          bindtap="showDetail" 
-          data-index="{{index}}"
-        >
-          <view class="item-row">
-            <view class="type-tag {{item.typeColor || 'tag-default'}}">{{item.type}}</view>
-            <text class="item-time">{{item.time}}</text>
-          </view>
-          <text class="item-code" selectable>{{item.code}}</text>
-          <view class="item-actions">
-            <view class="action-btn" catchtap="copyItem" data-index="{{index}}">
-              <text>复制</text>
+      <view class="record-scroll-wrap">
+        <!-- 有记录时显示列表 -->
+        <scroll-view class="record-list" scroll-y wx:if="{{scanList.length > 0}}" enhanced show-scrollbar>
+          <view
+            class="record-item {{expandedIndex === index ? 'item-expanded' : ''}}"
+            wx:for="{{scanList}}"
+            wx:key="index"
+            bindtap="toggleDetail"
+            data-index="{{index}}"
+          >
+            <view class="item-row">
+              <view class="type-tag {{item.typeColor || 'tag-default'}}">{{item.type}}</view>
+              <text class="item-time">{{item.time}}</text>
             </view>
-            <view class="action-btn action-open" catchtap="openUrl" data-index="{{index}}" wx:if="{{item.isUrl}}">
-              <text>打开</text>
+            <text class="item-code" selectable>{{item.code}}</text>
+            <view class="item-actions">
+              <view class="action-btn" catchtap="copyItem" data-index="{{index}}">复制</view>
+              <view class="action-btn action-open" catchtap="openUrl" data-index="{{index}}" wx:if="{{item.isUrl}}">打开</view>
+              <view class="action-btn action-toggle" catchtap="toggleDetail" data-index="{{index}}">
+                {{expandedIndex === index ? '收起 ▲' : '详情'}}
+              </view>
             </view>
-          </view>
-        </view>
-      </scroll-view>
 
-      <!-- 空状态 -->
-      <view class="empty-state" wx:else>
-        <text class="empty-icon">📋</text>
-        <text class="empty-text">暂无扫码记录</text>
-        <text class="empty-hint">点击下方按钮开始持续扫描</text>
+            <!-- 内联展开详情 -->
+            <view class="item-detail" wx:if="{{expandedIndex === index}}">
+              <view class="detail-code-box">
+                <text class="detail-code" selectable>{{expandedDetail.code}}</text>
+              </view>
+
+              <block wx:if="{{expandedDetail.customData}}">
+                <view class="detail-highlight">
+                  <text class="highlight-label">{{expandedDetail.customLabel || '解析结果'}}</text>
+                  <text class="highlight-value">{{expandedDetail.customData}}</text>
+                </view>
+              </block>
+
+              <view class="detail-info-list">
+                <view class="d-info-row">
+                  <text class="d-label">字符长度</text>
+                  <text class="d-value">{{expandedDetail.codeLength}}</text>
+                </view>
+                <view class="d-info-row" wx:if="{{expandedDetail.country}}">
+                  <text class="d-label">国家/地区</text>
+                  <text class="d-value">{{expandedDetail.country}}</text>
+                </view>
+                <view class="d-info-row" wx:if="{{expandedDetail.domain}}">
+                  <text class="d-label">域名</text>
+                  <text class="d-value">{{expandedDetail.domain}}</text>
+                </view>
+                <view class="d-info-row">
+                  <text class="d-label">扫描时间</text>
+                  <text class="d-value">{{item.time}}</text>
+                </view>
+              </view>
+
+              <view class="detail-actions">
+                <button class="d-btn d-copy" catchtap="copyExpandedCode">复制</button>
+                <button class="d-btn d-url" catchtap="openExpandedUrl" wx:if="{{item.isUrl}}">打开链接</button>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:else>
+          <text class="empty-icon">📋</text>
+          <text class="empty-text">暂无扫码记录</text>
+          <text class="empty-hint">点击下方按钮开始持续扫描</text>
+        </view>
       </view>
     </view>
 
@@ -66,49 +108,5 @@
     </view>
   </view>
 
-  <!-- 详情弹窗 -->
-  <view class="detail-mask" wx:if="{{showDetailPanel}}" catchtap="closeDetailPanel">
-    <view class="detail-panel" catchtap="stopPropagation">
-      <view class="detail-header">
-        <view class="detail-type-tag">{{detailData.type}}</view>
-        <text class="detail-close" bindtap="closeDetailPanel">✕</text>
-      </view>
-      <scroll-view class="detail-body" scroll-y>
-        <view class="detail-code-box">
-          <text class="detail-code" selectable>{{detailData.code}}</text>
-        </view>
-        
-        <block wx:if="{{detailDecoded.customData}}">
-          <view class="detail-highlight">
-            <text class="highlight-label">{{detailDecoded.customLabel || '解析结果'}}</text>
-            <text class="highlight-value">{{detailDecoded.customData}}</text>
-          </view>
-        </block>
 
-        <view class="detail-info-list">
-          <view class="d-info-row">
-            <text class="d-label">字符长度</text>
-            <text class="d-value">{{detailData.code.length}}</text>
-          </view>
-          <view class="d-info-row" wx:if="{{detailDecoded.country}}">
-            <text class="d-label">国家/地区</text>
-            <text class="d-value">{{detailDecoded.country}}</text>
-          </view>
-          <view class="d-info-row" wx:if="{{detailDecoded.domain}}">
-            <text class="d-label">域名</text>
-            <text class="d-value">{{detailDecoded.domain}}</text>
-          </view>
-          <view class="d-info-row">
-            <text class="d-label">扫描时间</text>
-            <text class="d-value">{{detailData.time}}</text>
-          </view>
-        </view>
-      </scroll-view>
-      <view class="detail-footer">
-        <button class="d-btn d-copy" bindtap="copyDetailCode">复制</button>
-        <button class="d-btn d-url" bindtap="openDetailUrl" wx:if="{{detailData.isUrl}}">打开链接</button>
-        <button class="d-btn d-deep" bindtap="goDeepDecode">深度解密</button>
-      </view>
-    </view>
-  </view>
 </view>

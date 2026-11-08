@@ -1,0 +1,235 @@
+page-wrap {
+  min-height: 100vh;
+  background: #F9F4EB;
+  padding-bottom: 40rpx;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  gap: 16rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #2B1D18;
+}
+
+.search-btn {
+  font-size: 28rpx;
+  color: #C0553D;
+  flex-shrink: 0;
+}
+
+/* 用户列表 */
+.user-list {
+  height: calc(100vh - 200rpx);
+  padding: 0 24rpx;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  flex-shrink: 0;
+  background: #E0E0E0;
+}
+
+.user-meta {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #2B1D18;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-id {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.user-action {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.user-days {
+  font-size: 26rpx;
+  color: #C0553D;
+  font-weight: 500;
+}
+
+.user-edit {
+  font-size: 24rpx;
+  color: #C0553D;
+  padding: 8rpx 16rpx;
+  background: #F3E7D8;
+  border-radius: 12rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 编辑弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 28rpx;
+  width: 600rpx;
+  overflow: hidden;
+  box-shadow: 0 24rpx 64rpx rgba(13,27,42,0.2);
+}
+
+.modal-header {
+  padding: 36rpx 36rpx 0;
+  display: flex;
+  align-items: center;
+}
+
+.modal-accent {
+  width: 8rpx;
+  height: 32rpx;
+  background: #C0553D;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #2B1D18;
+}
+
+.modal-body {
+  padding: 32rpx 36rpx;
+}
+
+.modal-label {
+  font-size: 28rpx;
+  color: #333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.modal-input-row {
+  margin-bottom: 24rpx;
+}
+
+.modal-display-row {
+  margin-bottom: 24rpx;
+}
+
+.modal-input-label {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.modal-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #E8E8E8;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #2B1D18;
+  background: #FAFAFA;
+  box-sizing: border-box;
+}
+
+.modal-display-value {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #C0553D;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.modal-hint {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 20rpx;
+  margin: 32rpx 36rpx 36rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  border-radius: 42rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.modal-cancel {
+  background: #F0F0F0;
+  color: #6B6B6B;
+}
+
+.modal-confirm {
+  background: #C0553D;
+  color: #fff;
+}

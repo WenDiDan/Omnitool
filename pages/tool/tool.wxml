@@ -1,0 +1,366 @@
+<view class="tool-page">
+
+  <view class="loading-area" wx:if="{{loading}}">
+    <text class="loading-text">正在加载工具内容…</text>
+  </view>
+
+  <view class="empty-area" wx:elif="{{notFound}}">
+    <text class="empty-title">未找到该工具</text>
+    <text class="empty-desc">工具可能已下线，请返回工具台查看</text>
+    <view class="empty-btn" bindtap="goBack">返回</view>
+  </view>
+
+  <block wx:else>
+    <!-- 顶部工具条：三个 Tab 共用 -->
+    <view class="top-bar">
+      <view class="back-btn" wx:if="{{activeTab > 0}}" bindtap="goBackBoard">← 返回助力</view>
+      <view class="top-actions">
+        <view class="top-btn" bindtap="showNotice">通知/公告</view>
+        <view class="top-btn" bindtap="onRefresh">刷新</view>
+      </view>
+    </view>
+
+    <!-- 模式 Tab：仅开始助力 / 记录页显示，个人中心是单一界面 -->
+    <view class="mode-tabs" wx:if="{{modes.length > 0 && activeTab !== 2}}">
+      <view class="mode-tab {{activeMode === index ? 'mode-active' : ''}}"
+            wx:for="{{modes}}" wx:key="index"
+            bindtap="switchMode" data-index="{{index}}">
+        <text>{{item}}</text>
+      </view>
+    </view>
+
+    <!-- ===== Tab 0：开始助力 ===== -->
+    <block wx:if="{{activeTab === 0}}">
+      <view class="board-card">
+        <view class="board-head">
+          <text class="board-title">随缘互助</text>
+          <text class="board-help" bindtap="toggleRules">帮助</text>
+        </view>
+
+        <view class="quota-grid">
+          <view class="quota-col">
+            <text class="quota-label">今日助人 · 上限{{current.helpLimit}}次</text>
+            <view class="quota-main">
+              <text class="quota-number">{{current.helpLeft}}</text>
+              <text class="quota-unit">次</text>
+            </view>
+            <view class="quota-bar">
+              <view class="quota-bar-fill" style="width: {{current.helpPercent}}%;"></view>
+            </view>
+            <view class="quota-sub">
+              <text class="quota-used">已用 {{current.helpUsed}} / {{current.helpLimit}}</text>
+            </view>
+          </view>
+          <view class="quota-divider"></view>
+          <view class="quota-col">
+            <text class="quota-label">今日受助 · 设置{{current.receiveLimit}}次</text>
+            <view class="quota-main">
+              <text class="quota-number">{{current.receiveLeft}}</text>
+              <text class="quota-unit">次</text>
+            </view>
+            <view class="quota-bar">
+              <view class="quota-bar-fill" style="width: {{current.receivePercent}}%;"></view>
+            </view>
+            <view class="quota-sub">
+              <text class="quota-used">已安排 {{current.receiveUsed}} / {{current.receiveLimit}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 领取口令 / 进行中的任务 / 今日领取完成 -->
+        <view class="draw-section">
+          <block wx:if="{{!current.task && current.helpUsed >= current.helpLimit}}">
+            <view class="done-card">
+              <text class="done-title">今日领取已完成</text>
+              <text class="done-desc">明天零点恢复领取机会。已有记录可到「今日助人」查看。</text>
+              <view class="done-stats" bindtap="showStats">查看今日统计</view>
+            </view>
+          </block>
+          <block wx:elif="{{!current.task}}">
+          <t-button theme="primary" size="large" block loading="{{drawing}}" disabled="{{drawing}}" bindtap="drawCommand">
+            {{drawing ? '匹配中…' : '领取口令'}}
+          </t-button>
+          <text class="draw-hint">暂无匹配不扣次数</text>
+          </block>
+          <block wx:else>
+            <view class="task-card">
+              <view class="task-user">
+                <image class="task-avatar" wx:if="{{current.task.avatar_url}}" src="{{current.task.avatar_url}}" mode="aspectFill" />
+                <view class="task-avatar task-avatar-text" wx:else>{{current.task.avatarText}}</view>
+                <view class="task-info">
+                  <text class="task-nick">{{current.task.nick}}</text>
+                  <text class="task-meta">管理员处罚 0 次</text>
+                </view>
+                <view class="task-clock">
+                  <text class="task-clock-time">{{taskCountdown}}</text>
+                  <text class="task-clock-sub">可换{{current.task.swapsLeft}}个</text>
+                </view>
+                <view class="task-side">
+                  <text class="task-block" bindtap="blockTask">拉黑</text>
+                  <text class="task-swap" bindtap="swapTask">换一个</text>
+                </view>
+              </view>
+              <text class="task-dispute">近7天纠纷：被投诉 0 单 ｜ 投诉别人 0 单</text>
+            </view>
+
+            <view class="task-command">
+              <text class="task-command-text" selectable>{{current.task.command}}</text>
+            </view>
+
+            <view class="task-copy" bindtap="copyTaskCommand">一键复制</view>
+
+            <view class="task-actions">
+              <view class="task-fail" bindtap="reportFail">反馈失败</view>
+              <view class="task-done" bindtap="markSuccess">{{activeMode === 1 ? '提交结果 · 上传截图（必传）' : '提交助力结果'}}</view>
+            </view>
+
+            <text class="draw-result-note">淘宝助力后，回来点「已成功，上传截图」，并上传助力明细图。</text>
+          </block>
+        </view>
+
+        <!-- 当前模式口令：两套模式各自独立 -->
+        <view class="command-card">
+          <view class="command-head">
+            <text class="command-title">{{current.label}} · 我的口令</text>
+            <view class="command-actions">
+              <text class="command-btn" catchtap="editCommand">编辑</text>
+              <text class="command-btn command-btn-primary" catchtap="copyCommand">复制</text>
+            </view>
+          </view>
+          <text class="command-text" wx:if="{{current.command}}" selectable>{{current.command}}</text>
+          <text class="command-empty" wx:else>{{current.publishHint}}</text>
+          <text class="command-hint">受助机会：注册即赠 1 次，成功助力 +1，被助力 -1；不按天补充，亏欠需先助力补齐才能发布</text>
+        </view>
+
+        <view class="board-divider"></view>
+        <text class="quota-full">{{tool.quota_full_text}}</text>
+
+        <view class="more-head" bindtap="toggleMore">
+          <text class="more-arrow">{{showMore ? '▼' : '▶'}}</text>
+          <text class="more-title">剩余次数与明日参与</text>
+        </view>
+
+        <view class="detail-card">
+          <view class="detail-head">
+            <view class="detail-title-wrap">
+              <text class="detail-title">{{tool.detail_title}}</text>
+              <text class="detail-pending">待补充</text>
+            </view>
+            <view class="detail-upload" bindtap="copyLink">上传助力明细</view>
+          </view>
+          <text class="detail-desc">{{tool.detail_desc}}</text>
+          <text class="detail-note">{{tool.detail_note}}</text>
+        </view>
+      </view>
+
+      <!-- 规则全文（折叠） -->
+      <view class="rules-card" wx:if="{{showRules}}">
+        <view class="rules-head">
+          <text class="rules-title">活动规则</text>
+          <text class="rules-close" bindtap="toggleRules">收起</text>
+        </view>
+        <view class="rule-line" wx:for="{{ruleLines}}" wx:key="no">
+          <text class="rule-no">{{item.no}}</text>
+          <text class="rule-text">{{item.text}}</text>
+        </view>
+        <view class="rules-note" wx:if="{{tool.source_note}}">
+          <text class="rules-note-text">{{tool.source_note}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- ===== Tab 1：记录 ===== -->
+    <block wx:elif="{{activeTab === 1}}">
+      <view class="seg-control">
+        <view class="seg-item {{recordType === 'help' ? 'seg-item-active' : ''}}" data-t="help" bindtap="setRecordType">
+          <text class="seg-title">助人记录</text>
+          <text class="seg-count">{{recordCounts.all}}</text>
+        </view>
+        <view class="seg-item {{recordType === 'receive' ? 'seg-item-active' : ''}}" data-t="receive" bindtap="setRecordType">
+          <text class="seg-title">受助记录</text>
+          <text class="seg-count">{{recordCounts.all}}</text>
+        </view>
+      </view>
+
+      <view class="record-tip" wx:if="{{recordType === 'receive' && recordCounts.pending}}">
+        <text class="record-tip-text">有 {{recordCounts.pending}} 条待核对，请及时确认；10 分钟后自动通过。</text>
+      </view>
+
+      <view class="record-filter">
+        <text class="rf-cell {{recordFilter === 'all' ? 'rf-cell-active' : ''}}" data-f="all" bindtap="setRecordFilter">全部 {{recordCounts.all}}</text>
+        <text class="rf-cell {{recordFilter === 'pending' ? 'rf-cell-active' : ''}}" data-f="pending" bindtap="setRecordFilter">待核对 {{recordCounts.pending}}</text>
+        <text class="rf-cell {{recordFilter === 'done' ? 'rf-cell-active' : ''}}" data-f="done" bindtap="setRecordFilter">成功 {{recordCounts.done}}</text>
+        <text class="rf-cell {{recordFilter === 'returned' ? 'rf-cell-active' : ''}}" data-f="returned" bindtap="setRecordFilter">已放回 {{recordCounts.returned}}</text>
+      </view>
+
+      <block wx:for="{{recordGroups}}" wx:key="date" wx:for-item="group">
+        <text class="date-head">{{group.dateText}} · {{group.list.length}}条</text>
+        <view class="hr-card" wx:for="{{group.list}}" wx:for-item="item" wx:key="id" bindtap="viewRecordDetail" data-id="{{item.id}}">
+          <view class="hr-top">
+            <text class="hr-tag">{{recordType === 'help' ? '我助力的' : '助力我的'}}</text>
+            <text class="hr-mode">{{current.label}}</text>
+            <text class="hr-status hr-status-{{item.status}}">{{item.statusText}}</text>
+          </view>
+          <view class="hr-main">
+            <text class="hr-command">{{item.command || item.nick}}</text>
+            <text class="hr-detail">查看详情 ›</text>
+          </view>
+          <text class="hr-time">{{recordType === 'help' ? '领取于' : '被领取于'}} {{item.date}} {{item.time}}</text>
+          <view class="hr-actions" wx:if="{{recordType === 'receive' && item.status === 'pending'}}">
+          <t-button theme="primary" size="extra-small" catchtap="confirmReceive" data-id="{{item.id}}">确认完成</t-button>
+          </view>
+        </view>
+      </block>
+
+      <view class="hr-empty" wx:if="{{!recordsList.length && !recordsLoading}}">
+        <text class="hr-empty-title">{{recordType === 'help' ? '暂无助人记录' : '暂无受助记录'}}</text>
+        <text class="hr-empty-desc">{{recordType === 'help' ? '领取口令后按状态计入：待核对、已成功、已放回（失败/超时/换掉）。' : '别人领取你的口令后计入：对方提交后为「待核对」，确认或 10 分钟自动通过后计入受助次数。'}}</text>
+      </view>
+    </block>
+
+    <!-- ===== Tab 2：个人中心 ===== -->
+    <block wx:else>
+      <text class="page-title">个人中心</text>
+      <view class="user-card">
+        <view class="user-row">
+          <view class="avatar" wx:if="{{avatarPreview}}">
+            <image class="avatar-img" src="{{avatarPreview}}" mode="aspectFill"/>
+          </view>
+          <view class="avatar avatar-letter-box" wx:else>{{avatarText}}</view>
+          <view class="user-info">
+            <text class="user-nick">{{account.tb_nick || '尚未登记淘宝账号'}}</text>
+            <text class="user-site" wx:if="{{account}}">本站编号 {{account.site_no || '—'}}</text>
+            <text class="user-site" wx:else>点击「编辑资料」登记账号</text>
+          </view>
+          <text class="edit-link" bindtap="openEdit">编辑资料 ›</text>
+        </view>
+        <view class="quota-cols">
+          <view class="quota-col-item" bindtap="showStats">
+            <text class="quota-col-label">个人赛</text>
+            <text class="quota-col-num">剩余 {{modeHelpLeft[0]}} 次</text>
+          </view>
+          <view class="quota-col-divider"></view>
+          <view class="quota-col-item" bindtap="showStats">
+            <text class="quota-col-label">车队</text>
+            <text class="quota-col-num">剩余 {{modeHelpLeft[1]}} 次</text>
+          </view>
+        </view>
+      </view>
+
+      <text class="section-label">常用功能</text>
+      <view class="feature-list">
+        <view class="feature-row" bindtap="openHelpSettings" data-mode="0">
+          <text class="feature-name">个人赛受助设置</text>
+          <text class="feature-action">人数、暂停与邀请 ›</text>
+        </view>
+        <view class="feature-row" bindtap="openHelpSettings" data-mode="1">
+          <text class="feature-name">车队受助设置</text>
+          <text class="feature-action">锁定、等级与人数 ›</text>
+        </view>
+        <view class="feature-row" bindtap="onFeature" data-name="拉黑名单">
+          <text class="feature-name">拉黑名单</text>
+          <text class="feature-action">查看与解除 ›</text>
+        </view>
+        <view class="feature-row" bindtap="showHelp">
+          <text class="feature-name">帮助与反馈</text>
+          <text class="feature-action">使用说明与问题反馈 ›</text>
+        </view>
+        <view class="feature-row" bindtap="onFeature" data-name="进群互助">
+          <text class="feature-name">进群互助</text>
+          <text class="feature-action">查看群入口 ›</text>
+        </view>
+      </view>
+
+      <!-- 清除登记资料 -->
+      <view class="danger-card" bindtap="clearProfile">
+        <text class="danger-title">清除登记资料</text>
+        <text class="danger-desc">清除时会撤回邀请；未决任务和必要历史记录保留。</text>
+      </view>
+    </block>
+
+    <!-- 底部导航：仅切换内容区 -->
+    <view class="bottom-nav">
+      <view class="nav-item {{activeTab === 0 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="0">开始助力</view>
+      <view class="nav-item {{activeTab === 1 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="1">记录</view>
+      <view class="nav-item {{activeTab === 2 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="2">个人中心</view>
+    </view>
+  </block>
+
+  <!-- 登记资料弹窗：只登记昵称与头像 -->
+  <view class="modal-mask" wx:if="{{showEdit}}" bindtap="closeEdit">
+    <view class="modal-panel" catchtap="noop">
+      <view class="modal-head">
+        <text class="modal-title">登记资料</text>
+        <text class="modal-close" bindtap="closeEdit">✕</text>
+      </view>
+
+      <view class="form-card">
+        <!-- 淘宝显示昵称 -->
+        <view class="form-group">
+          <view class="form-label-row">
+            <text class="form-label">淘宝显示昵称</text>
+            <text class="form-required">必填</text>
+          </view>
+          <input class="form-input" placeholder="实际助力账号的显示昵称" value="{{form.tb_nick}}"
+                 data-field="tb_nick" bindinput="onInput" maxlength="40"/>
+          <text class="form-hint">填写实际用于助力的淘宝账号显示昵称，不是用户名、登录账号或手机号。昵称或头像有变化，请及时修改。</text>
+        </view>
+
+        <!-- 淘宝头像 -->
+        <view class="form-group">
+          <view class="form-label-row">
+            <text class="form-label">淘宝头像</text>
+            <text class="form-optional">选填</text>
+          </view>
+          <view class="avatar-row">
+            <view class="avatar-preview" wx:if="{{avatarPreview}}">
+              <image class="avatar-img" src="{{avatarPreview}}" mode="aspectFill"/>
+            </view>
+            <view class="avatar-preview avatar-placeholder" wx:else>
+              <text class="avatar-letter">{{avatarText}}</text>
+            </view>
+            <view class="avatar-btn" bindtap="chooseAvatar">选择头像</view>
+            <text class="avatar-remove" bindtap="removeAvatar">删除头像</text>
+          </view>
+          <text class="form-hint">如上传，请使用同一助力账号的当前头像。截图请先遮住账号、订单、手机号等敏感信息。原图不超过 10MB，会在本机压缩。</text>
+        </view>
+
+        <!-- 同意勾选 -->
+        <view class="agree-row" bindtap="toggleAgree">
+          <view class="checkbox {{agreed ? 'checkbox-checked' : ''}}">
+            <text wx:if="{{agreed}}">✓</text>
+          </view>
+          <text class="agree-text">我同意本站为互助展示昵称及可选头像，并已阅读</text>
+          <text class="agree-link" catchtap="showPolicy">资料说明</text>
+          <text class="agree-text">。</text>
+        </view>
+
+        <t-button theme="primary" block bindtap="saveAccount">保存资料</t-button>
+        </view>
+    </view>
+  </view>
+
+  <!-- 受助设置弹窗：两套独立界面规则，由 MODE_RULES 驱动 -->
+  <view class="settings-mask" wx:if="{{showHelpSettings}}" bindtap="closeHelpSettings">
+    <view class="settings-panel" catchtap="noop">
+      <view class="settings-head">
+        <text class="settings-title">{{settings.title}}</text>
+        <view class="settings-close" bindtap="closeHelpSettings">关闭</view>
+      </view>
+      <text class="settings-mode">{{settings.modeLabel}} · 独立规则</text>
+      <text class="settings-status">{{settings.status}}</text>
+
+      <view class="setting-row {{item.disabled ? 'setting-locked' : ''}}"
+            wx:for="{{settings.rows}}" wx:key="key"
+            bindtap="onSettingAction" data-action="{{item.action}}">
+        <text class="setting-name">{{item.label}}</text>
+        <text class="setting-value" wx:if="{{item.valueText}}">{{item.valueText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- TDesign 轻提示 / 对话框宿主 -->
+  <t-toast id="t-toast"></t-toast>
+  <t-dialog id="t-dialog"></t-dialog>
+
+</view>

@@ -5,12 +5,12 @@
 
 .setting-label {
   font-size: 28rpx;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .setting-value {
   font-size: 26rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
 }
 
 /* 自定义规则卡片 */
@@ -40,21 +40,21 @@
 .card-title {
   font-size: 28rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .add-btn {
   font-size: 26rpx;
   color: #fff;
   padding: 10rpx 24rpx;
-  background: linear-gradient(135deg, #3D8B7A, #2D7A6A);
+  background: linear-gradient(135deg, #E8A44C, #2D7A6A);
   border-radius: 20rpx;
   font-weight: 500;
 }
 
 /* 编辑表单样式 */
 .rule-form {
-  background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+  background: linear-gradient(180deg, #FAF6EE 0%, #fff 100%);
   border-radius: 14rpx;
   padding: 24rpx;
   margin: 16rpx 0;
@@ -77,7 +77,7 @@
 .form-title {
   font-size: 30rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .form-section {
@@ -92,7 +92,7 @@
 
 .section-title {
   font-size: 24rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   font-weight: 600;
   margin-bottom: 14rpx;
   display: flex;
@@ -104,7 +104,7 @@
   content: '';
   width: 4rpx;
   height: 24rpx;
-  background: #3D8B7A;
+  background: #E8A44C;
   border-radius: 2rpx;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .form-input:focus {
-  border-color: #3D8B7A;
+  border-color: #E8A44C;
 }
 
 .regex-input {
@@ -157,7 +157,7 @@
 
 .form-hint-inline {
   font-size: 20rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
 }
 
 .position-row {
@@ -278,7 +278,7 @@
   font-size: 26rpx;
   color: #fff;
   padding: 18rpx;
-  background: linear-gradient(135deg, #3D8B7A, #2D7A6A);
+  background: linear-gradient(135deg, #E8A44C, #2D7A6A);
   border-radius: 10rpx;
   text-align: center;
   font-weight: 600;
@@ -327,7 +327,7 @@
 }
 
 .rule-item:active {
-  background: #f8f9fa;
+  background: #FAF6EE;
 }
 
 .rule-item.disabled {
@@ -348,7 +348,7 @@
 
 .rule-name {
   font-size: 28rpx;
-  color: #0D1B2A;
+  color: #2B1D18;
   font-weight: 600;
 }
 
@@ -361,7 +361,7 @@
 }
 
 .rule-badge.active {
-  background: #3D8B7A;
+  background: #E8A44C;
 }
 
 .rule-details {
@@ -373,7 +373,7 @@
 
 .rule-pattern {
   font-size: 22rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   font-family: 'Courier New', monospace;
   background: #e8f5f3;
   padding: 4rpx 10rpx;
@@ -481,7 +481,7 @@
 }
 
 .preset-item {
-  background: #f8f9fa;
+  background: #FAF6EE;
   border-radius: 10rpx;
   padding: 18rpx 12rpx;
   text-align: center;
@@ -538,11 +538,11 @@
 
 .toggle-arrow {
   font-size: 22rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
 }
 
 .helper-content {
-  background: #f8f9fa;
+  background: #FAF6EE;
   border-radius: 12rpx;
   padding: 18rpx;
   margin-top: 12rpx;
@@ -565,7 +565,7 @@
 
 .info-label {
   font-size: 22rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   font-weight: 600;
   display: block;
   margin-bottom: 6rpx;
@@ -616,7 +616,7 @@
 
 .mapping-letter {
   font-size: 22rpx;
-  color: #0D1B2A;
+  color: #2B1D18;
   font-weight: bold;
   font-family: 'Courier New', monospace;
   margin-bottom: 4rpx;
@@ -655,7 +655,7 @@
 .base-year-input {
   width: 120rpx;
   height: 52rpx;
-  border: 2rpx solid #3D8B7A;
+  border: 2rpx solid #E8A44C;
   border-radius: 8rpx;
   text-align: center;
   font-size: 26rpx;
@@ -687,7 +687,7 @@
   border-radius: 14rpx;
   padding: 16rpx;
   margin-top: 12rpx;
-  border: 1rpx solid #3D8B7A20;
+  border: 1rpx solid #E8A44C20;
 }
 
 .test-input-row {
@@ -700,14 +700,14 @@
   flex: 1;
   height: 60rpx;
   background: #fff;
-  border: 2rpx solid #3D8B7A30;
+  border: 2rpx solid #E8A44C30;
   border-radius: 10rpx;
   padding: 0 16rpx;
   font-size: 26rpx;
 }
 
 .test-input:focus {
-  border-color: #3D8B7A;
+  border-color: #E8A44C;
   background: #fff;
 }
 
@@ -720,17 +720,17 @@
   height: 60rpx;
   padding: 0 22rpx;
   background: #fff;
-  border: 2rpx solid #3D8B7A;
+  border: 2rpx solid #E8A44C;
   border-radius: 10rpx;
   font-size: 24rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .test-btn.primary {
-  background: #3D8B7A;
+  background: #E8A44C;
   color: #fff;
 }
 
@@ -743,7 +743,7 @@
   border-radius: 10rpx;
   padding: 16rpx;
   margin-top: 10rpx;
-  border-left: 4rpx solid #3D8B7A;
+  border-left: 4rpx solid #E8A44C;
 }
 
 .test-result-label {
@@ -761,7 +761,7 @@
 .result-main {
   font-size: 30rpx;
   font-weight: 700;
-  color: #0D1B2A;
+  color: #2B1D18;
   background: linear-gradient(135deg, #FF9500, #FF6B00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -814,7 +814,7 @@
 
 .hint-text {
   font-size: 22rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
 }
 
 /* 测试步骤 */
@@ -882,7 +882,7 @@
 .step-num {
   width: 30rpx;
   height: 30rpx;
-  background: #3D8B7A;
+  background: #E8A44C;
   color: #fff;
   border-radius: 50%;
   font-size: 20rpx;
@@ -935,7 +935,7 @@
 }
 
 .step-value.highlight {
-  color: #3D8B7A;
+  color: #E8A44C;
   font-weight: 600;
 }
 
@@ -950,7 +950,7 @@
   background: linear-gradient(135deg, #fff 0%, #f0fdfb 100%);
   border-radius: 14rpx;
   padding: 18rpx;
-  border: 2rpx solid #3D8B7A30;
+  border: 2rpx solid #E8A44C30;
 }
 
 .result-header {
@@ -959,7 +959,7 @@
   gap: 8rpx;
   margin-bottom: 12rpx;
   padding-bottom: 10rpx;
-  border-bottom: 1rpx dashed #3D8B7A40;
+  border-bottom: 1rpx dashed #E8A44C40;
 }
 
 .result-icon {
@@ -968,7 +968,7 @@
 
 .result-title {
   font-size: 26rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   font-weight: 600;
 }
 
@@ -977,7 +977,7 @@
   border-radius: 10rpx;
   padding: 16rpx;
   margin-bottom: 12rpx;
-  box-shadow: 0 2rpx 6rpx rgba(61, 139, 122, 0.1);
+  box-shadow: 0 2rpx 6rpx rgba(232, 164, 76, 0.1);
 }
 
 .result-label-row {
@@ -996,7 +996,7 @@
 .result-value {
   font-size: 34rpx;
   font-weight: 700;
-  color: #0D1B2A;
+  color: #2B1D18;
   background: linear-gradient(135deg, #FF9500, #FF6B00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1124,7 +1124,7 @@
   display: flex;
   align-items: center;
   padding: 28rpx 24rpx;
-  background: linear-gradient(135deg, #3D8B7A 0%, #4a9e8e 50%, #5ab09e 100%);
+  background: linear-gradient(135deg, #E8A44C 0%, #4a9e8e 50%, #5ab09e 100%);
   color: #fff;
   position: relative;
 }
@@ -1182,7 +1182,7 @@
 .modal-body .form-section {
   padding: 22rpx 24rpx;
   background: #fff;
-  border-bottom: 12rpx solid #f8f9fa;
+  border-bottom: 12rpx solid #FAF6EE;
 }
 
 .modal-body .form-section:last-child {
@@ -1191,11 +1191,11 @@
 
 .modal-body .form-section .section-title {
   font-size: 26rpx;
-  color: #3D8B7A;
+  color: #E8A44C;
   font-weight: 600;
   margin-bottom: 16rpx;
   padding-left: 12rpx;
-  border-left: 4rpx solid #3D8B7A;
+  border-left: 4rpx solid #E8A44C;
 }
 
 .modal-body .form-item {
@@ -1216,7 +1216,7 @@
 .modal-body .form-input {
   height: 68rpx;
   padding: 0 20rpx;
-  background: #f8f9fa;
+  background: #FAF6EE;
   border-radius: 12rpx;
   font-size: 28rpx;
   border: 2rpx solid transparent;
@@ -1224,7 +1224,7 @@
 }
 
 .modal-body .form-input:focus {
-  border-color: #3D8B7A;
+  border-color: #E8A44C;
   background: #fff;
 }
 
@@ -1279,14 +1279,14 @@
 }
 
 .modal-footer .save-btn {
-  background: linear-gradient(135deg, #3D8B7A 0%, #4a9e8e 100%);
+  background: linear-gradient(135deg, #E8A44C 0%, #4a9e8e 100%);
   color: #fff;
-  box-shadow: 0 4rpx 14rpx rgba(61, 139, 122, 0.35);
+  box-shadow: 0 4rpx 14rpx rgba(232, 164, 76, 0.35);
 }
 
 .modal-footer .save-btn:active {
   transform: scale(0.98);
-  box-shadow: 0 3rpx 10rpx rgba(61, 139, 122, 0.25);
+  box-shadow: 0 3rpx 10rpx rgba(232, 164, 76, 0.25);
 }
 
 .modal-footer .delete-rule-btn {

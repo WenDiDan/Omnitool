@@ -45,19 +45,49 @@ Page({
   loadPage(url, type) {
     this.setData({ loading: true, error: false, paragraphs: [], images: [], items: [], title: '' })
 
+    // 超时保护：15秒内无响应则提示
+    let timedOut = false
+    const timer = setTimeout(() => {
+      timedOut = true
+      this.setData({
+        loading: false,
+        error: true,
+        errorMsg: '请求超时，请检查网络或稍后重试'
+      })
+    }, 15000)
+
     wx.cloud.callFunction({
       name: 'fetchWeb',
       data: { url, type: type || 'page' },
       success: (res) => {
+        if (timedOut) return
+        clearTimeout(timer)
         const result = res.result
         if (result.code === 0) {
-          this.setData({
-            title: result.title || '',
-            paragraphs: result.paragraphs || [],
-            images: result.images || [],
-            items: result.items || [],
-            loading: false
-          })
+          const paragraphs = result.paragraphs || []
+          const title = result.title || ''
+          const images = result.images || []
+          const items = result.items || []
+
+          // 检测内容是否为空/极少（JS 渲染页面）
+          const totalTextLen = paragraphs.reduce((sum, p) => sum + ((p.text || '').length), 0)
+          const isEmptyContent = !title && totalTextLen < 30 && images.length === 0 && items.length === 0
+
+          if (isEmptyContent) {
+            this.setData({
+              loading: false,
+              error: true,
+              errorMsg: '该页面使用 JavaScript 动态渲染，无法在小程序内提取内容'
+            })
+          } else {
+            this.setData({
+              title,
+              paragraphs,
+              images,
+              items,
+              loading: false
+            })
+          }
         } else {
           this.setData({
             loading: false,
@@ -67,6 +97,8 @@ Page({
         }
       },
       fail: (err) => {
+        if (timedOut) return
+        clearTimeout(timer)
         this.setData({
           loading: false,
           error: true,
@@ -95,7 +127,8 @@ Page({
   copyUrl() {
     wx.setClipboardData({
       data: this.data.url,
-      success: () => { wx.showToast({ title: '链接已复制', icon: 'success' }) }
+      success: () => { wx.showToast({ title: '链接已复制', icon: 'success' }) },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }) }
     })
   },
 

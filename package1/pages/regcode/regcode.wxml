@@ -212,7 +212,7 @@
 
       <!-- 复制解析结果 -->
       <view class="parse-copy-area">
-        <view class="generate-btn" style="background: #3D8B7A;" bindtap="copyParseResult">
+        <view class="generate-btn" style="background: #E8A44C;" bindtap="copyParseResult">
           <text class="gen-text">复制解析结果</text>
         </view>
       </view>

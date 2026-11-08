@@ -17,10 +17,14 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.loadLogs(() => {
+    try {
+      this.loadLogs(() => {
+        wx.stopPullDownRefresh()
+        wx.showToast({ title: '刷新完成', icon: 'none', duration: 800 })
+      })
+    } catch (e) {
       wx.stopPullDownRefresh()
-      wx.showToast({ title: '刷新完成', icon: 'none', duration: 800 })
-    })
+    }
   },
 
   setFilter(e) {

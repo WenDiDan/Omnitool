@@ -1,12 +1,12 @@
 /* 用户管理页面样式 — 统一蓝色主题 */
 
 page {
-  background: #F2F3F7;
+  background: #F9F4EB;
 }
 
 .page-wrap {
   min-height: 100vh;
-  background: #F2F3F7;
+  background: #F9F4EB;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -22,7 +22,7 @@ page {
   left: 0;
   right: 0;
   height: 220rpx;
-  background: linear-gradient(135deg, #1a2a4a 0%, #2a3f6f 50%, #5B7FFF 100%);
+  background: linear-gradient(135deg, #1a2a4a 0%, #2a3f6f 50%, #C0553D 100%);
   border-radius: 0 0 40rpx 40rpx;
   z-index: 0;
 }
@@ -64,13 +64,13 @@ page {
 .stat-num {
   font-size: 52rpx;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #2B1D18;
   display: block;
   letter-spacing: -2rpx;
 }
 
 .stat-num.accent {
-  color: #5B7FFF;
+  color: #C0553D;
   text-shadow: 0 2rpx 10rpx rgba(91, 127, 255, 0.3);
 }
 
@@ -104,7 +104,7 @@ page {
   width: 60rpx;
   height: 60rpx;
   border: 4rpx solid #e0e0e0;
-  border-top-color: #5B7FFF;
+  border-top-color: #C0553D;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -134,7 +134,7 @@ page {
 .list-title {
   font-size: 34rpx;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #2B1D18;
   letter-spacing: -1rpx;
 }
 
@@ -170,7 +170,7 @@ page {
 }
 
 .user-item.vip {
-  border-left: 6rpx solid #5B7FFF;
+  border-left: 6rpx solid #C0553D;
 }
 
 .user-info {
@@ -207,18 +207,18 @@ page {
 }
 
 .current-user .avatar-img {
-  border: 5rpx solid #5B7FFF;
+  border: 5rpx solid #C0553D;
   box-shadow: 0 0 0 6rpx rgba(91, 127, 255, 0.2), 0 8rpx 24rpx rgba(91, 127, 255, 0.2);
 }
 
 .current-user .avatar-default {
-  border: 5rpx solid #5B7FFF;
+  border: 5rpx solid #C0553D;
   box-shadow: 0 0 0 6rpx rgba(91, 127, 255, 0.2), 0 8rpx 24rpx rgba(91, 127, 255, 0.2);
 }
 
 .user-item.current-user {
   background: linear-gradient(135deg, #f0f3ff 0%, #fff 100%);
-  border: 2rpx solid #5B7FFF;
+  border: 2rpx solid #C0553D;
   box-shadow: 0 8rpx 30rpx rgba(91, 127, 255, 0.15);
 }
 
@@ -233,7 +233,7 @@ page {
 }
 
 .role-dot-admin { background: #E63946; }
-.role-dot-vip { background: #5B7FFF; }
+.role-dot-vip { background: #C0553D; }
 .role-dot-user { background: #9CA3AF; }
 .role-dot-blocked { background: #999; display: none; }
 
@@ -252,7 +252,7 @@ page {
 .user-name {
   font-size: 32rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .role-tag {
@@ -269,7 +269,7 @@ page {
 }
 .role-tag.role-vip {
   background: rgba(91, 127, 255, 0.1);
-  color: #5B7FFF;
+  color: #C0553D;
 }
 .role-tag.role-user {
   background: rgba(107, 114, 128, 0.1);
@@ -285,7 +285,7 @@ page {
   align-items: center;
   padding: 4rpx 14rpx;
   border-radius: 20rpx;
-  background: linear-gradient(135deg, #5B7FFF 0%, #3D5FD9 100%);
+  background: linear-gradient(135deg, #C0553D 0%, #3D5FD9 100%);
 }
 
 .current-tag-text {
@@ -313,7 +313,7 @@ page {
 
 .user-id-value {
   font-size: 22rpx;
-  color: #0D1B2A;
+  color: #2B1D18;
   font-weight: 500;
   letter-spacing: 1rpx;
   font-family: Monaco, Menlo, Consolas, monospace;
@@ -324,7 +324,7 @@ page {
 
 .user-id-copy {
   font-size: 20rpx;
-  color: #5B7FFF;
+  color: #C0553D;
   flex-shrink: 0;
 }
 
@@ -350,7 +350,7 @@ page {
   justify-content: center;
   padding: 10rpx 16rpx;
   border-radius: 12rpx;
-  background: linear-gradient(135deg, #5B7FFF 0%, #3D5FD9 100%);
+  background: linear-gradient(135deg, #C0553D 0%, #3D5FD9 100%);
   box-shadow: 0 2rpx 8rpx rgba(91, 127, 255, 0.25);
   min-width: 90rpx;
 }
@@ -365,7 +365,7 @@ page {
   box-shadow: 0 4rpx 12rpx rgba(230, 57, 70, 0.3);
 }
 .action-btn.vip {
-  background: linear-gradient(135deg, #5B7FFF 0%, #3D5FD9 100%);
+  background: linear-gradient(135deg, #C0553D 0%, #3D5FD9 100%);
   box-shadow: 0 4rpx 12rpx rgba(91, 127, 255, 0.3);
 }
 .action-btn.blocked {
@@ -377,7 +377,7 @@ page {
   box-shadow: none;
 }
 .action-btn.self .action-text {
-  color: #5B7FFF;
+  color: #C0553D;
 }
 
 .action-text {
@@ -432,7 +432,7 @@ page {
 .empty-title {
   font-size: 36rpx;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #2B1D18;
   margin-bottom: 16rpx;
   letter-spacing: -1rpx;
 }
@@ -537,7 +537,7 @@ page {
 .modal-title {
   font-size: 36rpx;
   font-weight: 800;
-  color: #0D1B2A;
+  color: #2B1D18;
   letter-spacing: -1rpx;
 }
 
@@ -576,7 +576,7 @@ page {
 }
 
 .modal-cancel {
-  background: #F2F3F7;
+  background: #F9F4EB;
   color: #6B7280;
 }
 
@@ -633,4 +633,113 @@ page {
   color: #E63946;
   margin-top: 16rpx;
   font-weight: 500;
+}
+
+/* ===== VIP有效期选择弹窗 ===== */
+.vip-picker-box {
+  max-height: 80vh;
+}
+
+.vip-current-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16rpx 24rpx;
+  margin: 0 20rpx 8rpx;
+  background: #FFF7E6;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #FAAD14;
+}
+
+.vip-current-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-right: 8rpx;
+}
+
+.vip-current-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2B1D18;
+  margin-right: 4rpx;
+}
+
+.vip-current-expiry {
+  font-size: 24rpx;
+  color: #FF4D4F;
+  font-weight: 500;
+}
+
+.modal-accent-bar.vip-bar {
+  background: linear-gradient(180deg, #FF4D4F 0%, #D32F2F 100%);
+}
+
+.vip-picker-body {
+  padding: 16rpx 16rpx 8rpx;
+  max-height: 520rpx;
+  overflow-y: auto;
+}
+
+.vip-option {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 20rpx;
+  margin-bottom: 12rpx;
+  border-radius: 20rpx;
+  background: #F8F9FC;
+  transition: all 0.2s ease;
+}
+
+.vip-option:active {
+  background: #FFEDED;
+  transform: scale(0.97);
+}
+
+.vip-option.vip-permanent {
+  background: linear-gradient(135deg, #FFF2E8 0%, #FFE8D6 100%);
+  border: 2rpx solid #FFD7BA;
+}
+
+.vip-option-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #C0553D 0%, #3D5AFE 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #fff;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.vip-option.vip-permanent .vip-option-icon {
+  background: linear-gradient(135deg, #FF4D4F 0%, #D32F2F 100%);
+  font-size: 48rpx;
+}
+
+.vip-option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vip-option-label {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2B1D18;
+  margin-bottom: 6rpx;
+}
+
+.vip-option-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.vip-option-arrow {
+  font-size: 28rpx;
+  color: #C4C7D1;
+  flex-shrink: 0;
 }

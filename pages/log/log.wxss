@@ -1,6 +1,6 @@
 .page-wrap {
   min-height: 100vh;
-  background: #F2F3F7;
+  background: #F9F4EB;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -25,7 +25,7 @@
 .stat-num {
   font-size: 40rpx;
   font-weight: bold;
-  color: #1a1a2e;
+  color: #2B1D18;
   margin-bottom: 8rpx;
 }
 
@@ -157,7 +157,7 @@
 .log-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #2B1D18;
 }
 
 .log-time {
@@ -212,7 +212,7 @@
 .empty-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #2B1D18;
   margin-bottom: 12rpx;
 }
 

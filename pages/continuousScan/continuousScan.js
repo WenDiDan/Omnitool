@@ -6,10 +6,8 @@ Page({
   data: {
     scanList: [],                // 本次会话扫码记录
     continuousActive: false,     // 持续扫码是否激活
-    showDetailPanel: false,      // 详情弹窗
-    detailData: {},              // 当前查看的详情数据
-    detailDecoded: {},           // 详情解码信息
-    encodeResults: {}            // 编码转换结果
+    expandedIndex: -1,           // 当前展开的记录索引，-1 表示无展开
+    expandedDetail: {}           // 当前展开记录的详情数据
   },
 
   onLoad() {
@@ -18,8 +16,8 @@ Page({
 
   onUnload() {
     this._aborted = true;
-    // 停止下一次循环
     this._skipNextScan = true;
+    if (this._scanTimer) clearTimeout(this._scanTimer);
   },
 
   /* ========== 持续扫码 ========== */
@@ -66,7 +64,7 @@ Page({
         // 扫码完成后自动进行下一次 (除非已中断)
         // 给足时间让页面渲染结果（手机端需要更长时间）
         if (!this._aborted) {
-          setTimeout(() => {
+          this._scanTimer = setTimeout(() => {
             this.doSingleScan();
           }, 1000);
         } else {
@@ -170,7 +168,8 @@ Page({
       data: text,
       success: () => {
         wx.showToast({ title: '已复制全部', icon: 'success' });
-      }
+      },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }); }
     });
   },
 
@@ -218,7 +217,8 @@ Page({
           data: fullText,
           success: () => {
             wx.showToast({ title: '已复制内容', icon: 'success' });
-          }
+          },
+          fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }); }
         });
       }
     });
@@ -226,8 +226,17 @@ Page({
 
   /* ========== 列表操作 ========== */
 
-  showDetail(e) {
+  /**
+   * 点击「详情/收起」按钮，内联展开/收起该条记录的详情
+   */
+  toggleDetail(e) {
     const index = e.currentTarget.dataset.index;
+    // 点击已展开的记录 → 收起
+    if (this.data.expandedIndex === index) {
+      this.setData({ expandedIndex: -1, expandedDetail: {} });
+      return;
+    }
+
     const item = this.data.scanList[index];
     if (!item) return;
 
@@ -245,22 +254,27 @@ Page({
     }
 
     this.setData({
-      detailData: { ...item },
-      detailDecoded: decoded,
-      encodeResults,
-      showDetailPanel: true
+      expandedIndex: index,
+      expandedDetail: {
+        code: item.code,
+        codeLength: item.code.length,
+        country: decoded.country || '',
+        domain: decoded.domain || '',
+        customData: decoded.customData || '',
+        customLabel: decoded.customLabel || ''
+      },
+      encodeResults
     });
-  },
-
-  closeDetailPanel() {
-    this.setData({ showDetailPanel: false });
   },
 
   copyItem(e) {
     const index = e.currentTarget.dataset.index;
     const item = this.data.scanList[index];
     if (!item) return;
-    wx.setClipboardData({ data: item.code });
+    wx.setClipboardData({
+      data: item.code,
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }); }
+    });
   },
 
   openUrl(e) {
@@ -279,30 +293,27 @@ Page({
       confirmColor: '#E03E3E',
       success: (res) => {
         if (res.confirm) {
-          this.setData({ scanList: [] });
+          this.setData({ scanList: [], expandedIndex: -1, expandedDetail: {} });
         }
       }
     });
   },
 
-  /* ========== 详情弹窗操作 ========== */
+  /* ========== 展开详情内联操作 ========== */
 
-  copyDetailCode() {
-    wx.setClipboardData({ data: this.data.detailData.code });
-  },
-
-  openDetailUrl() {
-    const url = this.data.detailData.code;
-    this.setData({ showDetailPanel: false });
-    wx.navigateTo({
-      url: `/package1/pages/browser/browser?url=${encodeURIComponent(url)}`
+  copyExpandedCode() {
+    const item = this.data.scanList[this.data.expandedIndex];
+    if (item) wx.setClipboardData({
+      data: item.code,
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }); }
     });
   },
 
-  goDeepDecode() {
-    this.setData({ showDetailPanel: false });
+  openExpandedUrl() {
+    const item = this.data.scanList[this.data.expandedIndex];
+    if (!item || !item.isUrl) return;
     wx.navigateTo({
-      url: `/pages/index/index?code=${encodeURIComponent(this.data.detailData.code)}`
+      url: `/package1/pages/browser/browser?url=${encodeURIComponent(item.code)}`
     });
   },
 
@@ -312,8 +323,6 @@ Page({
     this._aborted = true;
     wx.navigateBack({ delta: 1 });
   },
-
-  stopPropagation() {},
 
   formatTime(date) {
     const h = String(date.getHours()).padStart(2, '0');

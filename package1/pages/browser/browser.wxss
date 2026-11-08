@@ -1,6 +1,6 @@
 .browser-page {
   min-height: 100vh;
-  background: #F2F3F7;
+  background: #F9F4EB;
   display: flex;
   flex-direction: column;
   padding-bottom: 120rpx;
@@ -86,7 +86,7 @@
 .progress-fill {
   height: 100%;
   width: 40%;
-  background: linear-gradient(90deg, #5B7FFF, #818CF8);
+  background: linear-gradient(90deg, #C0553D, #818CF8);
   animation: progress 1.5s ease-in-out infinite;
 }
 
@@ -115,7 +115,7 @@
   width: 16rpx;
   height: 16rpx;
   border-radius: 50%;
-  background: #5B7FFF;
+  background: #C0553D;
   animation: dotBounce 1.4s ease-in-out infinite;
 }
 
@@ -172,7 +172,7 @@
 .error-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
   margin-bottom: 12rpx;
 }
 
@@ -195,7 +195,7 @@
   align-items: center;
   gap: 8rpx;
   padding: 18rpx 36rpx;
-  background: linear-gradient(135deg, #5B7FFF, #3D5FD9);
+  background: linear-gradient(135deg, #C0553D, #3D5FD9);
   color: white;
   font-size: 26rpx;
   border-radius: 36rpx;
@@ -208,8 +208,8 @@
 
 .error-btn-outline {
   background: transparent;
-  color: #5B7FFF;
-  border: 2rpx solid #5B7FFF;
+  color: #C0553D;
+  border: 2rpx solid #C0553D;
   box-shadow: none;
 }
 
@@ -233,7 +233,7 @@
 
 .search-keyword {
   font-size: 26rpx;
-  color: #0D1B2A;
+  color: #2B1D18;
   font-weight: 600;
 }
 
@@ -268,7 +268,7 @@
 .search-card-index {
   font-size: 24rpx;
   font-weight: bold;
-  color: #5B7FFF;
+  color: #C0553D;
   min-width: 32rpx;
   margin-top: 2rpx;
 }
@@ -276,7 +276,7 @@
 .search-card-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #0D1B2A;
+  color: #2B1D18;
   line-height: 1.5;
   flex: 1;
 }
@@ -324,7 +324,7 @@
 .article-title {
   font-size: 40rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
   line-height: 1.4;
   display: block;
   margin-bottom: 20rpx;
@@ -369,25 +369,25 @@
 .heading-h1 {
   font-size: 36rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .heading-h2 {
   font-size: 34rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
 }
 
 .heading-h3 {
   font-size: 32rpx;
   font-weight: 600;
-  color: #1B3A4B;
+  color: #A8452F;
 }
 
 .heading-h4, .heading-h5, .heading-h6 {
   font-size: 30rpx;
   font-weight: 600;
-  color: #1B3A4B;
+  color: #A8452F;
 }
 
 .para-quote {
@@ -399,7 +399,7 @@
 
 .quote-bar {
   width: 6rpx;
-  background: #5B7FFF;
+  background: #C0553D;
   border-radius: 3rpx;
   flex-shrink: 0;
 }
@@ -439,7 +439,7 @@
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background: #5B7FFF;
+  background: #C0553D;
   margin-top: 18rpx;
   flex-shrink: 0;
 }
@@ -500,7 +500,7 @@
 .empty-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #0D1B2A;
+  color: #2B1D18;
   margin-bottom: 10rpx;
 }
 
@@ -516,7 +516,7 @@
 
 .empty-btn {
   padding: 18rpx 48rpx;
-  background: linear-gradient(135deg, #5B7FFF, #3D5FD9);
+  background: linear-gradient(135deg, #C0553D, #3D5FD9);
   color: white;
   font-size: 26rpx;
   border-radius: 36rpx;

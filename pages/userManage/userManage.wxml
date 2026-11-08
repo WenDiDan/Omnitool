@@ -64,7 +64,7 @@
           <view class="user-name-row">
             <text class="user-name">{{item.nickName || '微信用户'}}</text>
             <view class="role-tag role-{{item.role}}">
-              <text class="role-text">{{item.roleLabel || '用户'}}</text>
+              <text class="role-text">{{item.roleLabel || '用户'}}{{item.vipStatus}}</text>
             </view>
             <view class="current-tag" wx:if="{{item.isCurrentUser}}">
               <text class="current-tag-text">本机</text>
@@ -80,7 +80,7 @@
       </view>
       <view class="user-actions" wx:if="{{!item.isCurrentUser}}">
         <view class="action-row">
-          <picker mode="selector" range="{{roleOptions}}" range-key="label" bindchange="onRoleChange" data-openid="{{item.openid}}">
+          <picker mode="selector" range="{{roleOptions}}" range-key="label" value="{{item.roleIndex}}" bindchange="onRoleChange" data-openid="{{item.openid}}">
             <view class="action-btn {{item.role}}">
               <text class="action-text">修改</text>
             </view>
@@ -135,6 +135,36 @@
       <view class="modal-btns">
         <view class="modal-btn modal-cancel" bindtap="closeDeleteModal">取消</view>
         <view class="modal-btn modal-confirm danger" bindtap="confirmDelete">确认删除</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- VIP有效期选择弹窗 -->
+  <view class="modal-mask" wx:if="{{showVipPicker}}" bindtap="closeVipPicker">
+    <view class="modal-box vip-picker-box" catchtap="stopTap">
+      <view class="modal-header">
+        <view class="modal-accent-bar vip-bar"></view>
+        <text class="modal-title">选择VIP有效期</text>
+      </view>
+      <view class="vip-current-info" wx:if="{{pendingVipUser}}">
+        <text class="vip-current-label">当前用户：</text>
+        <text class="vip-current-name">{{pendingVipUser.nickName || '微信用户'}}</text>
+        <text class="vip-current-expiry" wx:if="{{pendingVipUser.vipStatus}}">（{{pendingVipUser.vipStatus}}）</text>
+      </view>
+      <view class="vip-picker-body">
+        <view class="vip-option {{item.value === 0 ? 'vip-permanent' : ''}}" 
+              wx:for="{{vipDurationOptions}}" wx:key="value" 
+              bindtap="onVipDurationSelect" data-index="{{index}}">
+          <view class="vip-option-icon">{{item.value === 0 ? '∞' : (item.value + 'M')}}</view>
+          <view class="vip-option-info">
+            <text class="vip-option-label">{{item.label}}</text>
+            <text class="vip-option-desc">{{item.value === 0 ? 'VIP永久有效，不会过期' : 'VIP有效期' + item.label}}</text>
+          </view>
+          <text class="vip-option-arrow">></text>
+        </view>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="closeVipPicker">取消</view>
       </view>
     </view>
   </view>

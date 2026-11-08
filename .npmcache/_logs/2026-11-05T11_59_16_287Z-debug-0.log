@@ -1,0 +1,1841 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.12.1
+2 info using node@v24.15.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 warn config production Use `--omit=dev` instead.
+5 silly config load:file:E:\WeChatProjects\xuexi\cloudfunctions\userManage\.npmrc
+6 silly config load:file:C:\Users\Di\.npmrc
+7 silly config load:file:C:\Program Files\nodejs\node_global\etc\npmrc
+8 verbose title npm install
+9 verbose argv "install" "--production" "--cache" "e:\\WeChatProjects\\xuexi\\.npmcache"
+10 verbose logfile logs-max:10 dir:e:\WeChatProjects\xuexi\.npmcache\_logs\2026-11-05T11_59_16_287Z-
+11 verbose logfile e:\WeChatProjects\xuexi\.npmcache\_logs\2026-11-05T11_59_16_287Z-debug-0.log
+12 silly logfile done cleaning log files
+13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+14 silly idealTree buildDeps
+15 silly fetch manifest wx-server-sdk@~2.6.3
+16 silly packumentCache full:https://registry.npmjs.org/wx-server-sdk cache-miss
+17 http cache https://registry.npmjs.org/wx-server-sdk 9ms (cache hit)
+18 silly packumentCache full:https://registry.npmjs.org/wx-server-sdk set size:428482 disposed:false
+19 silly placeDep ROOT wx-server-sdk@2.6.3 OK for: userManage@1.0.0 want: ~2.6.3
+20 silly fetch manifest tslib@^1.9.3
+21 silly packumentCache full:https://registry.npmjs.org/tslib cache-miss
+22 silly fetch manifest protobufjs@^6.8.8
+23 silly packumentCache full:https://registry.npmjs.org/protobufjs cache-miss
+24 silly fetch manifest json-bigint@^1.0.0
+25 silly packumentCache full:https://registry.npmjs.org/json-bigint cache-miss
+26 silly fetch manifest tcb-admin-node@latest
+27 silly packumentCache full:https://registry.npmjs.org/tcb-admin-node cache-miss
+28 silly fetch manifest @cloudbase/node-sdk@2.9.1
+29 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fnode-sdk cache-miss
+30 http cache https://registry.npmjs.org/protobufjs 6ms (cache hit)
+31 silly packumentCache full:https://registry.npmjs.org/protobufjs set size:785614 disposed:false
+32 http cache https://registry.npmjs.org/json-bigint 11ms (cache hit)
+33 silly packumentCache full:https://registry.npmjs.org/json-bigint set size:36963 disposed:false
+34 http cache https://registry.npmjs.org/tslib 11ms (cache hit)
+35 silly packumentCache full:https://registry.npmjs.org/tslib set size:111280 disposed:false
+36 http cache https://registry.npmjs.org/tcb-admin-node 13ms (cache hit)
+37 silly packumentCache full:https://registry.npmjs.org/tcb-admin-node set size:375720 disposed:false
+38 http cache https://registry.npmjs.org/@cloudbase%2fnode-sdk 16ms (cache hit)
+39 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fnode-sdk set size:453405 disposed:false
+40 silly placeDep ROOT @cloudbase/node-sdk@2.9.1 OK for: wx-server-sdk@2.6.3 want: 2.9.1
+41 silly placeDep ROOT json-bigint@1.0.0 OK for: wx-server-sdk@2.6.3 want: ^1.0.0
+42 silly placeDep ROOT protobufjs@6.11.6 OK for: wx-server-sdk@2.6.3 want: ^6.8.8
+43 silly placeDep ROOT tcb-admin-node@1.23.0 OK for: wx-server-sdk@2.6.3 want: latest
+44 silly placeDep ROOT tslib@1.14.1 OK for: wx-server-sdk@2.6.3 want: ^1.9.3
+45 silly fetch manifest axios@^0.21.1
+46 silly packumentCache full:https://registry.npmjs.org/axios cache-miss
+47 silly fetch manifest retry@^0.12.0
+48 silly packumentCache full:https://registry.npmjs.org/retry cache-miss
+49 silly fetch manifest xml2js@^0.4.19
+50 silly packumentCache full:https://registry.npmjs.org/xml2js cache-miss
+51 silly fetch manifest request@^2.87.0
+52 silly packumentCache full:https://registry.npmjs.org/request cache-miss
+53 silly fetch manifest ts-node@^8.10.2
+54 silly packumentCache full:https://registry.npmjs.org/ts-node cache-miss
+55 silly fetch manifest is-regex@^1.0.4
+56 silly packumentCache full:https://registry.npmjs.org/is-regex cache-miss
+57 silly fetch manifest @types/retry@^0.12.0
+58 silly packumentCache full:https://registry.npmjs.org/@types%2fretry cache-miss
+59 silly fetch manifest jsonwebtoken@^8.5.1
+60 silly packumentCache full:https://registry.npmjs.org/jsonwebtoken cache-miss
+61 silly fetch manifest lodash.merge@^4.6.1
+62 silly packumentCache full:https://registry.npmjs.org/lodash.merge cache-miss
+63 silly fetch manifest agentkeepalive@^4.1.3
+64 silly packumentCache full:https://registry.npmjs.org/agentkeepalive cache-miss
+65 silly fetch manifest request-promise@^4.2.5
+66 silly packumentCache full:https://registry.npmjs.org/request-promise cache-miss
+67 silly fetch manifest @cloudbase/database@1.4.1
+68 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fdatabase cache-miss
+69 silly fetch manifest @cloudbase/signature-nodejs@1.0.0-beta.0
+70 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fsignature-nodejs cache-miss
+71 silly fetch manifest bignumber.js@^9.0.0
+72 silly packumentCache full:https://registry.npmjs.org/bignumber.js cache-miss
+73 silly fetch manifest long@^4.0.0
+74 silly packumentCache full:https://registry.npmjs.org/long cache-miss
+75 silly fetch manifest @types/long@^4.0.1
+76 silly packumentCache full:https://registry.npmjs.org/@types%2flong cache-miss
+77 silly fetch manifest @types/node@>=13.7.0
+78 silly packumentCache full:https://registry.npmjs.org/@types%2fnode cache-miss
+79 silly fetch manifest @protobufjs/path@^1.1.2
+80 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fpath cache-miss
+81 silly fetch manifest @protobufjs/pool@^1.1.0
+82 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fpool cache-miss
+83 silly fetch manifest @protobufjs/utf8@^1.1.0
+84 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2futf8 cache-miss
+85 silly fetch manifest @protobufjs/fetch@^1.1.0
+86 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2ffetch cache-miss
+87 silly fetch manifest @protobufjs/float@^1.0.2
+88 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2ffloat cache-miss
+89 silly fetch manifest @protobufjs/base64@^1.1.2
+90 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fbase64 cache-miss
+91 silly fetch manifest @protobufjs/codegen@^2.0.4
+92 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fcodegen cache-miss
+93 silly fetch manifest @protobufjs/inquire@^1.1.0
+94 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2finquire cache-miss
+95 silly fetch manifest @protobufjs/aspromise@^1.1.2
+96 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2faspromise cache-miss
+97 silly fetch manifest @protobufjs/eventemitter@^1.1.0
+98 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2feventemitter cache-miss
+99 silly fetch manifest @cloudbase/database@0.9.15
+100 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fdatabase cache-miss
+101 silly fetch manifest @cloudbase/signature-nodejs@^1.0.0-beta.0
+102 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fsignature-nodejs cache-miss
+103 silly fetch manifest is-regex@^1.0.4
+104 silly packumentCache full:https://registry.npmjs.org/is-regex cache-miss
+105 silly fetch manifest jsonwebtoken@^8.5.1
+106 silly packumentCache full:https://registry.npmjs.org/jsonwebtoken cache-miss
+107 http cache https://registry.npmjs.org/is-regex 23ms (cache hit)
+108 silly packumentCache full:https://registry.npmjs.org/is-regex set size:42924 disposed:false
+109 silly fetch manifest lodash.merge@^4.6.1
+110 silly packumentCache full:https://registry.npmjs.org/lodash.merge cache-miss
+111 http cache https://registry.npmjs.org/ts-node 25ms (cache hit)
+112 silly packumentCache full:https://registry.npmjs.org/ts-node set size:574573 disposed:false
+113 silly fetch manifest request@^2.87.0
+114 silly packumentCache full:https://registry.npmjs.org/request cache-miss
+115 http cache https://registry.npmjs.org/retry 27ms (cache hit)
+116 silly packumentCache full:https://registry.npmjs.org/retry set size:31161 disposed:false
+117 silly fetch manifest xml2js@^0.4.19
+118 silly packumentCache full:https://registry.npmjs.org/xml2js cache-miss
+119 http cache https://registry.npmjs.org/xml2js 28ms (cache hit)
+120 silly packumentCache full:https://registry.npmjs.org/xml2js set size:198018 disposed:false
+121 http cache https://registry.npmjs.org/request 30ms (cache hit)
+122 silly packumentCache full:https://registry.npmjs.org/request set size:307243 disposed:false
+123 http cache https://registry.npmjs.org/lodash.merge 31ms (cache hit)
+124 silly packumentCache full:https://registry.npmjs.org/lodash.merge set size:78575 disposed:false
+125 http cache https://registry.npmjs.org/jsonwebtoken 33ms (cache hit)
+126 silly packumentCache full:https://registry.npmjs.org/jsonwebtoken set size:183413 disposed:false
+127 http cache https://registry.npmjs.org/bignumber.js 34ms (cache hit)
+128 silly packumentCache full:https://registry.npmjs.org/bignumber.js set size:149332 disposed:false
+129 http cache https://registry.npmjs.org/agentkeepalive 36ms (cache hit)
+130 silly packumentCache full:https://registry.npmjs.org/agentkeepalive set size:139473 disposed:false
+131 http cache https://registry.npmjs.org/@protobufjs%2futf8 36ms (cache hit)
+132 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2futf8 set size:17318 disposed:false
+133 http cache https://registry.npmjs.org/request-promise 38ms (cache hit)
+134 silly packumentCache full:https://registry.npmjs.org/request-promise set size:127456 disposed:false
+135 http cache https://registry.npmjs.org/@types%2flong 38ms (cache hit)
+136 silly packumentCache full:https://registry.npmjs.org/@types%2flong set size:28711 disposed:false
+137 http cache https://registry.npmjs.org/axios 41ms (cache hit)
+138 silly packumentCache full:https://registry.npmjs.org/axios set size:804365 disposed:false
+139 http cache https://registry.npmjs.org/@cloudbase%2fsignature-nodejs 45ms (cache hit)
+140 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fsignature-nodejs set size:25046 disposed:false
+141 http cache https://registry.npmjs.org/@protobufjs%2fpool 44ms (cache hit)
+142 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fpool set size:10727 disposed:false
+143 http cache https://registry.npmjs.org/@protobufjs%2ffetch 44ms (cache hit)
+144 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2ffetch set size:12023 disposed:false
+145 http cache https://registry.npmjs.org/@protobufjs%2fbase64 44ms (cache hit)
+146 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fbase64 set size:14176 disposed:false
+147 http cache https://registry.npmjs.org/@types%2fretry 46ms (cache hit)
+148 silly packumentCache full:https://registry.npmjs.org/@types%2fretry set size:17042 disposed:false
+149 http cache https://registry.npmjs.org/@protobufjs%2fcodegen 44ms (cache hit)
+150 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fcodegen set size:23820 disposed:false
+151 http cache https://registry.npmjs.org/@protobufjs%2faspromise 46ms (cache hit)
+152 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2faspromise set size:11438 disposed:false
+153 http cache https://registry.npmjs.org/@cloudbase%2fdatabase 49ms (cache hit)
+154 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fdatabase set size:234154 disposed:false
+155 http cache https://registry.npmjs.org/@protobufjs%2ffloat 49ms (cache hit)
+156 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2ffloat set size:9957 disposed:false
+157 http cache https://registry.npmjs.org/@protobufjs%2finquire 48ms (cache hit)
+158 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2finquire set size:10538 disposed:false
+159 http cache https://registry.npmjs.org/long 50ms (cache hit)
+160 silly packumentCache full:https://registry.npmjs.org/long set size:80704 disposed:false
+161 http cache https://registry.npmjs.org/@protobufjs%2fpath 51ms (cache hit)
+162 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2fpath set size:10241 disposed:false
+163 http cache https://registry.npmjs.org/@protobufjs%2feventemitter 50ms (cache hit)
+164 silly packumentCache full:https://registry.npmjs.org/@protobufjs%2feventemitter set size:13173 disposed:false
+165 http cache https://registry.npmjs.org/@cloudbase%2fsignature-nodejs 51ms (cache hit)
+166 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fsignature-nodejs set size:25046 disposed:false
+167 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fsignature-nodejs dispose
+168 http cache https://registry.npmjs.org/@cloudbase%2fdatabase 51ms (cache hit)
+169 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fdatabase set size:234154 disposed:false
+170 silly packumentCache full:https://registry.npmjs.org/@cloudbase%2fdatabase dispose
+171 http cache https://registry.npmjs.org/jsonwebtoken 53ms (cache hit)
+172 silly packumentCache full:https://registry.npmjs.org/jsonwebtoken set size:183413 disposed:false
+173 silly packumentCache full:https://registry.npmjs.org/jsonwebtoken dispose
+174 http cache https://registry.npmjs.org/is-regex 54ms (cache hit)
+175 silly packumentCache full:https://registry.npmjs.org/is-regex set size:42924 disposed:false
+176 silly packumentCache full:https://registry.npmjs.org/is-regex dispose
+177 http cache https://registry.npmjs.org/@types%2fnode 69ms (cache hit)
+178 silly packumentCache full:https://registry.npmjs.org/@types%2fnode set size:11183996 disposed:false
+179 http cache https://registry.npmjs.org/request 82ms (cache hit)
+180 silly packumentCache full:https://registry.npmjs.org/request set size:307243 disposed:false
+181 silly packumentCache full:https://registry.npmjs.org/request dispose
+182 http cache https://registry.npmjs.org/lodash.merge 87ms (cache hit)
+183 silly packumentCache full:https://registry.npmjs.org/lodash.merge set size:78575 disposed:false
+184 silly packumentCache full:https://registry.npmjs.org/lodash.merge dispose
+185 http cache https://registry.npmjs.org/xml2js 84ms (cache hit)
+186 silly packumentCache full:https://registry.npmjs.org/xml2js set size:198018 disposed:false
+187 silly packumentCache full:https://registry.npmjs.org/xml2js dispose
+188 silly fetch manifest typescript@>=2.7
+189 silly packumentCache full:https://registry.npmjs.org/typescript cache-miss
+190 http cache https://registry.npmjs.org/typescript 23ms (cache hit)
+191 silly packumentCache full:https://registry.npmjs.org/typescript set size:15894727 disposed:false
+192 silly placeDep ROOT @cloudbase/database@1.4.1 OK for: @cloudbase/node-sdk@2.9.1 want: 1.4.1
+193 silly placeDep ROOT @cloudbase/signature-nodejs@1.0.0-beta.0 OK for: @cloudbase/node-sdk@2.9.1 want: 1.0.0-beta.0
+194 silly placeDep ROOT @types/retry@0.12.5 OK for: @cloudbase/node-sdk@2.9.1 want: ^0.12.0
+195 silly placeDep ROOT agentkeepalive@4.6.0 OK for: @cloudbase/node-sdk@2.9.1 want: ^4.1.3
+196 silly placeDep ROOT axios@0.21.4 OK for: @cloudbase/node-sdk@2.9.1 want: ^0.21.1
+197 silly placeDep ROOT is-regex@1.2.1 OK for: @cloudbase/node-sdk@2.9.1 want: ^1.0.4
+198 silly placeDep ROOT jsonwebtoken@8.5.1 OK for: @cloudbase/node-sdk@2.9.1 want: ^8.5.1
+199 silly placeDep ROOT lodash.merge@4.6.2 OK for: @cloudbase/node-sdk@2.9.1 want: ^4.6.1
+200 silly placeDep ROOT request@2.88.2 OK for: @cloudbase/node-sdk@2.9.1 want: ^2.87.0
+201 silly placeDep ROOT request-promise@4.2.6 OK for: @cloudbase/node-sdk@2.9.1 want: ^4.2.5
+202 silly placeDep ROOT retry@0.12.0 OK for: @cloudbase/node-sdk@2.9.1 want: ^0.12.0
+203 silly placeDep ROOT ts-node@8.10.2 OK for: @cloudbase/node-sdk@2.9.1 want: ^8.10.2
+204 silly placeDep ROOT typescript@7.0.2 OK for: ts-node@8.10.2 want: >=2.7
+205 silly placeDep ROOT xml2js@0.4.23 OK for: @cloudbase/node-sdk@2.9.1 want: ^0.4.19
+206 silly fetch manifest bson@^4.0.3
+207 silly packumentCache full:https://registry.npmjs.org/bson cache-miss
+208 silly fetch manifest lodash.set@4.3.2
+209 silly packumentCache full:https://registry.npmjs.org/lodash.set cache-miss
+210 silly fetch manifest lodash.unset@4.5.2
+211 silly packumentCache full:https://registry.npmjs.org/lodash.unset cache-miss
+212 silly fetch manifest lodash.clonedeep@4.5.0
+213 silly packumentCache full:https://registry.npmjs.org/lodash.clonedeep cache-miss
+214 silly fetch manifest url@^0.11.0
+215 silly packumentCache full:https://registry.npmjs.org/url cache-miss
+216 silly fetch manifest clone@^2.1.2
+217 silly packumentCache full:https://registry.npmjs.org/clone cache-miss
+218 silly fetch manifest is-stream@^2.0.0
+219 silly packumentCache full:https://registry.npmjs.org/is-stream cache-miss
+220 silly fetch manifest @types/clone@^0.1.30
+221 silly packumentCache full:https://registry.npmjs.org/@types%2fclone cache-miss
+222 silly fetch manifest humanize-ms@^1.2.1
+223 silly packumentCache full:https://registry.npmjs.org/humanize-ms cache-miss
+224 silly fetch manifest follow-redirects@^1.14.0
+225 silly packumentCache full:https://registry.npmjs.org/follow-redirects cache-miss
+226 silly fetch manifest call-bound@^1.0.2
+227 silly packumentCache full:https://registry.npmjs.org/call-bound cache-miss
+228 silly fetch manifest gopd@^1.2.0
+229 silly packumentCache full:https://registry.npmjs.org/gopd cache-miss
+230 silly fetch manifest has-tostringtag@^1.0.2
+231 silly packumentCache full:https://registry.npmjs.org/has-tostringtag cache-miss
+232 silly fetch manifest hasown@^2.0.2
+233 silly packumentCache full:https://registry.npmjs.org/hasown cache-miss
+234 silly fetch manifest ms@^2.1.1
+235 silly packumentCache full:https://registry.npmjs.org/ms cache-miss
+236 silly fetch manifest jws@^3.2.2
+237 silly packumentCache full:https://registry.npmjs.org/jws cache-miss
+238 silly fetch manifest semver@^5.6.0
+239 silly packumentCache full:https://registry.npmjs.org/semver cache-miss
+240 silly fetch manifest lodash.once@^4.0.0
+241 silly packumentCache full:https://registry.npmjs.org/lodash.once cache-miss
+242 silly fetch manifest lodash.includes@^4.3.0
+243 silly packumentCache full:https://registry.npmjs.org/lodash.includes cache-miss
+244 silly fetch manifest lodash.isnumber@^3.0.3
+245 silly packumentCache full:https://registry.npmjs.org/lodash.isnumber cache-miss
+246 silly fetch manifest lodash.isstring@^4.0.1
+247 silly packumentCache full:https://registry.npmjs.org/lodash.isstring cache-miss
+248 silly fetch manifest lodash.isboolean@^3.0.3
+249 silly packumentCache full:https://registry.npmjs.org/lodash.isboolean cache-miss
+250 silly fetch manifest lodash.isinteger@^4.0.4
+251 silly packumentCache full:https://registry.npmjs.org/lodash.isinteger cache-miss
+252 silly fetch manifest lodash.isplainobject@^4.0.6
+253 silly packumentCache full:https://registry.npmjs.org/lodash.isplainobject cache-miss
+254 silly fetch manifest qs@~6.5.2
+255 silly packumentCache full:https://registry.npmjs.org/qs cache-miss
+256 silly fetch manifest aws4@^1.8.0
+257 silly packumentCache full:https://registry.npmjs.org/aws4 cache-miss
+258 silly fetch manifest uuid@^3.3.2
+259 silly packumentCache full:https://registry.npmjs.org/uuid cache-miss
+260 silly fetch manifest extend@~3.0.2
+261 silly packumentCache full:https://registry.npmjs.org/extend cache-miss
+262 silly fetch manifest caseless@~0.12.0
+263 silly packumentCache full:https://registry.npmjs.org/caseless cache-miss
+264 silly fetch manifest isstream@~0.1.2
+265 silly packumentCache full:https://registry.npmjs.org/isstream cache-miss
+266 silly fetch manifest aws-sign2@~0.7.0
+267 silly packumentCache full:https://registry.npmjs.org/aws-sign2 cache-miss
+268 http cache https://registry.npmjs.org/@types%2fclone 22ms (cache hit)
+269 silly packumentCache full:https://registry.npmjs.org/@types%2fclone set size:25084 disposed:false
+270 silly fetch manifest form-data@~2.3.2
+271 silly packumentCache full:https://registry.npmjs.org/form-data cache-miss
+272 http cache https://registry.npmjs.org/url 23ms (cache hit)
+273 silly packumentCache full:https://registry.npmjs.org/url set size:22027 disposed:false
+274 silly fetch manifest mime-types@~2.1.19
+275 silly packumentCache full:https://registry.npmjs.org/mime-types cache-miss
+276 http cache https://registry.npmjs.org/follow-redirects 24ms (cache hit)
+277 silly packumentCache full:https://registry.npmjs.org/follow-redirects set size:194627 disposed:false
+278 silly fetch manifest oauth-sign@~0.9.0
+279 silly packumentCache full:https://registry.npmjs.org/oauth-sign cache-miss
+280 http cache https://registry.npmjs.org/lodash.set 27ms (cache hit)
+281 silly packumentCache full:https://registry.npmjs.org/lodash.set set size:24464 disposed:false
+282 silly fetch manifest safe-buffer@^5.1.2
+283 silly packumentCache full:https://registry.npmjs.org/safe-buffer cache-miss
+284 http cache https://registry.npmjs.org/clone 27ms (cache hit)
+285 silly packumentCache full:https://registry.npmjs.org/clone set size:82973 disposed:false
+286 silly fetch manifest tough-cookie@~2.5.0
+287 silly packumentCache full:https://registry.npmjs.org/tough-cookie cache-miss
+288 http cache https://registry.npmjs.org/lodash.clonedeep 28ms (cache hit)
+289 silly packumentCache full:https://registry.npmjs.org/lodash.clonedeep set size:48192 disposed:false
+290 silly fetch manifest tunnel-agent@^0.6.0
+291 silly packumentCache full:https://registry.npmjs.org/tunnel-agent cache-miss
+292 http cache https://registry.npmjs.org/gopd 28ms (cache hit)
+293 silly packumentCache full:https://registry.npmjs.org/gopd set size:11483 disposed:false
+294 silly fetch manifest forever-agent@~0.6.1
+295 silly packumentCache full:https://registry.npmjs.org/forever-agent cache-miss
+296 http cache https://registry.npmjs.org/call-bound 29ms (cache hit)
+297 silly packumentCache full:https://registry.npmjs.org/call-bound set size:15317 disposed:false
+298 silly fetch manifest har-validator@~5.1.3
+299 silly packumentCache full:https://registry.npmjs.org/har-validator cache-miss
+300 http cache https://registry.npmjs.org/has-tostringtag 29ms (cache hit)
+301 silly packumentCache full:https://registry.npmjs.org/has-tostringtag set size:13945 disposed:false
+302 silly fetch manifest is-typedarray@~1.0.0
+303 silly packumentCache full:https://registry.npmjs.org/is-typedarray cache-miss
+304 http cache https://registry.npmjs.org/lodash.unset 31ms (cache hit)
+305 silly packumentCache full:https://registry.npmjs.org/lodash.unset set size:29990 disposed:false
+306 silly fetch manifest http-signature@~1.2.0
+307 silly packumentCache full:https://registry.npmjs.org/http-signature cache-miss
+308 http cache https://registry.npmjs.org/is-stream 31ms (cache hit)
+309 silly packumentCache full:https://registry.npmjs.org/is-stream set size:18582 disposed:false
+310 silly fetch manifest combined-stream@~1.0.6
+311 silly packumentCache full:https://registry.npmjs.org/combined-stream cache-miss
+312 http cache https://registry.npmjs.org/ms 30ms (cache hit)
+313 silly packumentCache full:https://registry.npmjs.org/ms set size:92208 disposed:false
+314 silly fetch manifest performance-now@^2.1.0
+315 silly packumentCache full:https://registry.npmjs.org/performance-now cache-miss
+316 http cache https://registry.npmjs.org/lodash.isnumber 31ms (cache hit)
+317 silly packumentCache full:https://registry.npmjs.org/lodash.isnumber set size:21368 disposed:false
+318 silly fetch manifest json-stringify-safe@~5.0.1
+319 silly packumentCache full:https://registry.npmjs.org/json-stringify-safe cache-miss
+320 http cache https://registry.npmjs.org/jws 32ms (cache hit)
+321 silly packumentCache full:https://registry.npmjs.org/jws set size:48740 disposed:false
+322 silly fetch manifest bluebird@^3.5.0
+323 silly packumentCache full:https://registry.npmjs.org/bluebird cache-miss
+324 http cache https://registry.npmjs.org/humanize-ms 34ms (cache hit)
+325 silly packumentCache full:https://registry.npmjs.org/humanize-ms set size:12275 disposed:false
+326 silly fetch manifest tough-cookie@^2.3.3
+327 silly packumentCache full:https://registry.npmjs.org/tough-cookie cache-miss
+328 http cache https://registry.npmjs.org/lodash.includes 33ms (cache hit)
+329 silly packumentCache full:https://registry.npmjs.org/lodash.includes set size:27594 disposed:false
+330 silly fetch manifest stealthy-require@^1.1.1
+331 silly packumentCache full:https://registry.npmjs.org/stealthy-require cache-miss
+332 http cache https://registry.npmjs.org/hasown 34ms (cache hit)
+333 silly packumentCache full:https://registry.npmjs.org/hasown set size:18314 disposed:false
+334 silly fetch manifest request-promise-core@1.1.4
+335 silly packumentCache full:https://registry.npmjs.org/request-promise-core cache-miss
+336 http cache https://registry.npmjs.org/lodash.isstring 34ms (cache hit)
+337 silly packumentCache full:https://registry.npmjs.org/lodash.isstring set size:21368 disposed:false
+338 silly fetch manifest yn@3.1.1
+339 silly packumentCache full:https://registry.npmjs.org/yn cache-miss
+340 http cache https://registry.npmjs.org/lodash.isboolean 35ms (cache hit)
+341 silly packumentCache full:https://registry.npmjs.org/lodash.isboolean set size:21437 disposed:false
+342 silly fetch manifest arg@^4.1.0
+343 silly packumentCache full:https://registry.npmjs.org/arg cache-miss
+344 http cache https://registry.npmjs.org/lodash.once 35ms (cache hit)
+345 silly packumentCache full:https://registry.npmjs.org/lodash.once set size:23407 disposed:false
+346 silly fetch manifest diff@^4.0.1
+347 silly packumentCache full:https://registry.npmjs.org/diff cache-miss
+348 http cache https://registry.npmjs.org/lodash.isplainobject 35ms (cache hit)
+349 silly packumentCache full:https://registry.npmjs.org/lodash.isplainobject set size:38531 disposed:false
+350 silly fetch manifest make-error@^1.1.1
+351 silly packumentCache full:https://registry.npmjs.org/make-error cache-miss
+352 http cache https://registry.npmjs.org/semver 37ms (cache hit)
+353 silly packumentCache full:https://registry.npmjs.org/semver set size:227320 disposed:false
+354 silly fetch manifest source-map-support@^0.5.17
+355 silly packumentCache full:https://registry.npmjs.org/source-map-support cache-miss
+356 http cache https://registry.npmjs.org/extend 37ms (cache hit)
+357 silly packumentCache full:https://registry.npmjs.org/extend set size:25974 disposed:false
+358 silly fetch manifest @typescript/typescript-aix-ppc64@7.0.2
+359 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-aix-ppc64 cache-miss
+360 http cache https://registry.npmjs.org/aws4 38ms (cache hit)
+361 silly packumentCache full:https://registry.npmjs.org/aws4 set size:141900 disposed:false
+362 silly fetch manifest @typescript/typescript-linux-arm@7.0.2
+363 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-arm cache-miss
+364 http cache https://registry.npmjs.org/qs 40ms (cache hit)
+365 silly packumentCache full:https://registry.npmjs.org/qs set size:397169 disposed:false
+366 silly fetch manifest @typescript/typescript-linux-x64@7.0.2
+367 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-x64 cache-miss
+368 http cache https://registry.npmjs.org/bson 46ms (cache hit)
+369 silly packumentCache full:https://registry.npmjs.org/bson set size:600315 disposed:false
+370 silly fetch manifest @typescript/typescript-sunos-x64@7.0.2
+371 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-sunos-x64 cache-miss
+372 http cache https://registry.npmjs.org/uuid 47ms (cache hit)
+373 silly packumentCache full:https://registry.npmjs.org/uuid set size:265730 disposed:false
+374 silly fetch manifest @typescript/typescript-win32-x64@7.0.2
+375 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-win32-x64 cache-miss
+376 http cache https://registry.npmjs.org/lodash.isinteger 50ms (cache hit)
+377 silly packumentCache full:https://registry.npmjs.org/lodash.isinteger set size:10827 disposed:false
+378 silly fetch manifest @typescript/typescript-darwin-x64@7.0.2
+379 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-darwin-x64 cache-miss
+380 http cache https://registry.npmjs.org/caseless 50ms (cache hit)
+381 silly packumentCache full:https://registry.npmjs.org/caseless set size:17911 disposed:false
+382 silly fetch manifest @typescript/typescript-netbsd-x64@7.0.2
+383 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-netbsd-x64 cache-miss
+384 http cache https://registry.npmjs.org/aws-sign2 51ms (cache hit)
+385 silly packumentCache full:https://registry.npmjs.org/aws-sign2 set size:6079 disposed:false
+386 silly fetch manifest @typescript/typescript-freebsd-x64@7.0.2
+387 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-freebsd-x64 cache-miss
+388 http cache https://registry.npmjs.org/isstream 52ms (cache hit)
+389 silly packumentCache full:https://registry.npmjs.org/isstream set size:9114 disposed:false
+390 silly fetch manifest @typescript/typescript-linux-arm64@7.0.2
+391 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-arm64 cache-miss
+392 http cache https://registry.npmjs.org/mime-types 49ms (cache hit)
+393 silly packumentCache full:https://registry.npmjs.org/mime-types set size:139110 disposed:false
+394 silly fetch manifest @typescript/typescript-linux-ppc64@7.0.2
+395 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-ppc64 cache-miss
+396 http cache https://registry.npmjs.org/safe-buffer 48ms (cache hit)
+397 silly packumentCache full:https://registry.npmjs.org/safe-buffer set size:41183 disposed:false
+398 silly fetch manifest @typescript/typescript-linux-s390x@7.0.2
+399 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-s390x cache-miss
+400 http cache https://registry.npmjs.org/oauth-sign 49ms (cache hit)
+401 silly packumentCache full:https://registry.npmjs.org/oauth-sign set size:15915 disposed:false
+402 silly fetch manifest @typescript/typescript-openbsd-x64@7.0.2
+403 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-openbsd-x64 cache-miss
+404 http cache https://registry.npmjs.org/forever-agent 46ms (cache hit)
+405 silly packumentCache full:https://registry.npmjs.org/forever-agent set size:10023 disposed:false
+406 silly fetch manifest @typescript/typescript-win32-arm64@7.0.2
+407 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-win32-arm64 cache-miss
+408 http cache https://registry.npmjs.org/performance-now 44ms (cache hit)
+409 silly packumentCache full:https://registry.npmjs.org/performance-now set size:19893 disposed:false
+410 silly fetch manifest @typescript/typescript-darwin-arm64@7.0.2
+411 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-darwin-arm64 cache-miss
+412 http cache https://registry.npmjs.org/tunnel-agent 48ms (cache hit)
+413 silly packumentCache full:https://registry.npmjs.org/tunnel-agent set size:12847 disposed:false
+414 silly fetch manifest @typescript/typescript-netbsd-arm64@7.0.2
+415 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-netbsd-arm64 cache-miss
+416 http cache https://registry.npmjs.org/http-signature 46ms (cache hit)
+417 silly packumentCache full:https://registry.npmjs.org/http-signature set size:58675 disposed:false
+418 silly fetch manifest @typescript/typescript-freebsd-arm64@7.0.2
+419 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-freebsd-arm64 cache-miss
+420 http cache https://registry.npmjs.org/form-data 55ms (cache hit)
+421 silly packumentCache full:https://registry.npmjs.org/form-data set size:153174 disposed:false
+422 silly fetch manifest @typescript/typescript-linux-loong64@7.0.2
+423 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-loong64 cache-miss
+424 http cache https://registry.npmjs.org/tough-cookie 51ms (cache hit)
+425 silly packumentCache full:https://registry.npmjs.org/tough-cookie set size:152921 disposed:false
+426 silly fetch manifest @typescript/typescript-linux-riscv64@7.0.2
+427 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-riscv64 cache-miss
+428 http cache https://registry.npmjs.org/stealthy-require 45ms (cache hit)
+429 silly packumentCache full:https://registry.npmjs.org/stealthy-require set size:16828 disposed:false
+430 silly fetch manifest @typescript/typescript-openbsd-arm64@7.0.2
+431 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-openbsd-arm64 cache-miss
+432 http cache https://registry.npmjs.org/is-typedarray 51ms (cache hit)
+433 silly packumentCache full:https://registry.npmjs.org/is-typedarray set size:3992 disposed:false
+434 silly fetch manifest @typescript/typescript-linux-mips64el@7.0.2
+435 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-mips64el cache-miss
+436 http cache https://registry.npmjs.org/har-validator 53ms (cache hit)
+437 silly packumentCache full:https://registry.npmjs.org/har-validator set size:122031 disposed:false
+438 silly fetch manifest sax@>=0.6.0
+439 silly packumentCache full:https://registry.npmjs.org/sax cache-miss
+440 http cache https://registry.npmjs.org/combined-stream 52ms (cache hit)
+441 silly packumentCache full:https://registry.npmjs.org/combined-stream set size:40337 disposed:false
+442 silly fetch manifest xmlbuilder@~11.0.0
+443 silly packumentCache full:https://registry.npmjs.org/xmlbuilder cache-miss
+444 http cache https://registry.npmjs.org/json-stringify-safe 51ms (cache hit)
+445 silly packumentCache full:https://registry.npmjs.org/json-stringify-safe set size:8806 disposed:false
+446 http cache https://registry.npmjs.org/yn 48ms (cache hit)
+447 silly packumentCache full:https://registry.npmjs.org/yn set size:23572 disposed:false
+448 http cache https://registry.npmjs.org/tough-cookie 51ms (cache hit)
+449 silly packumentCache full:https://registry.npmjs.org/tough-cookie set size:152921 disposed:false
+450 silly packumentCache full:https://registry.npmjs.org/tough-cookie dispose
+451 http cache https://registry.npmjs.org/arg 50ms (cache hit)
+452 silly packumentCache full:https://registry.npmjs.org/arg set size:67036 disposed:false
+453 http cache https://registry.npmjs.org/request-promise-core 51ms (cache hit)
+454 silly packumentCache full:https://registry.npmjs.org/request-promise-core set size:18969 disposed:false
+455 http cache https://registry.npmjs.org/bluebird 53ms (cache hit)
+456 silly packumentCache full:https://registry.npmjs.org/bluebird set size:490988 disposed:false
+457 http cache https://registry.npmjs.org/diff 52ms (cache hit)
+458 silly packumentCache full:https://registry.npmjs.org/diff set size:154400 disposed:false
+459 http cache https://registry.npmjs.org/make-error 53ms (cache hit)
+460 silly packumentCache full:https://registry.npmjs.org/make-error set size:45218 disposed:false
+461 http cache https://registry.npmjs.org/source-map-support 52ms (cache hit)
+462 silly packumentCache full:https://registry.npmjs.org/source-map-support set size:125488 disposed:false
+463 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-arm 51ms (cache hit)
+464 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-arm set size:306542 disposed:false
+465 http cache https://registry.npmjs.org/@typescript%2ftypescript-aix-ppc64 53ms (cache hit)
+466 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-aix-ppc64 set size:8587 disposed:false
+467 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-x64 49ms (cache hit)
+468 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-x64 set size:314275 disposed:false
+469 http cache https://registry.npmjs.org/@typescript%2ftypescript-win32-x64 43ms (cache hit)
+470 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-win32-x64 set size:311759 disposed:false
+471 http cache https://registry.npmjs.org/@typescript%2ftypescript-netbsd-x64 43ms (cache hit)
+472 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-netbsd-x64 set size:8610 disposed:false
+473 http cache https://registry.npmjs.org/@typescript%2ftypescript-sunos-x64 47ms (cache hit)
+474 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-sunos-x64 set size:8585 disposed:false
+475 http cache https://registry.npmjs.org/@typescript%2ftypescript-darwin-x64 45ms (cache hit)
+476 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-darwin-x64 set size:307478 disposed:false
+477 http cache https://registry.npmjs.org/@typescript%2ftypescript-freebsd-x64 44ms (cache hit)
+478 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-freebsd-x64 set size:8639 disposed:false
+479 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-arm64 45ms (cache hit)
+480 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-arm64 set size:315963 disposed:false
+481 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-riscv64 26ms (cache hit)
+482 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-riscv64 set size:8691 disposed:false
+483 http cache https://registry.npmjs.org/@typescript%2ftypescript-freebsd-arm64 30ms (cache hit)
+484 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-freebsd-arm64 set size:8689 disposed:false
+485 http cache https://registry.npmjs.org/@typescript%2ftypescript-openbsd-arm64 26ms (cache hit)
+486 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-openbsd-arm64 set size:8689 disposed:false
+487 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-mips64el 26ms (cache hit)
+488 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-mips64el set size:8715 disposed:false
+489 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-ppc64 33ms (cache hit)
+490 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-ppc64 set size:8639 disposed:false
+491 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-s390x 33ms (cache hit)
+492 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-s390x set size:8637 disposed:false
+493 http cache https://registry.npmjs.org/@typescript%2ftypescript-openbsd-x64 32ms (cache hit)
+494 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-openbsd-x64 set size:8637 disposed:false
+495 http cache https://registry.npmjs.org/@typescript%2ftypescript-netbsd-arm64 31ms (cache hit)
+496 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-netbsd-arm64 set size:8666 disposed:false
+497 http cache https://registry.npmjs.org/sax 25ms (cache hit)
+498 silly packumentCache full:https://registry.npmjs.org/sax set size:92982 disposed:false
+499 http cache https://registry.npmjs.org/@typescript%2ftypescript-win32-arm64 33ms (cache hit)
+500 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-win32-arm64 set size:307393 disposed:false
+501 http cache https://registry.npmjs.org/@typescript%2ftypescript-linux-loong64 31ms (cache hit)
+502 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-linux-loong64 set size:8691 disposed:false
+503 http cache https://registry.npmjs.org/xmlbuilder 27ms (cache hit)
+504 silly packumentCache full:https://registry.npmjs.org/xmlbuilder set size:158707 disposed:false
+505 http cache https://registry.npmjs.org/@typescript%2ftypescript-darwin-arm64 36ms (cache hit)
+506 silly packumentCache full:https://registry.npmjs.org/@typescript%2ftypescript-darwin-arm64 set size:315707 disposed:false
+507 silly placeDep ROOT bson@4.7.2 OK for: @cloudbase/database@1.4.1 want: ^4.0.3
+508 silly placeDep ROOT lodash.clonedeep@4.5.0 OK for: @cloudbase/database@1.4.1 want: 4.5.0
+509 silly placeDep ROOT lodash.set@4.3.2 OK for: @cloudbase/database@1.4.1 want: 4.3.2
+510 silly placeDep ROOT lodash.unset@4.5.2 OK for: @cloudbase/database@1.4.1 want: 4.5.2
+511 silly fetch manifest buffer@^5.6.0
+512 silly packumentCache full:https://registry.npmjs.org/buffer cache-miss
+513 http cache https://registry.npmjs.org/buffer 2ms (cache hit)
+514 silly packumentCache full:https://registry.npmjs.org/buffer set size:280480 disposed:false
+515 silly placeDep ROOT @types/clone@0.1.30 OK for: @cloudbase/signature-nodejs@1.0.0-beta.0 want: ^0.1.30
+516 silly placeDep ROOT clone@2.1.2 OK for: @cloudbase/signature-nodejs@1.0.0-beta.0 want: ^2.1.2
+517 silly placeDep ROOT is-stream@2.0.1 OK for: @cloudbase/signature-nodejs@1.0.0-beta.0 want: ^2.0.0
+518 silly placeDep ROOT url@0.11.4 OK for: @cloudbase/signature-nodejs@1.0.0-beta.0 want: ^0.11.0
+519 silly fetch manifest qs@^6.12.3
+520 silly packumentCache full:https://registry.npmjs.org/qs cache-hit
+521 silly fetch manifest punycode@^1.4.1
+522 silly packumentCache full:https://registry.npmjs.org/punycode cache-miss
+523 http cache https://registry.npmjs.org/punycode 2ms (cache hit)
+524 silly packumentCache full:https://registry.npmjs.org/punycode set size:61278 disposed:false
+525 silly placeDep ROOT humanize-ms@1.2.1 OK for: agentkeepalive@4.6.0 want: ^1.2.1
+526 silly fetch manifest ms@^2.0.0
+527 silly packumentCache full:https://registry.npmjs.org/ms cache-hit
+528 silly placeDep ROOT follow-redirects@1.16.2 OK for: axios@0.21.4 want: ^1.14.0
+529 silly placeDep ROOT buffer@5.7.1 OK for: bson@4.7.2 want: ^5.6.0
+530 silly fetch manifest base64-js@^1.3.1
+531 silly packumentCache full:https://registry.npmjs.org/base64-js cache-miss
+532 silly fetch manifest ieee754@^1.1.13
+533 silly packumentCache full:https://registry.npmjs.org/ieee754 cache-miss
+534 http cache https://registry.npmjs.org/base64-js 3ms (cache hit)
+535 silly packumentCache full:https://registry.npmjs.org/base64-js set size:41270 disposed:false
+536 http cache https://registry.npmjs.org/ieee754 4ms (cache hit)
+537 silly packumentCache full:https://registry.npmjs.org/ieee754 set size:34910 disposed:false
+538 silly placeDep ROOT base64-js@1.5.1 OK for: buffer@5.7.1 want: ^1.3.1
+539 silly placeDep ROOT ieee754@1.2.1 OK for: buffer@5.7.1 want: ^1.1.13
+540 silly placeDep ROOT ms@2.1.3 OK for: humanize-ms@1.2.1 want: ^2.0.0
+541 silly placeDep ROOT call-bound@1.0.4 OK for: is-regex@1.2.1 want: ^1.0.2
+542 silly placeDep ROOT gopd@1.2.0 OK for: is-regex@1.2.1 want: ^1.2.0
+543 silly placeDep ROOT has-tostringtag@1.0.2 OK for: is-regex@1.2.1 want: ^1.0.2
+544 silly placeDep ROOT hasown@2.0.4 OK for: is-regex@1.2.1 want: ^2.0.2
+545 silly fetch manifest call-bind-apply-helpers@^1.0.2
+546 silly packumentCache full:https://registry.npmjs.org/call-bind-apply-helpers cache-miss
+547 silly fetch manifest get-intrinsic@^1.3.0
+548 silly packumentCache full:https://registry.npmjs.org/get-intrinsic cache-miss
+549 silly fetch manifest has-symbols@^1.0.3
+550 silly packumentCache full:https://registry.npmjs.org/has-symbols cache-miss
+551 silly fetch manifest function-bind@^1.1.2
+552 silly packumentCache full:https://registry.npmjs.org/function-bind cache-miss
+553 http cache https://registry.npmjs.org/has-symbols 7ms (cache hit)
+554 silly packumentCache full:https://registry.npmjs.org/has-symbols set size:21550 disposed:false
+555 http cache https://registry.npmjs.org/call-bind-apply-helpers 8ms (cache hit)
+556 silly packumentCache full:https://registry.npmjs.org/call-bind-apply-helpers set size:12744 disposed:false
+557 http cache https://registry.npmjs.org/get-intrinsic 8ms (cache hit)
+558 silly packumentCache full:https://registry.npmjs.org/get-intrinsic set size:60985 disposed:false
+559 http cache https://registry.npmjs.org/function-bind 8ms (cache hit)
+560 silly packumentCache full:https://registry.npmjs.org/function-bind set size:15733 disposed:false
+561 silly placeDep ROOT call-bind-apply-helpers@1.0.2 OK for: call-bound@1.0.4 want: ^1.0.2
+562 silly placeDep ROOT get-intrinsic@1.3.0 OK for: call-bound@1.0.4 want: ^1.3.0
+563 silly fetch manifest es-errors@^1.3.0
+564 silly packumentCache full:https://registry.npmjs.org/es-errors cache-miss
+565 silly fetch manifest es-errors@^1.3.0
+566 silly packumentCache full:https://registry.npmjs.org/es-errors cache-miss
+567 silly fetch manifest get-proto@^1.0.1
+568 silly packumentCache full:https://registry.npmjs.org/get-proto cache-miss
+569 silly fetch manifest has-symbols@^1.1.0
+570 silly packumentCache full:https://registry.npmjs.org/has-symbols cache-hit
+571 silly fetch manifest es-object-atoms@^1.1.1
+572 silly packumentCache full:https://registry.npmjs.org/es-object-atoms cache-miss
+573 silly fetch manifest math-intrinsics@^1.1.0
+574 silly packumentCache full:https://registry.npmjs.org/math-intrinsics cache-miss
+575 silly fetch manifest es-define-property@^1.0.1
+576 silly packumentCache full:https://registry.npmjs.org/es-define-property cache-miss
+577 http cache https://registry.npmjs.org/get-proto 4ms (cache hit)
+578 silly packumentCache full:https://registry.npmjs.org/get-proto set size:8300 disposed:false
+579 http cache https://registry.npmjs.org/es-object-atoms 5ms (cache hit)
+580 silly packumentCache full:https://registry.npmjs.org/es-object-atoms set size:18278 disposed:false
+581 http cache https://registry.npmjs.org/math-intrinsics 5ms (cache hit)
+582 silly packumentCache full:https://registry.npmjs.org/math-intrinsics set size:9265 disposed:false
+583 http cache https://registry.npmjs.org/es-errors 7ms (cache hit)
+584 silly packumentCache full:https://registry.npmjs.org/es-errors set size:16918 disposed:false
+585 http cache https://registry.npmjs.org/es-errors 6ms (cache hit)
+586 silly packumentCache full:https://registry.npmjs.org/es-errors set size:16918 disposed:false
+587 silly packumentCache full:https://registry.npmjs.org/es-errors dispose
+588 http cache https://registry.npmjs.org/es-define-property 7ms (cache hit)
+589 silly packumentCache full:https://registry.npmjs.org/es-define-property set size:8542 disposed:false
+590 silly placeDep ROOT es-errors@1.3.0 OK for: call-bind-apply-helpers@1.0.2 want: ^1.3.0
+591 silly placeDep ROOT function-bind@1.1.2 OK for: call-bind-apply-helpers@1.0.2 want: ^1.1.2
+592 silly placeDep ROOT es-define-property@1.0.1 OK for: get-intrinsic@1.3.0 want: ^1.0.1
+593 silly placeDep ROOT es-object-atoms@1.1.2 OK for: get-intrinsic@1.3.0 want: ^1.1.1
+594 silly placeDep ROOT get-proto@1.0.1 OK for: get-intrinsic@1.3.0 want: ^1.0.1
+595 silly placeDep ROOT has-symbols@1.1.0 OK for: get-intrinsic@1.3.0 want: ^1.1.0
+596 silly placeDep ROOT math-intrinsics@1.1.0 OK for: get-intrinsic@1.3.0 want: ^1.1.0
+597 silly fetch manifest dunder-proto@^1.0.1
+598 silly packumentCache full:https://registry.npmjs.org/dunder-proto cache-miss
+599 http cache https://registry.npmjs.org/dunder-proto 2ms (cache hit)
+600 silly packumentCache full:https://registry.npmjs.org/dunder-proto set size:8256 disposed:false
+601 silly placeDep ROOT dunder-proto@1.0.1 OK for: get-proto@1.0.1 want: ^1.0.1
+602 silly placeDep ROOT bignumber.js@9.3.1 OK for: json-bigint@1.0.0 want: ^9.0.0
+603 silly placeDep ROOT jws@3.2.3 OK for: jsonwebtoken@8.5.1 want: ^3.2.2
+604 silly placeDep ROOT lodash.includes@4.3.0 OK for: jsonwebtoken@8.5.1 want: ^4.3.0
+605 silly placeDep ROOT lodash.isboolean@3.0.3 OK for: jsonwebtoken@8.5.1 want: ^3.0.3
+606 silly placeDep ROOT lodash.isinteger@4.0.4 OK for: jsonwebtoken@8.5.1 want: ^4.0.4
+607 silly placeDep ROOT lodash.isnumber@3.0.3 OK for: jsonwebtoken@8.5.1 want: ^3.0.3
+608 silly placeDep ROOT lodash.isplainobject@4.0.6 OK for: jsonwebtoken@8.5.1 want: ^4.0.6
+609 silly placeDep ROOT lodash.isstring@4.0.1 OK for: jsonwebtoken@8.5.1 want: ^4.0.1
+610 silly placeDep ROOT lodash.once@4.1.1 OK for: jsonwebtoken@8.5.1 want: ^4.0.0
+611 silly placeDep ROOT semver@5.7.3 OK for: jsonwebtoken@8.5.1 want: ^5.6.0
+612 silly fetch manifest jwa@^1.4.2
+613 silly packumentCache full:https://registry.npmjs.org/jwa cache-miss
+614 silly fetch manifest safe-buffer@^5.0.1
+615 silly packumentCache full:https://registry.npmjs.org/safe-buffer cache-hit
+616 http cache https://registry.npmjs.org/jwa 2ms (cache hit)
+617 silly packumentCache full:https://registry.npmjs.org/jwa set size:39720 disposed:false
+618 silly placeDep ROOT jwa@1.4.2 OK for: jws@3.2.3 want: ^1.4.2
+619 silly placeDep ROOT safe-buffer@5.2.1 OK for: jws@3.2.3 want: ^5.0.1
+620 silly fetch manifest ecdsa-sig-formatter@1.0.11
+621 silly packumentCache full:https://registry.npmjs.org/ecdsa-sig-formatter cache-miss
+622 silly fetch manifest buffer-equal-constant-time@^1.0.1
+623 silly packumentCache full:https://registry.npmjs.org/buffer-equal-constant-time cache-miss
+624 http cache https://registry.npmjs.org/ecdsa-sig-formatter 2ms (cache hit)
+625 silly packumentCache full:https://registry.npmjs.org/ecdsa-sig-formatter set size:23546 disposed:false
+626 http cache https://registry.npmjs.org/buffer-equal-constant-time 4ms (cache hit)
+627 silly packumentCache full:https://registry.npmjs.org/buffer-equal-constant-time set size:4390 disposed:false
+628 silly placeDep ROOT buffer-equal-constant-time@1.0.1 OK for: jwa@1.4.2 want: ^1.0.1
+629 silly placeDep ROOT ecdsa-sig-formatter@1.0.11 OK for: jwa@1.4.2 want: 1.0.11
+630 silly placeDep ROOT @protobufjs/aspromise@1.1.2 OK for: protobufjs@6.11.6 want: ^1.1.2
+631 silly placeDep ROOT @protobufjs/base64@1.1.2 OK for: protobufjs@6.11.6 want: ^1.1.2
+632 silly placeDep ROOT @protobufjs/codegen@2.0.5 OK for: protobufjs@6.11.6 want: ^2.0.4
+633 silly placeDep ROOT @protobufjs/eventemitter@1.1.1 OK for: protobufjs@6.11.6 want: ^1.1.0
+634 silly placeDep ROOT @protobufjs/fetch@1.1.1 OK for: protobufjs@6.11.6 want: ^1.1.0
+635 silly placeDep ROOT @protobufjs/float@1.0.2 OK for: protobufjs@6.11.6 want: ^1.0.2
+636 silly placeDep ROOT @protobufjs/inquire@1.1.2 OK for: protobufjs@6.11.6 want: ^1.1.0
+637 silly placeDep ROOT @protobufjs/path@1.1.2 OK for: protobufjs@6.11.6 want: ^1.1.2
+638 silly placeDep ROOT @protobufjs/pool@1.1.0 OK for: protobufjs@6.11.6 want: ^1.1.0
+639 silly placeDep ROOT @protobufjs/utf8@1.1.2 OK for: protobufjs@6.11.6 want: ^1.1.0
+640 silly placeDep ROOT @types/long@4.0.2 OK for: protobufjs@6.11.6 want: ^4.0.1
+641 silly placeDep ROOT @types/node@26.6.6 OK for: protobufjs@6.11.6 want: >=13.7.0
+642 silly placeDep ROOT long@4.0.0 OK for: protobufjs@6.11.6 want: ^4.0.0
+643 silly fetch manifest undici-types@~8.9.0
+644 silly packumentCache full:https://registry.npmjs.org/undici-types cache-miss
+645 http cache https://registry.npmjs.org/undici-types 2ms (cache hit)
+646 silly packumentCache full:https://registry.npmjs.org/undici-types set size:287834 disposed:false
+647 silly placeDep ROOT undici-types@8.9.0 OK for: @types/node@26.6.6 want: ~8.9.0
+648 silly placeDep ROOT aws-sign2@0.7.0 OK for: request@2.88.2 want: ~0.7.0
+649 silly placeDep ROOT aws4@1.13.2 OK for: request@2.88.2 want: ^1.8.0
+650 silly placeDep ROOT caseless@0.12.0 OK for: request@2.88.2 want: ~0.12.0
+651 silly placeDep ROOT combined-stream@1.0.8 OK for: request@2.88.2 want: ~1.0.6
+652 silly placeDep ROOT extend@3.0.2 OK for: request@2.88.2 want: ~3.0.2
+653 silly placeDep ROOT forever-agent@0.6.1 OK for: request@2.88.2 want: ~0.6.1
+654 silly placeDep ROOT form-data@2.3.3 OK for: request@2.88.2 want: ~2.3.2
+655 silly placeDep ROOT har-validator@5.1.5 OK for: request@2.88.2 want: ~5.1.3
+656 silly placeDep ROOT http-signature@1.2.0 OK for: request@2.88.2 want: ~1.2.0
+657 silly placeDep ROOT is-typedarray@1.0.0 OK for: request@2.88.2 want: ~1.0.0
+658 silly placeDep ROOT isstream@0.1.2 OK for: request@2.88.2 want: ~0.1.2
+659 silly placeDep ROOT json-stringify-safe@5.0.1 OK for: request@2.88.2 want: ~5.0.1
+660 silly placeDep ROOT mime-types@2.1.35 OK for: request@2.88.2 want: ~2.1.19
+661 silly placeDep ROOT oauth-sign@0.9.0 OK for: request@2.88.2 want: ~0.9.0
+662 silly placeDep ROOT performance-now@2.1.0 OK for: request@2.88.2 want: ^2.1.0
+663 silly placeDep ROOT qs@6.5.5 OK for: request@2.88.2 want: ~6.5.2
+664 silly placeDep ROOT tough-cookie@2.5.0 OK for: request@2.88.2 want: ~2.5.0
+665 silly placeDep ROOT tunnel-agent@0.6.0 OK for: request@2.88.2 want: ^0.6.0
+666 silly placeDep ROOT uuid@3.4.0 OK for: request@2.88.2 want: ^3.3.2
+667 silly fetch manifest delayed-stream@~1.0.0
+668 silly packumentCache full:https://registry.npmjs.org/delayed-stream cache-miss
+669 silly fetch manifest asynckit@^0.4.0
+670 silly packumentCache full:https://registry.npmjs.org/asynckit cache-miss
+671 silly fetch manifest mime-types@^2.1.12
+672 silly packumentCache full:https://registry.npmjs.org/mime-types cache-hit
+673 silly fetch manifest ajv@^6.12.3
+674 silly packumentCache full:https://registry.npmjs.org/ajv cache-miss
+675 silly fetch manifest har-schema@^2.0.0
+676 silly packumentCache full:https://registry.npmjs.org/har-schema cache-miss
+677 silly fetch manifest sshpk@^1.7.0
+678 silly packumentCache full:https://registry.npmjs.org/sshpk cache-miss
+679 silly fetch manifest jsprim@^1.2.2
+680 silly packumentCache full:https://registry.npmjs.org/jsprim cache-miss
+681 silly fetch manifest assert-plus@^1.0.0
+682 silly packumentCache full:https://registry.npmjs.org/assert-plus cache-miss
+683 silly fetch manifest mime-db@1.52.0
+684 silly packumentCache full:https://registry.npmjs.org/mime-db cache-miss
+685 silly fetch manifest psl@^1.1.28
+686 silly packumentCache full:https://registry.npmjs.org/psl cache-miss
+687 silly fetch manifest punycode@^2.1.1
+688 silly packumentCache full:https://registry.npmjs.org/punycode cache-hit
+689 http cache https://registry.npmjs.org/delayed-stream 7ms (cache hit)
+690 silly packumentCache full:https://registry.npmjs.org/delayed-stream set size:15820 disposed:false
+691 http cache https://registry.npmjs.org/har-schema 7ms (cache hit)
+692 silly packumentCache full:https://registry.npmjs.org/har-schema set size:23124 disposed:false
+693 http cache https://registry.npmjs.org/assert-plus 7ms (cache hit)
+694 silly packumentCache full:https://registry.npmjs.org/assert-plus set size:16225 disposed:false
+695 http cache https://registry.npmjs.org/sshpk 9ms (cache hit)
+696 silly packumentCache full:https://registry.npmjs.org/sshpk set size:133005 disposed:false
+697 http cache https://registry.npmjs.org/ajv 11ms (cache hit)
+698 silly packumentCache full:https://registry.npmjs.org/ajv set size:1142658 disposed:false
+699 http cache https://registry.npmjs.org/asynckit 15ms (cache hit)
+700 silly packumentCache full:https://registry.npmjs.org/asynckit set size:18932 disposed:false
+701 http cache https://registry.npmjs.org/mime-db 15ms (cache hit)
+702 silly packumentCache full:https://registry.npmjs.org/mime-db set size:164953 disposed:false
+703 http cache https://registry.npmjs.org/psl 16ms (cache hit)
+704 silly packumentCache full:https://registry.npmjs.org/psl set size:129526 disposed:false
+705 http cache https://registry.npmjs.org/jsprim 17ms (cache hit)
+706 silly packumentCache full:https://registry.npmjs.org/jsprim set size:49508 disposed:false
+707 silly placeDep ROOT delayed-stream@1.0.0 OK for: combined-stream@1.0.8 want: ~1.0.0
+708 silly placeDep ROOT asynckit@0.4.0 OK for: form-data@2.3.3 want: ^0.4.0
+709 silly placeDep ROOT ajv@6.15.0 OK for: har-validator@5.1.5 want: ^6.12.3
+710 silly placeDep ROOT har-schema@2.0.0 OK for: har-validator@5.1.5 want: ^2.0.0
+711 silly fetch manifest uri-js@^4.2.2
+712 silly packumentCache full:https://registry.npmjs.org/uri-js cache-miss
+713 silly fetch manifest fast-deep-equal@^3.1.1
+714 silly packumentCache full:https://registry.npmjs.org/fast-deep-equal cache-miss
+715 silly fetch manifest json-schema-traverse@^0.4.1
+716 silly packumentCache full:https://registry.npmjs.org/json-schema-traverse cache-miss
+717 silly fetch manifest fast-json-stable-stringify@^2.0.0
+718 silly packumentCache full:https://registry.npmjs.org/fast-json-stable-stringify cache-miss
+719 http cache https://registry.npmjs.org/json-schema-traverse 4ms (cache hit)
+720 silly packumentCache full:https://registry.npmjs.org/json-schema-traverse set size:23537 disposed:false
+721 http cache https://registry.npmjs.org/fast-json-stable-stringify 4ms (cache hit)
+722 silly packumentCache full:https://registry.npmjs.org/fast-json-stable-stringify set size:11337 disposed:false
+723 http cache https://registry.npmjs.org/uri-js 6ms (cache hit)
+724 silly packumentCache full:https://registry.npmjs.org/uri-js set size:42559 disposed:false
+725 http cache https://registry.npmjs.org/fast-deep-equal 6ms (cache hit)
+726 silly packumentCache full:https://registry.npmjs.org/fast-deep-equal set size:48634 disposed:false
+727 silly placeDep ROOT fast-deep-equal@3.1.3 OK for: ajv@6.15.0 want: ^3.1.1
+728 silly placeDep ROOT fast-json-stable-stringify@2.1.0 OK for: ajv@6.15.0 want: ^2.0.0
+729 silly placeDep ROOT json-schema-traverse@0.4.1 OK for: ajv@6.15.0 want: ^0.4.1
+730 silly placeDep ROOT uri-js@4.4.1 OK for: ajv@6.15.0 want: ^4.2.2
+731 silly fetch manifest punycode@^2.1.0
+732 silly packumentCache full:https://registry.npmjs.org/punycode cache-hit
+733 silly placeDep ROOT assert-plus@1.0.0 OK for: http-signature@1.2.0 want: ^1.0.0
+734 silly placeDep ROOT jsprim@1.4.2 OK for: http-signature@1.2.0 want: ^1.2.2
+735 silly placeDep ROOT sshpk@1.18.0 OK for: http-signature@1.2.0 want: ^1.7.0
+736 silly fetch manifest verror@1.10.0
+737 silly packumentCache full:https://registry.npmjs.org/verror cache-miss
+738 silly fetch manifest extsprintf@1.3.0
+739 silly packumentCache full:https://registry.npmjs.org/extsprintf cache-miss
+740 silly fetch manifest json-schema@0.4.0
+741 silly packumentCache full:https://registry.npmjs.org/json-schema cache-miss
+742 silly fetch manifest asn1@~0.2.3
+743 silly packumentCache full:https://registry.npmjs.org/asn1 cache-miss
+744 silly fetch manifest jsbn@~0.1.0
+745 silly packumentCache full:https://registry.npmjs.org/jsbn cache-miss
+746 silly fetch manifest getpass@^0.1.1
+747 silly packumentCache full:https://registry.npmjs.org/getpass cache-miss
+748 silly fetch manifest dashdash@^1.12.0
+749 silly packumentCache full:https://registry.npmjs.org/dashdash cache-miss
+750 silly fetch manifest ecc-jsbn@~0.1.1
+751 silly packumentCache full:https://registry.npmjs.org/ecc-jsbn cache-miss
+752 silly fetch manifest tweetnacl@~0.14.0
+753 silly packumentCache full:https://registry.npmjs.org/tweetnacl cache-miss
+754 silly fetch manifest bcrypt-pbkdf@^1.0.0
+755 silly packumentCache full:https://registry.npmjs.org/bcrypt-pbkdf cache-miss
+756 silly fetch manifest safer-buffer@^2.0.2
+757 silly packumentCache full:https://registry.npmjs.org/safer-buffer cache-miss
+758 http cache https://registry.npmjs.org/asn1 12ms (cache hit)
+759 silly packumentCache full:https://registry.npmjs.org/asn1 set size:29978 disposed:false
+760 http cache https://registry.npmjs.org/extsprintf 14ms (cache hit)
+761 silly packumentCache full:https://registry.npmjs.org/extsprintf set size:16178 disposed:false
+762 http cache https://registry.npmjs.org/getpass 13ms (cache hit)
+763 silly packumentCache full:https://registry.npmjs.org/getpass set size:13448 disposed:false
+764 http cache https://registry.npmjs.org/jsbn 13ms (cache hit)
+765 silly packumentCache full:https://registry.npmjs.org/jsbn set size:8169 disposed:false
+766 http cache https://registry.npmjs.org/dashdash 14ms (cache hit)
+767 silly packumentCache full:https://registry.npmjs.org/dashdash set size:63751 disposed:false
+768 http cache https://registry.npmjs.org/verror 15ms (cache hit)
+769 silly packumentCache full:https://registry.npmjs.org/verror set size:50129 disposed:false
+770 http cache https://registry.npmjs.org/bcrypt-pbkdf 14ms (cache hit)
+771 silly packumentCache full:https://registry.npmjs.org/bcrypt-pbkdf set size:6832 disposed:false
+772 http cache https://registry.npmjs.org/json-schema 16ms (cache hit)
+773 silly packumentCache full:https://registry.npmjs.org/json-schema set size:15084 disposed:false
+774 http cache https://registry.npmjs.org/safer-buffer 14ms (cache hit)
+775 silly packumentCache full:https://registry.npmjs.org/safer-buffer set size:18521 disposed:false
+776 http cache https://registry.npmjs.org/ecc-jsbn 16ms (cache hit)
+777 silly packumentCache full:https://registry.npmjs.org/ecc-jsbn set size:8870 disposed:false
+778 http cache https://registry.npmjs.org/tweetnacl 16ms (cache hit)
+779 silly packumentCache full:https://registry.npmjs.org/tweetnacl set size:79790 disposed:false
+780 silly placeDep ROOT extsprintf@1.3.0 OK for: jsprim@1.4.2 want: 1.3.0
+781 silly placeDep ROOT json-schema@0.4.0 OK for: jsprim@1.4.2 want: 0.4.0
+782 silly placeDep ROOT verror@1.10.0 OK for: jsprim@1.4.2 want: 1.10.0
+783 silly fetch manifest core-util-is@1.0.2
+784 silly packumentCache full:https://registry.npmjs.org/core-util-is cache-miss
+785 http cache https://registry.npmjs.org/core-util-is 2ms (cache hit)
+786 silly packumentCache full:https://registry.npmjs.org/core-util-is set size:7163 disposed:false
+787 silly placeDep ROOT mime-db@1.52.0 OK for: mime-types@2.1.35 want: 1.52.0
+788 silly fetch manifest request@^2.34
+789 silly packumentCache full:https://registry.npmjs.org/request cache-hit
+790 silly placeDep ROOT bluebird@3.7.2 OK for: request-promise@4.2.6 want: ^3.5.0
+791 silly placeDep ROOT request-promise-core@1.1.4 OK for: request-promise@4.2.6 want: 1.1.4
+792 silly placeDep ROOT stealthy-require@1.1.1 OK for: request-promise@4.2.6 want: ^1.1.1
+793 silly fetch manifest lodash@^4.17.19
+794 silly packumentCache full:https://registry.npmjs.org/lodash cache-miss
+795 http cache https://registry.npmjs.org/lodash 3ms (cache hit)
+796 silly packumentCache full:https://registry.npmjs.org/lodash set size:247678 disposed:false
+797 silly placeDep ROOT lodash@4.18.1 OK for: request-promise-core@1.1.4 want: ^4.17.19
+798 silly placeDep ROOT asn1@0.2.6 OK for: sshpk@1.18.0 want: ~0.2.3
+799 silly placeDep ROOT bcrypt-pbkdf@1.0.2 OK for: sshpk@1.18.0 want: ^1.0.0
+800 silly placeDep ROOT dashdash@1.14.1 OK for: sshpk@1.18.0 want: ^1.12.0
+801 silly placeDep ROOT ecc-jsbn@0.1.2 OK for: sshpk@1.18.0 want: ~0.1.1
+802 silly placeDep ROOT getpass@0.1.7 OK for: sshpk@1.18.0 want: ^0.1.1
+803 silly placeDep ROOT jsbn@0.1.1 OK for: sshpk@1.18.0 want: ~0.1.0
+804 silly placeDep ROOT safer-buffer@2.1.2 OK for: sshpk@1.18.0 want: ^2.0.2
+805 silly placeDep ROOT tweetnacl@0.14.5 OK for: sshpk@1.18.0 want: ~0.14.0
+806 silly fetch manifest safer-buffer@~2.1.0
+807 silly packumentCache full:https://registry.npmjs.org/safer-buffer cache-hit
+808 silly fetch manifest tweetnacl@^0.14.3
+809 silly packumentCache full:https://registry.npmjs.org/tweetnacl cache-hit
+810 silly fetch manifest safer-buffer@^2.1.0
+811 silly packumentCache full:https://registry.npmjs.org/safer-buffer cache-hit
+812 silly placeDep node_modules/tcb-admin-node @cloudbase/database@0.9.15 OK for: tcb-admin-node@1.23.0 want: 0.9.15
+813 silly placeDep ROOT psl@1.15.0 OK for: tough-cookie@2.5.0 want: ^1.1.28
+814 silly placeDep ROOT punycode@2.3.1 OK for: tough-cookie@2.5.0 want: ^2.1.1
+815 silly fetch manifest punycode@^2.3.1
+816 silly packumentCache full:https://registry.npmjs.org/punycode cache-hit
+817 silly placeDep ROOT arg@4.1.3 OK for: ts-node@8.10.2 want: ^4.1.0
+818 silly placeDep ROOT diff@4.0.4 OK for: ts-node@8.10.2 want: ^4.0.1
+819 silly placeDep ROOT make-error@1.3.6 OK for: ts-node@8.10.2 want: ^1.1.1
+820 silly placeDep ROOT source-map-support@0.5.21 OK for: ts-node@8.10.2 want: ^0.5.17
+821 silly placeDep ROOT yn@3.1.1 OK for: ts-node@8.10.2 want: 3.1.1
+822 silly fetch manifest buffer-from@^1.0.0
+823 silly packumentCache full:https://registry.npmjs.org/buffer-from cache-miss
+824 silly fetch manifest source-map@^0.6.0
+825 silly packumentCache full:https://registry.npmjs.org/source-map cache-miss
+826 http cache https://registry.npmjs.org/source-map 3ms (cache hit)
+827 silly packumentCache full:https://registry.npmjs.org/source-map set size:231696 disposed:false
+828 http cache https://registry.npmjs.org/buffer-from 4ms (cache hit)
+829 silly packumentCache full:https://registry.npmjs.org/buffer-from set size:15463 disposed:false
+830 silly placeDep ROOT buffer-from@1.1.2 OK for: source-map-support@0.5.21 want: ^1.0.0
+831 silly placeDep ROOT source-map@0.6.1 OK for: source-map-support@0.5.21 want: ^0.6.0
+832 silly placeDep ROOT @typescript/typescript-aix-ppc64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+833 silly placeDep ROOT @typescript/typescript-darwin-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+834 silly placeDep ROOT @typescript/typescript-darwin-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+835 silly placeDep ROOT @typescript/typescript-freebsd-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+836 silly placeDep ROOT @typescript/typescript-freebsd-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+837 silly placeDep ROOT @typescript/typescript-linux-arm@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+838 silly placeDep ROOT @typescript/typescript-linux-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+839 silly placeDep ROOT @typescript/typescript-linux-loong64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+840 silly placeDep ROOT @typescript/typescript-linux-mips64el@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+841 silly placeDep ROOT @typescript/typescript-linux-ppc64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+842 silly placeDep ROOT @typescript/typescript-linux-riscv64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+843 silly placeDep ROOT @typescript/typescript-linux-s390x@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+844 silly placeDep ROOT @typescript/typescript-linux-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+845 silly placeDep ROOT @typescript/typescript-netbsd-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+846 silly placeDep ROOT @typescript/typescript-netbsd-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+847 silly placeDep ROOT @typescript/typescript-openbsd-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+848 silly placeDep ROOT @typescript/typescript-openbsd-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+849 silly placeDep ROOT @typescript/typescript-sunos-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+850 silly placeDep ROOT @typescript/typescript-win32-arm64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+851 silly placeDep ROOT @typescript/typescript-win32-x64@7.0.2 OK for: typescript@7.0.2 want: 7.0.2
+852 silly placeDep node_modules/url punycode@1.4.1 OK for: url@0.11.4 want: ^1.4.1
+853 silly placeDep node_modules/url qs@6.17.1 OK for: url@0.11.4 want: ^6.12.3
+854 silly fetch manifest side-channel@^1.1.1
+855 silly packumentCache full:https://registry.npmjs.org/side-channel cache-miss
+856 http cache https://registry.npmjs.org/side-channel 3ms (cache hit)
+857 silly packumentCache full:https://registry.npmjs.org/side-channel set size:27650 disposed:false
+858 silly placeDep ROOT core-util-is@1.0.2 OK for: verror@1.10.0 want: 1.0.2
+859 silly placeDep ROOT sax@1.6.1 OK for: xml2js@0.4.23 want: >=0.6.0
+860 silly placeDep ROOT xmlbuilder@11.0.1 OK for: xml2js@0.4.23 want: ~11.0.0
+861 silly placeDep ROOT side-channel@1.1.1 OK for: qs@6.17.1 want: ^1.1.1
+862 silly fetch manifest object-inspect@^1.13.4
+863 silly packumentCache full:https://registry.npmjs.org/object-inspect cache-miss
+864 silly fetch manifest side-channel-list@^1.0.1
+865 silly packumentCache full:https://registry.npmjs.org/side-channel-list cache-miss
+866 silly fetch manifest side-channel-map@^1.0.1
+867 silly packumentCache full:https://registry.npmjs.org/side-channel-map cache-miss
+868 silly fetch manifest side-channel-weakmap@^1.0.2
+869 silly packumentCache full:https://registry.npmjs.org/side-channel-weakmap cache-miss
+870 http cache https://registry.npmjs.org/object-inspect 4ms (cache hit)
+871 silly packumentCache full:https://registry.npmjs.org/object-inspect set size:101881 disposed:false
+872 http cache https://registry.npmjs.org/side-channel-list 4ms (cache hit)
+873 silly packumentCache full:https://registry.npmjs.org/side-channel-list set size:9021 disposed:false
+874 http cache https://registry.npmjs.org/side-channel-map 5ms (cache hit)
+875 silly packumentCache full:https://registry.npmjs.org/side-channel-map set size:9126 disposed:false
+876 http cache https://registry.npmjs.org/side-channel-weakmap 5ms (cache hit)
+877 silly packumentCache full:https://registry.npmjs.org/side-channel-weakmap set size:12620 disposed:false
+878 silly placeDep ROOT object-inspect@1.13.4 OK for: side-channel@1.1.1 want: ^1.13.4
+879 silly placeDep ROOT side-channel-list@1.0.1 OK for: side-channel@1.1.1 want: ^1.0.1
+880 silly placeDep ROOT side-channel-map@1.0.1 OK for: side-channel@1.1.1 want: ^1.0.1
+881 silly placeDep ROOT side-channel-weakmap@1.0.2 OK for: side-channel@1.1.1 want: ^1.0.2
+882 silly reify moves {}
+883 silly audit bulk request {
+883 silly audit   'wx-server-sdk': [ '2.6.3' ],
+883 silly audit   '@cloudbase/node-sdk': [ '2.9.1' ],
+883 silly audit   'json-bigint': [ '1.0.0' ],
+883 silly audit   protobufjs: [ '6.11.6' ],
+883 silly audit   'tcb-admin-node': [ '1.23.0' ],
+883 silly audit   tslib: [ '1.14.1' ],
+883 silly audit   '@cloudbase/database': [ '1.4.1', '0.9.15' ],
+883 silly audit   '@cloudbase/signature-nodejs': [ '1.0.0-beta.0' ],
+883 silly audit   '@types/retry': [ '0.12.5' ],
+883 silly audit   agentkeepalive: [ '4.6.0' ],
+883 silly audit   axios: [ '0.21.4' ],
+883 silly audit   'is-regex': [ '1.2.1' ],
+883 silly audit   jsonwebtoken: [ '8.5.1' ],
+883 silly audit   'lodash.merge': [ '4.6.2' ],
+883 silly audit   request: [ '2.88.2' ],
+883 silly audit   'request-promise': [ '4.2.6' ],
+883 silly audit   retry: [ '0.12.0' ],
+883 silly audit   'ts-node': [ '8.10.2' ],
+883 silly audit   typescript: [ '7.0.2' ],
+883 silly audit   xml2js: [ '0.4.23' ],
+883 silly audit   bson: [ '4.7.2' ],
+883 silly audit   'lodash.clonedeep': [ '4.5.0' ],
+883 silly audit   'lodash.set': [ '4.3.2' ],
+883 silly audit   'lodash.unset': [ '4.5.2' ],
+883 silly audit   '@types/clone': [ '0.1.30' ],
+883 silly audit   clone: [ '2.1.2' ],
+883 silly audit   'is-stream': [ '2.0.1' ],
+883 silly audit   url: [ '0.11.4' ],
+883 silly audit   'humanize-ms': [ '1.2.1' ],
+883 silly audit   'follow-redirects': [ '1.16.2' ],
+883 silly audit   buffer: [ '5.7.1' ],
+883 silly audit   'base64-js': [ '1.5.1' ],
+883 silly audit   ieee754: [ '1.2.1' ],
+883 silly audit   ms: [ '2.1.3' ],
+883 silly audit   'call-bound': [ '1.0.4' ],
+883 silly audit   gopd: [ '1.2.0' ],
+883 silly audit   'has-tostringtag': [ '1.0.2' ],
+883 silly audit   hasown: [ '2.0.4' ],
+883 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+883 silly audit   'get-intrinsic': [ '1.3.0' ],
+883 silly audit   'es-errors': [ '1.3.0' ],
+883 silly audit   'function-bind': [ '1.1.2' ],
+883 silly audit   'es-define-property': [ '1.0.1' ],
+883 silly audit   'es-object-atoms': [ '1.1.2' ],
+883 silly audit   'get-proto': [ '1.0.1' ],
+883 silly audit   'has-symbols': [ '1.1.0' ],
+883 silly audit   'math-intrinsics': [ '1.1.0' ],
+883 silly audit   'dunder-proto': [ '1.0.1' ],
+883 silly audit   'bignumber.js': [ '9.3.1' ],
+883 silly audit   jws: [ '3.2.3' ],
+883 silly audit   'lodash.includes': [ '4.3.0' ],
+883 silly audit   'lodash.isboolean': [ '3.0.3' ],
+883 silly audit   'lodash.isinteger': [ '4.0.4' ],
+883 silly audit   'lodash.isnumber': [ '3.0.3' ],
+883 silly audit   'lodash.isplainobject': [ '4.0.6' ],
+883 silly audit   'lodash.isstring': [ '4.0.1' ],
+883 silly audit   'lodash.once': [ '4.1.1' ],
+883 silly audit   semver: [ '5.7.3' ],
+883 silly audit   jwa: [ '1.4.2' ],
+883 silly audit   'safe-buffer': [ '5.2.1' ],
+883 silly audit   'buffer-equal-constant-time': [ '1.0.1' ],
+883 silly audit   'ecdsa-sig-formatter': [ '1.0.11' ],
+883 silly audit   '@protobufjs/aspromise': [ '1.1.2' ],
+883 silly audit   '@protobufjs/base64': [ '1.1.2' ],
+883 silly audit   '@protobufjs/codegen': [ '2.0.5' ],
+883 silly audit   '@protobufjs/eventemitter': [ '1.1.1' ],
+883 silly audit   '@protobufjs/fetch': [ '1.1.1' ],
+883 silly audit   '@protobufjs/float': [ '1.0.2' ],
+883 silly audit   '@protobufjs/inquire': [ '1.1.2' ],
+883 silly audit   '@protobufjs/path': [ '1.1.2' ],
+883 silly audit   '@protobufjs/pool': [ '1.1.0' ],
+883 silly audit   '@protobufjs/utf8': [ '1.1.2' ],
+883 silly audit   '@types/long': [ '4.0.2' ],
+883 silly audit   '@types/node': [ '26.6.6' ],
+883 silly audit   long: [ '4.0.0' ],
+883 silly audit   'undici-types': [ '8.9.0' ],
+883 silly audit   'aws-sign2': [ '0.7.0' ],
+883 silly audit   aws4: [ '1.13.2' ],
+883 silly audit   caseless: [ '0.12.0' ],
+883 silly audit   'combined-stream': [ '1.0.8' ],
+883 silly audit   extend: [ '3.0.2' ],
+883 silly audit   'forever-agent': [ '0.6.1' ],
+883 silly audit   'form-data': [ '2.3.3' ],
+883 silly audit   'har-validator': [ '5.1.5' ],
+883 silly audit   'http-signature': [ '1.2.0' ],
+883 silly audit   'is-typedarray': [ '1.0.0' ],
+883 silly audit   isstream: [ '0.1.2' ],
+883 silly audit   'json-stringify-safe': [ '5.0.1' ],
+883 silly audit   'mime-types': [ '2.1.35' ],
+883 silly audit   'oauth-sign': [ '0.9.0' ],
+883 silly audit   'performance-now': [ '2.1.0' ],
+883 silly audit   qs: [ '6.5.5', '6.17.1' ],
+883 silly audit   'tough-cookie': [ '2.5.0' ],
+883 silly audit   'tunnel-agent': [ '0.6.0' ],
+883 silly audit   uuid: [ '3.4.0' ],
+883 silly audit   'delayed-stream': [ '1.0.0' ],
+883 silly audit   asynckit: [ '0.4.0' ],
+883 silly audit   ajv: [ '6.15.0' ],
+883 silly audit   'har-schema': [ '2.0.0' ],
+883 silly audit   'fast-deep-equal': [ '3.1.3' ],
+883 silly audit   'fast-json-stable-stringify': [ '2.1.0' ],
+883 silly audit   'json-schema-traverse': [ '0.4.1' ],
+883 silly audit   'uri-js': [ '4.4.1' ],
+883 silly audit   'assert-plus': [ '1.0.0' ],
+883 silly audit   jsprim: [ '1.4.2' ],
+883 silly audit   sshpk: [ '1.18.0' ],
+883 silly audit   extsprintf: [ '1.3.0' ],
+883 silly audit   'json-schema': [ '0.4.0' ],
+883 silly audit   verror: [ '1.10.0' ],
+883 silly audit   'mime-db': [ '1.52.0' ],
+883 silly audit   bluebird: [ '3.7.2' ],
+883 silly audit   'request-promise-core': [ '1.1.4' ],
+883 silly audit   'stealthy-require': [ '1.1.1' ],
+883 silly audit   lodash: [ '4.18.1' ],
+883 silly audit   asn1: [ '0.2.6' ],
+883 silly audit   'bcrypt-pbkdf': [ '1.0.2' ],
+883 silly audit   dashdash: [ '1.14.1' ],
+883 silly audit   'ecc-jsbn': [ '0.1.2' ],
+883 silly audit   getpass: [ '0.1.7' ],
+883 silly audit   jsbn: [ '0.1.1' ],
+883 silly audit   'safer-buffer': [ '2.1.2' ],
+883 silly audit   tweetnacl: [ '0.14.5' ],
+883 silly audit   psl: [ '1.15.0' ],
+883 silly audit   punycode: [ '2.3.1', '1.4.1' ],
+883 silly audit   arg: [ '4.1.3' ],
+883 silly audit   diff: [ '4.0.4' ],
+883 silly audit   'make-error': [ '1.3.6' ],
+883 silly audit   'source-map-support': [ '0.5.21' ],
+883 silly audit   yn: [ '3.1.1' ],
+883 silly audit   'buffer-from': [ '1.1.2' ],
+883 silly audit   'source-map': [ '0.6.1' ],
+883 silly audit   '@typescript/typescript-aix-ppc64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-darwin-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-darwin-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-freebsd-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-freebsd-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-arm': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-loong64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-mips64el': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-ppc64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-riscv64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-s390x': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-linux-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-netbsd-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-netbsd-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-openbsd-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-openbsd-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-sunos-x64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-win32-arm64': [ '7.0.2' ],
+883 silly audit   '@typescript/typescript-win32-x64': [ '7.0.2' ],
+883 silly audit   'core-util-is': [ '1.0.2' ],
+883 silly audit   sax: [ '1.6.1' ],
+883 silly audit   xmlbuilder: [ '11.0.1' ],
+883 silly audit   'side-channel': [ '1.1.1' ],
+883 silly audit   'object-inspect': [ '1.13.4' ],
+883 silly audit   'side-channel-list': [ '1.0.1' ],
+883 silly audit   'side-channel-map': [ '1.0.1' ],
+883 silly audit   'side-channel-weakmap': [ '1.0.2' ]
+883 silly audit }
+884 http cache side-channel-map@https://registry.npmjs.org/side-channel-map/-/side-channel-map-1.0.1.tgz 0ms (cache hit)
+885 http cache side-channel-weakmap@https://registry.npmjs.org/side-channel-weakmap/-/side-channel-weakmap-1.0.2.tgz 0ms (cache hit)
+886 http cache side-channel-list@https://registry.npmjs.org/side-channel-list/-/side-channel-list-1.0.1.tgz 0ms (cache hit)
+887 http cache object-inspect@https://registry.npmjs.org/object-inspect/-/object-inspect-1.13.4.tgz 0ms (cache hit)
+888 http cache side-channel@https://registry.npmjs.org/side-channel/-/side-channel-1.1.1.tgz 0ms (cache hit)
+889 http cache xmlbuilder@https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz 0ms (cache hit)
+890 http cache core-util-is@https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz 0ms (cache hit)
+891 http cache @typescript/typescript-win32-x64@https://registry.npmjs.org/@typescript/typescript-win32-x64/-/typescript-win32-x64-7.0.2.tgz 0ms (cache hit)
+892 http cache source-map@https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz 0ms (cache hit)
+893 http cache buffer-from@https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz 0ms (cache hit)
+894 http cache sax@https://registry.npmjs.org/sax/-/sax-1.6.1.tgz 0ms (cache hit)
+895 http cache yn@https://registry.npmjs.org/yn/-/yn-3.1.1.tgz 0ms (cache hit)
+896 http cache source-map-support@https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz 0ms (cache hit)
+897 http cache make-error@https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz 0ms (cache hit)
+898 http cache arg@https://registry.npmjs.org/arg/-/arg-4.1.3.tgz 0ms (cache hit)
+899 http cache diff@https://registry.npmjs.org/diff/-/diff-4.0.4.tgz 0ms (cache hit)
+900 http cache punycode@https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz 0ms (cache hit)
+901 http cache psl@https://registry.npmjs.org/psl/-/psl-1.15.0.tgz 0ms (cache hit)
+902 http cache safer-buffer@https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz 0ms (cache hit)
+903 http cache jsbn@https://registry.npmjs.org/jsbn/-/jsbn-0.1.1.tgz 0ms (cache hit)
+904 http cache getpass@https://registry.npmjs.org/getpass/-/getpass-0.1.7.tgz 0ms (cache hit)
+905 http cache ecc-jsbn@https://registry.npmjs.org/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz 0ms (cache hit)
+906 http cache dashdash@https://registry.npmjs.org/dashdash/-/dashdash-1.14.1.tgz 0ms (cache hit)
+907 http cache bcrypt-pbkdf@https://registry.npmjs.org/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz 0ms (cache hit)
+908 http cache lodash@https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz 0ms (cache hit)
+909 http cache stealthy-require@https://registry.npmjs.org/stealthy-require/-/stealthy-require-1.1.1.tgz 0ms (cache hit)
+910 http cache asn1@https://registry.npmjs.org/asn1/-/asn1-0.2.6.tgz 0ms (cache hit)
+911 http cache request-promise-core@https://registry.npmjs.org/request-promise-core/-/request-promise-core-1.1.4.tgz 0ms (cache hit)
+912 http cache bluebird@https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz 0ms (cache hit)
+913 http cache mime-db@https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz 0ms (cache hit)
+914 http cache verror@https://registry.npmjs.org/verror/-/verror-1.10.0.tgz 0ms (cache hit)
+915 http cache json-schema@https://registry.npmjs.org/json-schema/-/json-schema-0.4.0.tgz 0ms (cache hit)
+916 http cache extsprintf@https://registry.npmjs.org/extsprintf/-/extsprintf-1.3.0.tgz 0ms (cache hit)
+917 http cache sshpk@https://registry.npmjs.org/sshpk/-/sshpk-1.18.0.tgz 0ms (cache hit)
+918 http cache assert-plus@https://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz 0ms (cache hit)
+919 http cache jsprim@https://registry.npmjs.org/jsprim/-/jsprim-1.4.2.tgz 0ms (cache hit)
+920 http cache json-schema-traverse@https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz 0ms (cache hit)
+921 http cache uri-js@https://registry.npmjs.org/uri-js/-/uri-js-4.4.1.tgz 0ms (cache hit)
+922 http cache fast-deep-equal@https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz 0ms (cache hit)
+923 http cache fast-json-stable-stringify@https://registry.npmjs.org/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz 0ms (cache hit)
+924 http cache asynckit@https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz 0ms (cache hit)
+925 http cache ajv@https://registry.npmjs.org/ajv/-/ajv-6.15.0.tgz 0ms (cache hit)
+926 http cache har-schema@https://registry.npmjs.org/har-schema/-/har-schema-2.0.0.tgz 0ms (cache hit)
+927 http cache tweetnacl@https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.5.tgz 0ms (cache hit)
+928 http cache delayed-stream@https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz 0ms (cache hit)
+929 http cache uuid@https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz 0ms (cache hit)
+930 http cache tough-cookie@https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.5.0.tgz 0ms (cache hit)
+931 http cache qs@https://registry.npmjs.org/qs/-/qs-6.5.5.tgz 0ms (cache hit)
+932 http cache performance-now@https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz 0ms (cache hit)
+933 http cache oauth-sign@https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.9.0.tgz 0ms (cache hit)
+934 http cache json-stringify-safe@https://registry.npmjs.org/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz 0ms (cache hit)
+935 http cache isstream@https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz 0ms (cache hit)
+936 http cache is-typedarray@https://registry.npmjs.org/is-typedarray/-/is-typedarray-1.0.0.tgz 0ms (cache hit)
+937 http cache mime-types@https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz 0ms (cache hit)
+938 http cache tunnel-agent@https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.6.0.tgz 0ms (cache hit)
+939 http cache http-signature@https://registry.npmjs.org/http-signature/-/http-signature-1.2.0.tgz 0ms (cache hit)
+940 http cache form-data@https://registry.npmjs.org/form-data/-/form-data-2.3.3.tgz 0ms (cache hit)
+941 http cache extend@https://registry.npmjs.org/extend/-/extend-3.0.2.tgz 0ms (cache hit)
+942 http cache har-validator@https://registry.npmjs.org/har-validator/-/har-validator-5.1.5.tgz 0ms (cache hit)
+943 http cache forever-agent@https://registry.npmjs.org/forever-agent/-/forever-agent-0.6.1.tgz 0ms (cache hit)
+944 http cache combined-stream@https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz 0ms (cache hit)
+945 http cache caseless@https://registry.npmjs.org/caseless/-/caseless-0.12.0.tgz 0ms (cache hit)
+946 http cache aws-sign2@https://registry.npmjs.org/aws-sign2/-/aws-sign2-0.7.0.tgz 0ms (cache hit)
+947 http cache aws4@https://registry.npmjs.org/aws4/-/aws4-1.13.2.tgz 0ms (cache hit)
+948 http cache undici-types@https://registry.npmjs.org/undici-types/-/undici-types-8.9.0.tgz 0ms (cache hit)
+949 http cache long@https://registry.npmjs.org/long/-/long-4.0.0.tgz 0ms (cache hit)
+950 http cache @types/node@https://registry.npmjs.org/@types/node/-/node-26.6.6.tgz 0ms (cache hit)
+951 http cache @types/long@https://registry.npmjs.org/@types/long/-/long-4.0.2.tgz 0ms (cache hit)
+952 http cache @protobufjs/utf8@https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.2.tgz 0ms (cache hit)
+953 http cache @protobufjs/float@https://registry.npmjs.org/@protobufjs/float/-/float-1.0.2.tgz 0ms (cache hit)
+954 http cache @protobufjs/path@https://registry.npmjs.org/@protobufjs/path/-/path-1.1.2.tgz 0ms (cache hit)
+955 http cache @protobufjs/fetch@https://registry.npmjs.org/@protobufjs/fetch/-/fetch-1.1.1.tgz 0ms (cache hit)
+956 http cache @protobufjs/inquire@https://registry.npmjs.org/@protobufjs/inquire/-/inquire-1.1.2.tgz 0ms (cache hit)
+957 http cache @protobufjs/pool@https://registry.npmjs.org/@protobufjs/pool/-/pool-1.1.0.tgz 0ms (cache hit)
+958 http cache @protobufjs/eventemitter@https://registry.npmjs.org/@protobufjs/eventemitter/-/eventemitter-1.1.1.tgz 0ms (cache hit)
+959 http cache @protobufjs/codegen@https://registry.npmjs.org/@protobufjs/codegen/-/codegen-2.0.5.tgz 0ms (cache hit)
+960 http cache @protobufjs/aspromise@https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz 0ms (cache hit)
+961 http cache ecdsa-sig-formatter@https://registry.npmjs.org/ecdsa-sig-formatter/-/ecdsa-sig-formatter-1.0.11.tgz 0ms (cache hit)
+962 http cache @protobufjs/base64@https://registry.npmjs.org/@protobufjs/base64/-/base64-1.1.2.tgz 0ms (cache hit)
+963 http cache buffer-equal-constant-time@https://registry.npmjs.org/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz 0ms (cache hit)
+964 http cache safe-buffer@https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz 0ms (cache hit)
+965 http cache semver@https://registry.npmjs.org/semver/-/semver-5.7.3.tgz 0ms (cache hit)
+966 http cache lodash.once@https://registry.npmjs.org/lodash.once/-/lodash.once-4.1.1.tgz 0ms (cache hit)
+967 http cache jwa@https://registry.npmjs.org/jwa/-/jwa-1.4.2.tgz 0ms (cache hit)
+968 http cache lodash.isplainobject@https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz 0ms (cache hit)
+969 http cache lodash.isstring@https://registry.npmjs.org/lodash.isstring/-/lodash.isstring-4.0.1.tgz 0ms (cache hit)
+970 http cache lodash.isinteger@https://registry.npmjs.org/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz 0ms (cache hit)
+971 http cache lodash.isnumber@https://registry.npmjs.org/lodash.isnumber/-/lodash.isnumber-3.0.3.tgz 0ms (cache hit)
+972 http cache lodash.isboolean@https://registry.npmjs.org/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz 0ms (cache hit)
+973 http cache lodash.includes@https://registry.npmjs.org/lodash.includes/-/lodash.includes-4.3.0.tgz 0ms (cache hit)
+974 http cache jws@https://registry.npmjs.org/jws/-/jws-3.2.3.tgz 0ms (cache hit)
+975 http cache bignumber.js@https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.3.1.tgz 0ms (cache hit)
+976 http cache dunder-proto@https://registry.npmjs.org/dunder-proto/-/dunder-proto-1.0.1.tgz 0ms (cache hit)
+977 http cache math-intrinsics@https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz 0ms (cache hit)
+978 http cache get-proto@https://registry.npmjs.org/get-proto/-/get-proto-1.0.1.tgz 0ms (cache hit)
+979 http cache has-symbols@https://registry.npmjs.org/has-symbols/-/has-symbols-1.1.0.tgz 0ms (cache hit)
+980 http cache es-object-atoms@https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.1.2.tgz 0ms (cache hit)
+981 http cache es-errors@https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz 0ms (cache hit)
+982 http cache es-define-property@https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.1.tgz 0ms (cache hit)
+983 http cache call-bind-apply-helpers@https://registry.npmjs.org/call-bind-apply-helpers/-/call-bind-apply-helpers-1.0.2.tgz 0ms (cache hit)
+984 http cache get-intrinsic@https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.3.0.tgz 0ms (cache hit)
+985 http cache hasown@https://registry.npmjs.org/hasown/-/hasown-2.0.4.tgz 0ms (cache hit)
+986 http cache function-bind@https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz 0ms (cache hit)
+987 http cache has-tostringtag@https://registry.npmjs.org/has-tostringtag/-/has-tostringtag-1.0.2.tgz 0ms (cache hit)
+988 http cache gopd@https://registry.npmjs.org/gopd/-/gopd-1.2.0.tgz 0ms (cache hit)
+989 http cache ms@https://registry.npmjs.org/ms/-/ms-2.1.3.tgz 0ms (cache hit)
+990 http cache call-bound@https://registry.npmjs.org/call-bound/-/call-bound-1.0.4.tgz 0ms (cache hit)
+991 http cache ieee754@https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz 0ms (cache hit)
+992 http cache base64-js@https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz 0ms (cache hit)
+993 http cache buffer@https://registry.npmjs.org/buffer/-/buffer-5.7.1.tgz 0ms (cache hit)
+994 http cache follow-redirects@https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.2.tgz 0ms (cache hit)
+995 http cache humanize-ms@https://registry.npmjs.org/humanize-ms/-/humanize-ms-1.2.1.tgz 0ms (cache hit)
+996 http cache url@https://registry.npmjs.org/url/-/url-0.11.4.tgz 0ms (cache hit)
+997 http cache is-stream@https://registry.npmjs.org/is-stream/-/is-stream-2.0.1.tgz 0ms (cache hit)
+998 http cache @types/clone@https://registry.npmjs.org/@types/clone/-/clone-0.1.30.tgz 0ms (cache hit)
+999 http cache clone@https://registry.npmjs.org/clone/-/clone-2.1.2.tgz 0ms (cache hit)
+1000 http cache lodash.unset@https://registry.npmjs.org/lodash.unset/-/lodash.unset-4.5.2.tgz 0ms (cache hit)
+1001 http cache lodash.set@https://registry.npmjs.org/lodash.set/-/lodash.set-4.3.2.tgz 0ms (cache hit)
+1002 http cache bson@https://registry.npmjs.org/bson/-/bson-4.7.2.tgz 0ms (cache hit)
+1003 http cache lodash.clonedeep@https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz 0ms (cache hit)
+1004 http cache xml2js@https://registry.npmjs.org/xml2js/-/xml2js-0.4.23.tgz 0ms (cache hit)
+1005 http cache typescript@https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz 0ms (cache hit)
+1006 http cache retry@https://registry.npmjs.org/retry/-/retry-0.12.0.tgz 0ms (cache hit)
+1007 http cache ts-node@https://registry.npmjs.org/ts-node/-/ts-node-8.10.2.tgz 0ms (cache hit)
+1008 http cache request-promise@https://registry.npmjs.org/request-promise/-/request-promise-4.2.6.tgz 0ms (cache hit)
+1009 http cache request@https://registry.npmjs.org/request/-/request-2.88.2.tgz 0ms (cache hit)
+1010 http cache lodash.merge@https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz 0ms (cache hit)
+1011 http cache jsonwebtoken@https://registry.npmjs.org/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz 0ms (cache hit)
+1012 http cache agentkeepalive@https://registry.npmjs.org/agentkeepalive/-/agentkeepalive-4.6.0.tgz 0ms (cache hit)
+1013 http cache axios@https://registry.npmjs.org/axios/-/axios-0.21.4.tgz 0ms (cache hit)
+1014 http cache @types/retry@https://registry.npmjs.org/@types/retry/-/retry-0.12.5.tgz 0ms (cache hit)
+1015 http cache is-regex@https://registry.npmjs.org/is-regex/-/is-regex-1.2.1.tgz 0ms (cache hit)
+1016 http cache @cloudbase/signature-nodejs@https://registry.npmjs.org/@cloudbase/signature-nodejs/-/signature-nodejs-1.0.0-beta.0.tgz 0ms (cache hit)
+1017 http cache @cloudbase/database@https://registry.npmjs.org/@cloudbase/database/-/database-1.4.1.tgz 0ms (cache hit)
+1018 http cache tslib@https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz 0ms (cache hit)
+1019 http cache protobufjs@https://registry.npmjs.org/protobufjs/-/protobufjs-6.11.6.tgz 0ms (cache hit)
+1020 http cache json-bigint@https://registry.npmjs.org/json-bigint/-/json-bigint-1.0.0.tgz 0ms (cache hit)
+1021 http cache tcb-admin-node@https://registry.npmjs.org/tcb-admin-node/-/tcb-admin-node-1.23.0.tgz 0ms (cache hit)
+1022 http cache @cloudbase/node-sdk@https://registry.npmjs.org/@cloudbase/node-sdk/-/node-sdk-2.9.1.tgz 0ms (cache hit)
+1023 http cache wx-server-sdk@https://registry.npmjs.org/wx-server-sdk/-/wx-server-sdk-2.6.3.tgz 0ms (cache hit)
+1024 http cache qs@https://registry.npmjs.org/qs/-/qs-6.17.1.tgz 0ms (cache hit)
+1025 http cache punycode@https://registry.npmjs.org/punycode/-/punycode-1.4.1.tgz 0ms (cache hit)
+1026 http cache @cloudbase/database@https://registry.npmjs.org/@cloudbase/database/-/database-0.9.15.tgz 0ms (cache hit)
+1027 warn deprecated request-promise@4.2.6: request-promise has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+1028 warn deprecated har-validator@5.1.5: this library is no longer supported
+1029 warn deprecated uuid@3.4.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+1030 warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+1031 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 1856ms
+1032 silly audit report {
+1032 silly audit report   protobufjs: [
+1032 silly audit report     {
+1032 silly audit report       id: 1118641,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-66ff-xgx4-vchm',
+1032 silly audit report       title: 'protobuf.js: Code injection through bytes field defaults in generated toObject code',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118924,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-2pr8-phx7-x9h3',
+1032 silly audit report       title: 'protobuf.js: Denial of service from crafted field names in generated code',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118926,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-fx83-v9x8-x52w',
+1032 silly audit report       title: 'protobuf.js: Prototype injection in generated message constructors',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118928,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-75px-5xx7-5xc7',
+1032 silly audit report       title: 'protobuf.js: Code generation gadget after prototype pollution',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118930,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-jvwf-75h9-cwgg',
+1032 silly audit report       title: 'protobuf.js: Process-wide denial of service through unsafe option paths',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118932,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-685m-2w69-288q',
+1032 silly audit report       title: 'protobuf.js: Denial of service through unbounded protobuf recursion',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1118935,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-q6x5-8v7m-xcrf',
+1032 silly audit report       title: 'protobufjs has overlong UTF-8 decoding',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=7.5.5',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1119378,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-jggg-4jg4-v7c6',
+1032 silly audit report       title: 'protobufjs: Denial of Service via unbounded recursive JSON descriptor expansion',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=7.5.7',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1123488,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-wcpc-wj8m-hjx6',
+1032 silly audit report       title: 'protobufjs: Denial of service through unbounded Any expansion during JSON conversion',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=7.6.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1123492,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-f38q-mgvj-vph7',
+1032 silly audit report       title: 'protobufjs : Schema-derived names can shadow runtime-significant properties',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=7.6.2',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   axios: [
+1032 silly audit report     {
+1032 silly audit report       id: 1111034,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-jr5f-v2jv-69x6',
+1032 silly audit report       title: 'axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<0.30.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1119403,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-fvcv-3m26-pcqx',
+1032 silly audit report       title: 'Axios has Unrestricted Cloud Metadata Exfiltration via Header Injection Chain',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120124,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-62hf-57xw-28j9',
+1032 silly audit report       title: 'Axios: unbounded recursion in toFormData causes DoS via deeply nested request data',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120546,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-hfxv-24rg-xrqf',
+1032 silly audit report       title: 'Axios: Regular Expression Denial of Service (ReDoS) via Cookie Name Injection',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120644,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-p92q-9vqr-4j8v',
+1032 silly audit report       title: 'Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-to-HTTPS Redirect in Axios Node.js HTTP Adapter',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120646,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-j5f8-grm9-p9fc',
+1032 silly audit report       title: 'Axios: Proxy-Authorization header leaks to redirect target when proxy is re-evaluated to direct connection',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120648,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-3g43-6gmg-66jw',
+1032 silly audit report       title: 'axios Vulnerable to Credential Theft and Response Hijacking via Prototype Pollution Gadget in Config Merge',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '>=0.19.0 <0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120651,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-898c-q2cr-xwhg',
+1032 silly audit report       title: 'axios has DoS & Header Injection via Prototype Pollution Read-Side Gadgets in axios merge functions',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1116672,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-3p68-rc4w-qgx5',
+1032 silly audit report       title: 'Axios has a NO_PROXY Hostname Normalization Bypass that Leads to SSRF',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117573,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-w9j2-pvgh-6h63',
+1032 silly audit report       title: 'Axios: Authentication Bypass via Prototype Pollution Gadget in `validateStatus` Merge Strategy',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117575,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-pmwg-cvhr-8vh7',
+1032 silly audit report       title: 'Axios: Incomplete Fix for CVE-2025-62718 — NO_PROXY Protection Bypassed via RFC 1122 Loopback Subnet (127.0.0.0/8) in Axios 1.15.0',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117579,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-xhjh-pmcv-23jw',
+1032 silly audit report       title: 'Axios: Null Byte Injection via Reverse-Encoding in AxiosURLSearchParams',
+1032 silly audit report       severity: 'low',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117582,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-m7pr-hjqh-92cm',
+1032 silly audit report       title: 'Axios: no_proxy bypass via IP alias allows SSRF',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117586,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-5c9x-8gcm-mpgx',
+1032 silly audit report       title: "Axios' HTTP adapter-streamed uploads bypass maxBodyLength when maxRedirects: 0",
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117588,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-vf2m-468p-8v99',
+1032 silly audit report       title: 'Axios: HTTP adapter streamed responses bypass maxContentLength',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117590,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-pf86-5x62-jrwf',
+1032 silly audit report       title: 'Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltration, and Request Hijacking',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117592,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-6chq-wfr3-2hj9',
+1032 silly audit report       title: 'Axios: Header Injection via Prototype Pollution',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117594,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-xx6v-rp6x-q39c',
+1032 silly audit report       title: 'Axios: XSRF Token Cross-Origin Leakage via Prototype Pollution Gadget in `withXSRFToken` Boolean Coercion',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=0.31.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1117857,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-43fc-jf86-j433',
+1032 silly audit report       title: 'Axios is Vulnerable to Denial of Service via __proto__ Key in mergeConfig',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.30.2',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1123825,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-pjwm-pj3p-43mv',
+1032 silly audit report       title: "axios's shouldBypassProxy does not recognize IPv4-mapped IPv6 addresses, allowing NO_PROXY bypass (incomplete fix for CVE-2025-62718)",
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=0.31.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1097679,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-wf5p-g6vw-rhxx',
+1032 silly audit report       title: 'Axios Cross-Site Request Forgery Vulnerability',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '>=0.8.1 <0.28.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1147948,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-mmx7-hfxf-jppx',
+1032 silly audit report       title: 'Axios: Prototype pollution gadgets can alter axios request construction',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<0.33.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1153181,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-7q8q-rj6j-mhjq',
+1032 silly audit report       title: 'Axios: Nested axios option objects can consume polluted prototype values',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '>=0.8.0 <0.33.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   jsonwebtoken: [
+1032 silly audit report     {
+1032 silly audit report       id: 1102458,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-qwph-4952-7xr6',
+1032 silly audit report       title: 'jsonwebtoken vulnerable to signature validation bypass due to insecure default algorithm in jwt.verify()',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<9.0.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1097690,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-8cf7-32gw-wr33',
+1032 silly audit report       title: 'jsonwebtoken unrestricted key type could lead to legacy keys usage ',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<=8.5.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1097694,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-hjrf-2m68-5959',
+1032 silly audit report       title: "jsonwebtoken's insecure implementation of key retrieval function could lead to Forgeable Public/Private Tokens from RSA to HMAC",
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=8.5.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   request: [
+1032 silly audit report     {
+1032 silly audit report       id: 1096727,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-p8p7-x288-28g6',
+1032 silly audit report       title: 'Server-Side Request Forgery in Request',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<=2.88.2',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   xml2js: [
+1032 silly audit report     {
+1032 silly audit report       id: 1096693,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-776f-qx25-q3cc',
+1032 silly audit report       title: 'xml2js is vulnerable to prototype pollution',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<0.5.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   'lodash.set': [
+1032 silly audit report     {
+1032 silly audit report       id: 1106906,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-p6mc-m468-83gw',
+1032 silly audit report       title: 'Prototype Pollution in lodash',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '>=3.7.0 <=4.3.2',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   'lodash.unset': [
+1032 silly audit report     {
+1032 silly audit report       id: 1244434,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-f23m-r3pf-42rh',
+1032 silly audit report       title: 'lodash vulnerable to prototype pollution via array-path bypass in `_.unset`, `_.omit`, and `_.pullAt',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<4.18.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1244540,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-xxjr-mmjv-4gpg',
+1032 silly audit report       title: 'Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '>=4.0.0 <4.18.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   'form-data': [
+1032 silly audit report     {
+1032 silly audit report       id: 1109540,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-fjxv-7rqg-78g4',
+1032 silly audit report       title: 'form-data uses unsafe random function in form-data for choosing boundary',
+1032 silly audit report       severity: 'critical',
+1032 silly audit report       vulnerable_versions: '<2.5.4',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1120745,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-hmw2-7cc7-3qxx',
+1032 silly audit report       title: 'form-data: CRLF injection in form-data via unescaped multipart field names and filenames',
+1032 silly audit report       severity: 'high',
+1032 silly audit report       vulnerable_versions: '<2.5.6',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   qs: [
+1032 silly audit report     {
+1032 silly audit report       id: 1158507,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-4mjr-xmp4-gh2g',
+1032 silly audit report       title: 'qs: Denial of Service via Attacker Controlled isBuffer',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '>=2.2.5 <6.16.0',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     },
+1032 silly audit report     {
+1032 silly audit report       id: 1113719,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-6rw7-vpxm-498p',
+1032 silly audit report       title: "qs's arrayLimit bypass in its bracket notation allows DoS via memory exhaustion",
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<6.14.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   'tough-cookie': [
+1032 silly audit report     {
+1032 silly audit report       id: 1097682,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-72xf-g2v4-qvf3',
+1032 silly audit report       title: 'tough-cookie Prototype Pollution vulnerability',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<4.1.3',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ],
+1032 silly audit report   uuid: [
+1032 silly audit report     {
+1032 silly audit report       id: 1119441,
+1032 silly audit report       url: 'https://github.com/advisories/GHSA-w5hq-g745-h8pq',
+1032 silly audit report       title: 'uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided',
+1032 silly audit report       severity: 'moderate',
+1032 silly audit report       vulnerable_versions: '<11.1.1',
+1032 silly audit report       cwe: [Array],
+1032 silly audit report       cvss: [Object]
+1032 silly audit report     }
+1032 silly audit report   ]
+1032 silly audit report }
+1033 silly packumentCache corgi:https://registry.npmjs.org/protobufjs cache-miss
+1034 silly packumentCache corgi:https://registry.npmjs.org/axios cache-miss
+1035 silly packumentCache corgi:https://registry.npmjs.org/jsonwebtoken cache-miss
+1036 silly packumentCache corgi:https://registry.npmjs.org/request cache-miss
+1037 silly packumentCache corgi:https://registry.npmjs.org/xml2js cache-miss
+1038 silly packumentCache corgi:https://registry.npmjs.org/lodash.set cache-miss
+1039 silly packumentCache corgi:https://registry.npmjs.org/lodash.unset cache-miss
+1040 silly packumentCache corgi:https://registry.npmjs.org/form-data cache-miss
+1041 silly packumentCache corgi:https://registry.npmjs.org/qs cache-miss
+1042 silly packumentCache corgi:https://registry.npmjs.org/tough-cookie cache-miss
+1043 silly packumentCache corgi:https://registry.npmjs.org/uuid cache-miss
+1044 http cache https://registry.npmjs.org/form-data 25ms (cache hit)
+1045 silly packumentCache corgi:https://registry.npmjs.org/form-data set size:55002 disposed:false
+1046 http cache https://registry.npmjs.org/xml2js 27ms (cache hit)
+1047 silly packumentCache corgi:https://registry.npmjs.org/xml2js set size:38207 disposed:false
+1048 http cache https://registry.npmjs.org/jsonwebtoken 28ms (cache hit)
+1049 silly packumentCache corgi:https://registry.npmjs.org/jsonwebtoken set size:67367 disposed:false
+1050 http cache https://registry.npmjs.org/lodash.set 29ms (cache hit)
+1051 silly packumentCache corgi:https://registry.npmjs.org/lodash.set set size:6324 disposed:false
+1052 http cache https://registry.npmjs.org/lodash.unset 28ms (cache hit)
+1053 silly packumentCache corgi:https://registry.npmjs.org/lodash.unset set size:8313 disposed:false
+1054 http cache https://registry.npmjs.org/tough-cookie 27ms (cache hit)
+1055 silly packumentCache corgi:https://registry.npmjs.org/tough-cookie set size:57569 disposed:false
+1056 http cache https://registry.npmjs.org/protobufjs 32ms (cache hit)
+1057 silly packumentCache corgi:https://registry.npmjs.org/protobufjs set size:296669 disposed:false
+1058 http cache https://registry.npmjs.org/axios 35ms (cache hit)
+1059 silly packumentCache corgi:https://registry.npmjs.org/axios set size:307328 disposed:false
+1060 http cache https://registry.npmjs.org/uuid 36ms (cache hit)
+1061 silly packumentCache corgi:https://registry.npmjs.org/uuid set size:85670 disposed:false
+1062 http cache https://registry.npmjs.org/qs 38ms (cache hit)
+1063 silly packumentCache corgi:https://registry.npmjs.org/qs set size:160704 disposed:false
+1064 http cache https://registry.npmjs.org/request 40ms (cache hit)
+1065 silly packumentCache corgi:https://registry.npmjs.org/request set size:129997 disposed:false
+1066 silly packumentCache corgi:https://registry.npmjs.org/wx-server-sdk cache-miss
+1067 http cache https://registry.npmjs.org/wx-server-sdk 2ms (cache hit)
+1068 silly packumentCache corgi:https://registry.npmjs.org/wx-server-sdk set size:299522 disposed:false
+1069 silly packumentCache corgi:https://registry.npmjs.org/@cloudbase%2fnode-sdk cache-miss
+1070 http cache https://registry.npmjs.org/@cloudbase%2fnode-sdk 2ms (cache hit)
+1071 silly packumentCache corgi:https://registry.npmjs.org/@cloudbase%2fnode-sdk set size:218601 disposed:false
+1072 silly packumentCache corgi:https://registry.npmjs.org/tcb-admin-node cache-miss
+1073 http cache https://registry.npmjs.org/tcb-admin-node 3ms (cache hit)
+1074 silly packumentCache corgi:https://registry.npmjs.org/tcb-admin-node set size:203395 disposed:false
+1075 silly packumentCache corgi:https://registry.npmjs.org/request-promise cache-miss
+1076 silly packumentCache corgi:https://registry.npmjs.org/request-promise-core cache-miss
+1077 http cache https://registry.npmjs.org/request-promise 3ms (cache hit)
+1078 silly packumentCache corgi:https://registry.npmjs.org/request-promise set size:45088 disposed:false
+1079 http cache https://registry.npmjs.org/request-promise-core 3ms (cache hit)
+1080 silly packumentCache corgi:https://registry.npmjs.org/request-promise-core set size:6997 disposed:false
+1081 silly packumentCache corgi:https://registry.npmjs.org/@cloudbase%2fdatabase cache-miss
+1082 http cache https://registry.npmjs.org/@cloudbase%2fdatabase 1ms (cache hit)
+1083 silly packumentCache corgi:https://registry.npmjs.org/@cloudbase%2fdatabase set size:128558 disposed:false
+1084 info run protobufjs@6.11.6 postinstall node_modules/protobufjs node scripts/postinstall
+1085 info run protobufjs@6.11.6 postinstall { code: 0, signal: null }
+1086 silly ADD node_modules/side-channel-weakmap
+1087 silly ADD node_modules/side-channel-map
+1088 silly ADD node_modules/side-channel-list
+1089 silly ADD node_modules/object-inspect
+1090 silly ADD node_modules/side-channel
+1091 silly ADD node_modules/xmlbuilder
+1092 silly ADD node_modules/sax
+1093 silly ADD node_modules/core-util-is
+1094 silly ADD node_modules/@typescript/typescript-win32-x64
+1095 silly ADD node_modules/source-map
+1096 silly ADD node_modules/buffer-from
+1097 silly ADD node_modules/yn
+1098 silly ADD node_modules/source-map-support
+1099 silly ADD node_modules/make-error
+1100 silly ADD node_modules/diff
+1101 silly ADD node_modules/arg
+1102 silly ADD node_modules/punycode
+1103 silly ADD node_modules/psl
+1104 silly ADD node_modules/tweetnacl
+1105 silly ADD node_modules/safer-buffer
+1106 silly ADD node_modules/jsbn
+1107 silly ADD node_modules/getpass
+1108 silly ADD node_modules/ecc-jsbn
+1109 silly ADD node_modules/dashdash
+1110 silly ADD node_modules/bcrypt-pbkdf
+1111 silly ADD node_modules/asn1
+1112 silly ADD node_modules/lodash
+1113 silly ADD node_modules/stealthy-require
+1114 silly ADD node_modules/request-promise-core
+1115 silly ADD node_modules/bluebird
+1116 silly ADD node_modules/mime-db
+1117 silly ADD node_modules/verror
+1118 silly ADD node_modules/json-schema
+1119 silly ADD node_modules/extsprintf
+1120 silly ADD node_modules/sshpk
+1121 silly ADD node_modules/jsprim
+1122 silly ADD node_modules/assert-plus
+1123 silly ADD node_modules/uri-js
+1124 silly ADD node_modules/json-schema-traverse
+1125 silly ADD node_modules/fast-json-stable-stringify
+1126 silly ADD node_modules/fast-deep-equal
+1127 silly ADD node_modules/har-schema
+1128 silly ADD node_modules/ajv
+1129 silly ADD node_modules/asynckit
+1130 silly ADD node_modules/delayed-stream
+1131 silly ADD node_modules/uuid
+1132 silly ADD node_modules/tunnel-agent
+1133 silly ADD node_modules/tough-cookie
+1134 silly ADD node_modules/qs
+1135 silly ADD node_modules/performance-now
+1136 silly ADD node_modules/oauth-sign
+1137 silly ADD node_modules/mime-types
+1138 silly ADD node_modules/json-stringify-safe
+1139 silly ADD node_modules/isstream
+1140 silly ADD node_modules/is-typedarray
+1141 silly ADD node_modules/http-signature
+1142 silly ADD node_modules/har-validator
+1143 silly ADD node_modules/form-data
+1144 silly ADD node_modules/forever-agent
+1145 silly ADD node_modules/extend
+1146 silly ADD node_modules/combined-stream
+1147 silly ADD node_modules/caseless
+1148 silly ADD node_modules/aws4
+1149 silly ADD node_modules/aws-sign2
+1150 silly ADD node_modules/undici-types
+1151 silly ADD node_modules/long
+1152 silly ADD node_modules/@types/node
+1153 silly ADD node_modules/@types/long
+1154 silly ADD node_modules/@protobufjs/utf8
+1155 silly ADD node_modules/@protobufjs/pool
+1156 silly ADD node_modules/@protobufjs/path
+1157 silly ADD node_modules/@protobufjs/inquire
+1158 silly ADD node_modules/@protobufjs/float
+1159 silly ADD node_modules/@protobufjs/fetch
+1160 silly ADD node_modules/@protobufjs/eventemitter
+1161 silly ADD node_modules/@protobufjs/codegen
+1162 silly ADD node_modules/@protobufjs/base64
+1163 silly ADD node_modules/@protobufjs/aspromise
+1164 silly ADD node_modules/ecdsa-sig-formatter
+1165 silly ADD node_modules/buffer-equal-constant-time
+1166 silly ADD node_modules/safe-buffer
+1167 silly ADD node_modules/jwa
+1168 silly ADD node_modules/semver
+1169 silly ADD node_modules/lodash.once
+1170 silly ADD node_modules/lodash.isstring
+1171 silly ADD node_modules/lodash.isplainobject
+1172 silly ADD node_modules/lodash.isnumber
+1173 silly ADD node_modules/lodash.isinteger
+1174 silly ADD node_modules/lodash.isboolean
+1175 silly ADD node_modules/lodash.includes
+1176 silly ADD node_modules/jws
+1177 silly ADD node_modules/bignumber.js
+1178 silly ADD node_modules/dunder-proto
+1179 silly ADD node_modules/math-intrinsics
+1180 silly ADD node_modules/has-symbols
+1181 silly ADD node_modules/get-proto
+1182 silly ADD node_modules/es-object-atoms
+1183 silly ADD node_modules/es-define-property
+1184 silly ADD node_modules/function-bind
+1185 silly ADD node_modules/es-errors
+1186 silly ADD node_modules/get-intrinsic
+1187 silly ADD node_modules/call-bind-apply-helpers
+1188 silly ADD node_modules/hasown
+1189 silly ADD node_modules/has-tostringtag
+1190 silly ADD node_modules/gopd
+1191 silly ADD node_modules/call-bound
+1192 silly ADD node_modules/ms
+1193 silly ADD node_modules/ieee754
+1194 silly ADD node_modules/base64-js
+1195 silly ADD node_modules/buffer
+1196 silly ADD node_modules/follow-redirects
+1197 silly ADD node_modules/humanize-ms
+1198 silly ADD node_modules/url
+1199 silly ADD node_modules/url/node_modules/qs
+1200 silly ADD node_modules/url/node_modules/punycode
+1201 silly ADD node_modules/is-stream
+1202 silly ADD node_modules/clone
+1203 silly ADD node_modules/@types/clone
+1204 silly ADD node_modules/lodash.unset
+1205 silly ADD node_modules/lodash.set
+1206 silly ADD node_modules/lodash.clonedeep
+1207 silly ADD node_modules/bson
+1208 silly ADD node_modules/xml2js
+1209 silly ADD node_modules/typescript
+1210 silly ADD node_modules/ts-node
+1211 silly ADD node_modules/retry
+1212 silly ADD node_modules/request-promise
+1213 silly ADD node_modules/request
+1214 silly ADD node_modules/lodash.merge
+1215 silly ADD node_modules/jsonwebtoken
+1216 silly ADD node_modules/is-regex
+1217 silly ADD node_modules/axios
+1218 silly ADD node_modules/agentkeepalive
+1219 silly ADD node_modules/@types/retry
+1220 silly ADD node_modules/@cloudbase/signature-nodejs
+1221 silly ADD node_modules/@cloudbase/database
+1222 silly ADD node_modules/tslib
+1223 silly ADD node_modules/tcb-admin-node
+1224 silly ADD node_modules/tcb-admin-node/node_modules/@cloudbase/database
+1225 silly ADD node_modules/protobufjs
+1226 silly ADD node_modules/json-bigint
+1227 silly ADD node_modules/@cloudbase/node-sdk
+1228 silly ADD node_modules/wx-server-sdk
+1229 verbose cwd E:\WeChatProjects\xuexi\cloudfunctions\userManage
+1230 verbose os Windows_NT 10.0.26300
+1231 verbose node v24.15.0
+1232 verbose npm  v11.12.1
+1233 verbose exit 0
+1234 info ok

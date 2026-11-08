@@ -1,5 +1,9 @@
 {
-  "navigationBarTitleText": "首页",
-  "navigationBarBackgroundColor": "#0D1B2A",
-  "navigationBarTextStyle": "white"
+  "navigationBarTitleText": "工具箱",
+  "navigationBarBackgroundColor": "#2B1D18",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button"
+  }
 }

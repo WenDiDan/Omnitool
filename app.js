@@ -1,26 +1,32 @@
+const permission = require('./utils/permission.js')
+
 App({
-    globalData: {
-      userInfo: null,
-      scanHistory: [],
-      settings: {
-        soundEnabled: true,
-        vibrationEnabled: true,
-        autoCopy: false,
-        historyLimit: 100
-      },
+  globalData: {
+    userInfo: null,
+    scanHistory: [],
+    historyRetentionDays: 3, // 历史保留天数，普通用户3天，VIP/管理员365天
+    settings: {
+      soundEnabled: true,
+      vibrationEnabled: true,
+      autoCopy: false,
+      historyLimit: 100
+    },
       customRules: [],  // 自定义解码规则
-      isFirstShow: true  // 小程序启动后首次进入页面标记
+      isFirstShow: true,  // 小程序启动后首次进入页面标记
+      _autoLoginPromise: null  // autoLogin 的 Promise，供页面判断是否正在登录中
     },
   
     onLaunch() {
       if (wx.cloud) {
         wx.cloud.init({
+          env: 'wendi-d5gnswjf75b25aac0',
           traceUser: true
         });
       }
       this.initStorage();
       this.checkUpdate();
-      this.refreshUserFromCloud();  // 启动时自动刷新用户数据
+      const autoLoginPromise = this.autoLogin().catch(() => {});
+      this.globalData._autoLoginPromise = autoLoginPromise;  // 供页面判断是否正在登录中
     },
   
     initStorage() {
@@ -74,6 +80,7 @@ App({
       if (existingIndex !== -1) {
         history[existingIndex].count = count;
         history[existingIndex].time = scanData.time;
+        history[existingIndex].timestamp = Date.now();  // 更新时间戳
         history[existingIndex].wxScanType = scanData.wxScanType;
         history[existingIndex].decodedInfo = decodedInfo;
         // 移到开头
@@ -340,38 +347,87 @@ App({
       return results;
     },
 
-    // 启动时从云端刷新用户数据，缓存到本地
-    refreshUserFromCloud() {
-      const loggedIn = wx.getStorageSync('isLoggedIn')
-      if (!loggedIn) return
-
-      wx.cloud.callFunction({
-        name: 'userManage',
-        data: { action: 'getInfo' },
-        success: async (res) => {
-          if (res.result && res.result.success) {
-            const user = res.result.user
-            const now = new Date()
-            const activeTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-
-            if (user.nickName) {
-              wx.setStorageSync('userNickName', user.nickName)
-            }
-            if (user.avatarUrl) {
-              const avatarUrl = await this.getAvatarUrl(user.avatarUrl)
-              wx.setStorageSync('userAvatar', avatarUrl)
-            }
-            if (user.openid) {
-              wx.setStorageSync('userOpenid', user.openid)
-            }
-            wx.setStorageSync('lastActiveTime', activeTime)
-            this.globalData.userInfo = user
+    /**
+     * 自动登录：小程序启动时自动获取用户身份
+     */
+    async autoLogin() {
+      console.log('[app] 自动登录中...')
+      try {
+        const res = await wx.cloud.callFunction({
+          name: 'userManage',
+          data: { action: 'getInfo' }
+        })
+        if (res.result && res.result.success) {
+          const user = res.result.user
+          const now = new Date()
+          const loginTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+          
+          // 写入权限缓存
+          permission.saveCache(user)
+          // 应用用户信息到全局和本地存储
+          this.applyUserInfo(user)
+          
+          // 保存登录状态
+          wx.setStorageSync('isLoggedIn', true)
+          wx.setStorageSync('loginTime', loginTime)
+          wx.setStorageSync('lastActiveTime', loginTime)
+          if (user.openid) {
+            wx.setStorageSync('userOpenid', user.openid)
           }
-        },
-        fail: (err) => {
-          console.error('启动刷新用户数据失败', err)
+          
+          console.log('[app] 自动登录成功:', user.role, user.nickName || '无昵称')
+        } else {
+          console.warn('[app] 自动登录失败:', res.result?.error || '未知错误')
+          // 写入空权限缓存，避免页面报错
+          permission.saveCache({ openid: '', role: 'user', roleLabel: '普通用户', level: 1, nickName: '', avatarUrl: '', isBlocked: false })
         }
-      })
+      } catch (e) {
+        console.error('[app] 自动登录异常', e)
+        permission.saveCache({ openid: '', role: 'user', roleLabel: '普通用户', level: 1, nickName: '', avatarUrl: '', isBlocked: false })
+      } finally {
+        this.globalData._autoLoginPromise = null
+      }
+    },
+
+    /**
+     * 将用户信息应用到 globalData 和旧版 storage（向后兼容）
+     */
+    applyUserInfo(user) {
+      if (!user || !user.openid) return
+
+      const now = new Date()
+      const activeTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+
+      // 向后兼容：继续写入旧版 storage key
+      if (user.nickName) {
+        wx.setStorageSync('userNickName', user.nickName)
+      }
+      if (user.openid) {
+        wx.setStorageSync('userOpenid', user.openid)
+      }
+      wx.setStorageSync('lastActiveTime', activeTime)
+
+      // 头像单独处理（不阻塞主流程）
+      if (user.avatarUrl) {
+        this.getAvatarUrl(user.avatarUrl).then(url => {
+          wx.setStorageSync('userAvatar', url)
+        }).catch(() => {})
+      }
+
+      this.globalData.userInfo = user
+    },
+
+    /**
+     * 登出时清除权限缓存
+     */
+    clearUserPermission() {
+      permission.clearCache()
+      this.globalData.userInfo = null
+      wx.removeStorageSync('userNickName')
+      wx.removeStorageSync('userOpenid')
+      wx.removeStorageSync('userAvatar')
+      wx.removeStorageSync('lastActiveTime')
+      wx.removeStorageSync('isLoggedIn')
     },
 
     // 获取头像URL（cloud:// 转 https://）

@@ -149,7 +149,8 @@ Page({
     const index = e.currentTarget.dataset.index
     wx.setClipboardData({
       data: String(code),
-      success: () => { wx.showToast({ title: `注册码${index + 1}已复制`, icon: 'success' }) }
+      success: () => { wx.showToast({ title: `注册码${index + 1}已复制`, icon: 'success' }) },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }) }
     })
   },
 
@@ -157,7 +158,8 @@ Page({
     const text = this.data.codes.map((c, i) => `注册码${i + 1}: ${c}`).join('\n')
     wx.setClipboardData({
       data: text,
-      success: () => { wx.showToast({ title: '已全部复制', icon: 'success' }) }
+      success: () => { wx.showToast({ title: '已全部复制', icon: 'success' }) },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }) }
     })
   },
 
@@ -176,7 +178,8 @@ Page({
         if (res.data) {
           this.setData({ parseBatchInput: res.data, parseResult: null })
         }
-      }
+      },
+      fail: () => { wx.showToast({ title: '剪切板读取失败', icon: 'none' }) }
     })
   },
 
@@ -285,7 +288,8 @@ Page({
     }
     wx.setClipboardData({
       data: lines.join('\n'),
-      success: () => { wx.showToast({ title: '已复制', icon: 'success' }) }
+      success: () => { wx.showToast({ title: '已复制', icon: 'success' }) },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }) }
     })
   }
 })

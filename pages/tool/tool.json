@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "工具详情",
+  "navigationBarBackgroundColor": "#2B1D18",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-toast": "tdesign-miniprogram/toast/toast",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
+  }
+}

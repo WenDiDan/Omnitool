@@ -494,7 +494,7 @@ Page({
         const start = parseInt(formData.startPos) - 1;
         const end = parseInt(formData.endPos);
         extracted = testInput.substring(start, end);
-        extractDesc = `位置 ${formData.startPos}-${formData.endPos}`;
+        const extractDesc = `位置 ${formData.startPos}-${formData.endPos}`;
         steps.push({
           name: '内容提取',
           input: `方式: 提取位置 (${formData.startPos}-${formData.endPos})\n原始: ${testInput}`,

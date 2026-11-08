@@ -1,0 +1,9 @@
+{
+  "name": "qrcodeGen",
+  "version": "1.0.0",
+  "description": "生成二维码图片",
+  "main": "index.js",
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  }
+}

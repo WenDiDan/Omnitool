@@ -1,7 +1,28 @@
 {
-  "envId": "{{env.ENV_ID}}",
-  "functionRoot": "./functions",
-  "functions": [],
+  "envId": "wendi-d5gnswjf75b25aac0",
+  "functionRoot": "./cloudfunctions",
+  "functions": [
+    {
+      "name": "syncScanHistory",
+      "runtime": "Nodejs16.13",
+      "timeout": 15
+    },
+    {
+      "name": "fetchWeb",
+      "runtime": "Nodejs16.13",
+      "timeout": 15
+    },
+    {
+      "name": "userManage",
+      "runtime": "Nodejs16.13",
+      "timeout": 15
+    },
+    {
+      "name": "toolsManage",
+      "runtime": "Nodejs16.13",
+      "timeout": 15
+    }
+  ],
   "ai": {
     "defaultAgent": "{{env.AI_DEFAULT_AGENT}}",
     "agents": {

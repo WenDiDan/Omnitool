@@ -25,6 +25,40 @@ function getCreateTime(doc) {
   return ''
 }
 
+/**
+ * 检查VIP是否过期，过期则自动降级为普通用户
+ * @returns {object} { role, level, roleLabel, vipExpiresAt }  — 返回最新权限信息
+ */
+async function checkVipExpiry(user, usersCollection) {
+  if (user.role !== 'vip') {
+    return { role: user.role, level: ROLES[user.role]?.level ?? 1, roleLabel: ROLES[user.role]?.label || '普通用户', vipExpiresAt: user.vipExpiresAt || '' }
+  }
+
+  // 没有设置过期时间 → 永久VIP，不过期
+  if (!user.vipExpiresAt) {
+    return { role: 'vip', level: 2, roleLabel: 'VIP用户', vipExpiresAt: '' }
+  }
+
+  const now = new Date()
+  const expiresAt = new Date(user.vipExpiresAt)
+
+  // 未过期
+  if (expiresAt > now) {
+    return { role: 'vip', level: 2, roleLabel: 'VIP用户', vipExpiresAt: user.vipExpiresAt }
+  }
+
+  // 已过期 → 自动降级为普通用户
+  console.log(`[VIP过期] 用户 ${user.openid} VIP已过期 (${user.vipExpiresAt})，降级为普通用户`)
+  try {
+    await usersCollection.where({ openid: user.openid }).update({
+      data: { role: 'user', vipExpiresAt: '', historyRetentionDays: 3 }
+    })
+  } catch (e) {
+    console.error('[VIP过期] 降级写入失败', e)
+  }
+  return { role: 'user', level: 1, roleLabel: '普通用户', vipExpiresAt: '' }
+}
+
 // 角色定义
 const ROLES = {
   admin: { label: '管理员', level: 3 },
@@ -69,7 +103,7 @@ exports.main = async (event, context) => {
     case 'updateProfile':
       return await updateProfile(OPENID, event.nickName, event.avatarUrl, usersCollection)
     case 'setRole':
-      return await setRole(OPENID, event.targetOpenid, event.role, usersCollection)
+      return await setRole(OPENID, event.targetOpenid, event.role, event.vipExpiresAt, usersCollection)
     case 'deleteUser':
       return await deleteUser(OPENID, event.targetOpenid, usersCollection)
     case 'listUsers':
@@ -98,18 +132,37 @@ async function getUserInfo(openid, usersCollection) {
     if (data.length > 0) {
       const user = data.find(u => u.openid === openid) || data[0]
       const createdAt = await ensureCreatedAt(openid, user, usersCollection)
+
+      // 检查VIP是否过期（过期会自动降级写库）
+      const vipResult = await checkVipExpiry(user, usersCollection)
+
+      // 计算有效保留天数（与 syncScanHistory 逻辑一致）
+      let effectiveDays = user.historyRetentionDays || 3
+      if (vipResult.role === 'vip' && vipResult.vipExpiresAt) {
+        const expireDate = new Date(vipResult.vipExpiresAt)
+        const now2 = new Date()
+        if (expireDate > now2) {
+          const remainDays = Math.ceil((expireDate - now2) / (24 * 60 * 60 * 1000))
+          effectiveDays = Math.max(effectiveDays, remainDays)
+        }
+      } else if (vipResult.role === 'admin') {
+        effectiveDays = user.historyRetentionDays || 36500
+      }
+
       return {
         success: true,
         user: {
           openid,
-          role: user.role || 'user',
-          roleLabel: ROLES[user.role]?.label || '普通用户',
-          level: ROLES[user.role]?.level ?? 1,
+          role: vipResult.role,
+          roleLabel: vipResult.roleLabel,
+          level: vipResult.level,
           nickName: user.nickName || '',
           avatarUrl: user.avatarUrl || '',
           avatarVersion: user.avatarVersion || 1,
           createdAt,
-          isBlocked: user.role === 'blocked'
+          isBlocked: vipResult.role === 'blocked',
+          vipExpiresAt: vipResult.vipExpiresAt || '',
+          historyRetentionDays: effectiveDays
         }
       }
     }
@@ -177,7 +230,7 @@ async function updateProfile(openid, nickName, avatarUrl, usersCollection) {
 }
 
 // 管理员设置用户角色
-async function setRole(callerOpenid, targetOpenid, newRole, usersCollection) {
+async function setRole(callerOpenid, targetOpenid, newRole, vipExpiresAt, usersCollection) {
   // 参数验证：targetOpenid 和 newRole 是必须的
   if (!targetOpenid || !newRole || !ROLES[newRole]) {
     return { success: false, error: '参数无效' }
@@ -205,12 +258,35 @@ async function setRole(callerOpenid, targetOpenid, newRole, usersCollection) {
     }
   }
 
-  // 执行角色更新
-  await usersCollection.where({ openid: targetOpenid }).update({
-    data: { role: newRole }
-  })
+  // 构建更新数据
+  const updateData = { role: newRole }
 
-  return { success: true, message: `已将用户角色设为${ROLES[newRole].label}` }
+  // VIP 设置过期时间，同时将保留天数写入为VIP剩余天数（保持数据库与展示一致）
+  if (newRole === 'vip' && vipExpiresAt) {
+    updateData.vipExpiresAt = vipExpiresAt
+    const expireDate = new Date(vipExpiresAt)
+    const remainDays = Math.ceil((expireDate - new Date()) / (24 * 60 * 60 * 1000))
+    updateData.historyRetentionDays = Math.max(3, remainDays)
+  } else if (newRole === 'admin') {
+    // 设为管理员：清除VIP信息，保留天数设为36500（永久）
+    updateData.vipExpiresAt = ''
+    updateData.historyRetentionDays = 36500
+  } else if (newRole !== 'vip') {
+    // 改为普通用户：清除过期时间并恢复默认保留天数
+    updateData.vipExpiresAt = ''
+    if (currentRole === 'vip' || currentRole === 'admin') {
+      updateData.historyRetentionDays = 3
+    }
+  }
+
+  // 执行角色更新
+  await usersCollection.where({ openid: targetOpenid }).update({ data: updateData })
+
+  const msg = newRole === 'vip' && vipExpiresAt
+    ? `已将用户角色设为${ROLES[newRole].label}（有效期至 ${vipExpiresAt.substring(0, 10)}）`
+    : `已将用户角色设为${ROLES[newRole].label}`
+
+  return { success: true, message: msg }
 }
 
 // 管理员删除用户
@@ -312,14 +388,41 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
     .filter(u => !u.createdAt)
     .forEach(u => ensureCreatedAt(u.openid, u, usersCollection))
 
-  const users = usersResult.data.map(u => ({
-    openid: u.openid,
-    role: u.role || 'user',
-    roleLabel: ROLES[u.role]?.label || '普通用户',
-    nickName: u.nickName || '',
-    avatarUrl: processAvatarUrl(u.avatarUrl),
-    createdAt: getCreateTime(u) || new Date().toISOString()
-  }))
+  // 批量检查VIP过期（后台异步，不阻塞）
+  const vipUsers = usersResult.data.filter(u => u.role === 'vip' && u.vipExpiresAt)
+  if (vipUsers.length > 0) {
+    for (const vip of vipUsers) {
+      await checkVipExpiry(vip, usersCollection)
+    }
+    // 重新读取更新后的数据
+    const refreshed = await usersCollection.skip(skip).limit(pageSize).get()
+    usersResult.data = refreshed.data
+  }
+
+  const users = usersResult.data.map(u => {
+    // 动态计算有效保留天数（与 syncScanHistory 的 getRetentionDays 逻辑一致）
+    let effectiveDays = u.historyRetentionDays || 3
+    const role = u.role || 'user'
+    if (role === 'vip' && u.vipExpiresAt) {
+      const expireDate = new Date(u.vipExpiresAt)
+      const now = new Date()
+      if (expireDate > now) {
+        const remainDays = Math.ceil((expireDate - now) / (24 * 60 * 60 * 1000))
+        effectiveDays = Math.max(effectiveDays, remainDays)
+      }
+    }
+
+    return {
+      openid: u.openid,
+      role: role,
+      roleLabel: ROLES[role]?.label || '普通用户',
+      nickName: u.nickName || '',
+      avatarUrl: processAvatarUrl(u.avatarUrl),
+      createdAt: getCreateTime(u) || new Date().toISOString(),
+      vipExpiresAt: u.vipExpiresAt || '',
+      historyRetentionDays: effectiveDays
+    }
+  })
 
   return {
     success: true,
@@ -334,6 +437,11 @@ async function checkPermission(openid, requiredLevel, usersCollection) {
   if (!data.length) {
     return { success: false, hasPermission: false, error: '用户不存在' }
   }
-  const level = ROLES[data[0].role]?.level || 0
-  return { success: true, hasPermission: level >= requiredLevel, role: data[0].role, level }
+
+  const user = data[0]
+  // 检查VIP过期（过期会自动降级）
+  const vipResult = await checkVipExpiry(user, usersCollection)
+  const level = vipResult.level
+
+  return { success: true, hasPermission: level >= requiredLevel, role: vipResult.role, level }
 }

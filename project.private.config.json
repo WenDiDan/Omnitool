@@ -19,6 +19,6 @@
     "bigPackageSizeSupport": false,
     "useIsolateContext": true
   },
-  "libVersion": "3.15.2",
+  "libVersion": "3.16.3",
   "condition": {}
 }

@@ -16,6 +16,17 @@ Page({
       { label: '普通用户', value: 'user' },
       { label: '已封禁', value: 'blocked' }
     ],
+    // VIP到期时间选项
+    vipDurationOptions: [
+      { label: '1个月', value: 1 },
+      { label: '3个月', value: 3 },
+      { label: '6个月', value: 6 },
+      { label: '1年', value: 12 },
+      { label: '永久', value: 0 }
+    ],
+    showVipPicker: false,
+    pendingVipOpenid: '',
+    pendingVipUser: null,  // 当前待操作的用户（用于弹窗展示）
     // 删除确认弹窗
     showDeleteModal: false,
     deleteTarget: {
@@ -101,6 +112,14 @@ Page({
       // 预处理用户数据
       const users = usersData.map(user => {
         const createdAt = user.createdAt || ''
+        const vipExpiresAt = user.vipExpiresAt || ''
+        let vipStatus = ''
+        if (user.role === 'vip' && vipExpiresAt) {
+          const daysLeft = Math.ceil((new Date(vipExpiresAt) - new Date()) / (1000 * 60 * 60 * 24))
+          vipStatus = daysLeft > 0 ? `（剩${daysLeft}天）` : '（已过期）'
+        } else if (user.role === 'vip' && !vipExpiresAt) {
+          vipStatus = '（永久）'
+        }
         return {
           openid: user.openid,
           openidDisplay: user.openid || '---',
@@ -108,9 +127,12 @@ Page({
           avatarUrl: user.avatarUrl || '',
           role: user.role || 'user',
           roleLabel: this.getRoleLabel(user.role || 'user'),
+          roleIndex: this.getRoleIndex(user.role || 'user'),  // picker默认选中索引
           createdAt: createdAt,
           joinDate: createdAt ? createdAt.substring(0, 10) : '未知',
-          isCurrentUser: user.openid === currentOpenid
+          isCurrentUser: user.openid === currentOpenid,
+          vipExpiresAt,
+          vipStatus
         }
       })
       
@@ -156,6 +178,12 @@ Page({
     return labels[role] || '普通用户'
   },
 
+  // 获取角色在roleOptions中的索引（picker默认选中）
+  getRoleIndex(role) {
+    const map = { admin: 0, vip: 1, user: 2, blocked: 3 }
+    return map[role] !== undefined ? map[role] : 2
+  },
+
   // 下拉刷新
   onPullDownRefresh() {
     this.checkAdminAndLoad()
@@ -171,7 +199,8 @@ Page({
       data: openid,
       success: () => {
         wx.showToast({ title: '已复制', icon: 'none' })
-      }
+      },
+      fail: () => { wx.showToast({ title: '复制失败', icon: 'none' }) }
     })
   },
 
@@ -184,26 +213,81 @@ Page({
     const user = this.data.userList.find(u => u.openid === openid)
     if (!user) return
     
-    if (user.role === newRole) return
+    // 相同角色且非VIP → 无需操作
+    if (user.role === newRole && newRole !== 'vip') return
     
+    // 设置为VIP时，弹出有效期选择（包括已是VIP的情况——可续期或改时长）
+    if (newRole === 'vip') {
+      this.setData({
+        pendingVipOpenid: openid,
+        pendingVipUser: user,
+        showVipPicker: true
+      })
+      return
+    }
+    
+    this.confirmRoleChange(openid, newRole)
+  },
+
+  // 确认VIP有效时长
+  onVipDurationSelect(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const duration = this.data.vipDurationOptions[index]
+    const openid = this.data.pendingVipOpenid
+    const user = this.data.userList.find(u => u.openid === openid)
+    const nickName = user ? (user.nickName || '微信用户') : '该用户'
+
+    // 计算到期时间
+    let vipExpiresAt = ''
+    let confirmMsg = `确定将 "${nickName}" 设为永久VIP？`
+    if (duration.value > 0) {
+      const expires = new Date()
+      expires.setMonth(expires.getMonth() + duration.value)
+      vipExpiresAt = expires.toISOString()
+      confirmMsg = `确定将 "${nickName}" 设为VIP（${duration.label}后到期）？`
+    }
+
+    this.setData({ showVipPicker: false })
+
+    wx.showModal({
+      title: '确认修改',
+      content: confirmMsg,
+      success: (res) => {
+        if (res.confirm) {
+          this.updateUserRole(openid, 'vip', vipExpiresAt)
+        }
+      }
+    })
+  },
+
+  // 取消VIP有效期选择
+  closeVipPicker() {
+    this.setData({ showVipPicker: false, pendingVipOpenid: '', pendingVipUser: null })
+  },
+
+  // 确认角色修改（非VIP角色或来自VIP选择器的确认）
+  confirmRoleChange(openid, newRole) {
+    const user = this.data.userList.find(u => u.openid === openid)
+    if (!user) return
+
     wx.showModal({
       title: '确认修改',
       content: `确定将 "${user.nickName || '微信用户'}" 设为 ${this.getRoleLabel(newRole)}？`,
       success: (res) => {
         if (res.confirm) {
-          this.updateUserRole(openid, newRole)
+          this.updateUserRole(openid, newRole, '')
         }
       }
     })
   },
 
   // 更新用户角色
-  updateUserRole(openid, newRole) {
+  updateUserRole(openid, newRole, vipExpiresAt) {
     wx.showLoading({ title: '处理中...', mask: true })
 
     wx.cloud.callFunction({
       name: 'userManage',
-      data: { action: 'setRole', targetOpenid: openid, role: newRole },
+      data: { action: 'setRole', targetOpenid: openid, role: newRole, vipExpiresAt: vipExpiresAt || '' },
       success: (res) => {
         wx.hideLoading()
         if (res.result && res.result.success) {

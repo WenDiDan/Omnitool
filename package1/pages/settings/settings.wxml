@@ -2,17 +2,17 @@
   <view class="card">
     <view class="setting-item flex-between">
       <text class="setting-label">扫描声音</text>
-      <switch checked="{{settings.soundEnabled}}" bindchange="toggleSound" color="#3D8B7A"/>
+      <switch checked="{{settings.soundEnabled}}" bindchange="toggleSound" color="#E8A44C"/>
     </view>
     <view class="divider"></view>
     <view class="setting-item flex-between">
       <text class="setting-label">震动反馈</text>
-      <switch checked="{{settings.vibrationEnabled}}" bindchange="toggleVibration" color="#3D8B7A"/>
+      <switch checked="{{settings.vibrationEnabled}}" bindchange="toggleVibration" color="#E8A44C"/>
     </view>
     <view class="divider"></view>
     <view class="setting-item flex-between">
       <text class="setting-label">自动复制</text>
-      <switch checked="{{settings.autoCopy}}" bindchange="toggleAutoCopy" color="#3D8B7A"/>
+      <switch checked="{{settings.autoCopy}}" bindchange="toggleAutoCopy" color="#E8A44C"/>
     </view>
     <view class="divider"></view>
     <view class="setting-item flex-between">
@@ -61,7 +61,7 @@
         </view>
         <view class="rule-actions">
           <view class="rule-delete-btn" catchtap="deleteRule" data-rule="{{item}}">🗑️</view>
-          <switch checked="{{item.enabled}}" bindchange="toggleRule" data-rule="{{item}}" color="#3D8B7A"/>
+          <switch checked="{{item.enabled}}" bindchange="toggleRule" data-rule="{{item}}" color="#E8A44C"/>
         </view>
       </view>
     </view>
@@ -241,7 +241,7 @@
           <view class="form-item">
             <text class="form-label">长度匹配</text>
             <view class="flex-row-center">
-              <switch checked="{{formData.lengthEnabled}}" bindchange="onLengthToggle" color="#3D8B7A"/>
+              <switch checked="{{formData.lengthEnabled}}" bindchange="onLengthToggle" color="#E8A44C"/>
               <text class="form-hint-inline" wx:if="{{formData.lengthEnabled}}">开启长度限制</text>
             </view>
           </view>
@@ -283,7 +283,7 @@
           
           <view class="form-item">
             <text class="form-label">启用日期转换</text>
-            <switch checked="{{formData.dateMapping.enabled}}" bindchange="onDateMappingToggle" color="#3D8B7A"/>
+            <switch checked="{{formData.dateMapping.enabled}}" bindchange="onDateMappingToggle" color="#E8A44C"/>
           </view>
           
           <view class="form-item date-positions" wx:if="{{formData.dateMapping.enabled}}">

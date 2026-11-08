@@ -1,23 +1,26 @@
 {
     "pages": [
-        "pages/scan/scan",
         "pages/home/home",
-        "pages/index/index",
-        "pages/my/my",
+        "pages/scan/scan",
+        "pages/profile/profile",
         "pages/history/history",
+        "pages/recycleBin/recycleBin",
         "pages/userManage/userManage",
         "pages/log/log",
-        "pages/continuousScan/continuousScan"
+        "pages/admin/data-manage",
+        "pages/continuousScan/continuousScan",
+        "pages/qrcode/qrcode",
+        "pages/tool/tool"
     ],
     "lazyCodeLoading": "requiredComponents",
-    "entryPagePath": "pages/scan/scan",
+    "entryPagePath": "pages/home/home",
     "window": {
         "backgroundTextStyle": "light",
-        "navigationBarBackgroundColor": "#0D1B2A",
-        "navigationBarTitleText": "条码扫描器",
+        "navigationBarBackgroundColor": "#2B1D18",
+        "navigationBarTitleText": "工具箱",
         "navigationBarTextStyle": "white",
         "enablePullDownRefresh": false,
-        "backgroundColor": "#F4F1DE",
+        "backgroundColor": "#F9F4EB",
         "pageOrientation": "portrait",
         "navigationStyle": "default"
     },
@@ -28,16 +31,10 @@
     },
     "tabBar": {
         "color": "#999999",
-        "selectedColor": "#3D8B7A",
+        "selectedColor": "#C0553D",
         "backgroundColor": "#ffffff",
         "borderStyle": "black",
         "list": [
-            {
-                "pagePath": "pages/scan/scan",
-                "text": "扫码",
-                "iconPath": "images/scan.png",
-                "selectedIconPath": "images/scan_selected.png"
-            },
             {
                 "pagePath": "pages/home/home",
                 "text": "首页",
@@ -45,13 +42,7 @@
                 "selectedIconPath": "images/home_selected.png"
             },
             {
-                "pagePath": "pages/index/index",
-                "text": "解密",
-                "iconPath": "images/decode.png",
-                "selectedIconPath": "images/decode_selected.png"
-            },
-            {
-                "pagePath": "pages/my/my",
+                "pagePath": "pages/profile/profile",
                 "text": "我的",
                 "iconPath": "images/my.png",
                 "selectedIconPath": "images/my_selected.png"

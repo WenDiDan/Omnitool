@@ -1,0 +1,59 @@
+<view class="page-wrap">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索用户ID或昵称" value="{{searchKey}}" bindinput="onSearchInput"/>
+    <text class="search-btn" bindtap="loadUsers">刷新</text>
+  </view>
+
+  <!-- 用户列表 -->
+  <scroll-view class="user-list" scroll-y>
+    <block wx:for="{{users}}" wx:key="openid">
+      <view class="user-row" wx:if="{{!searchKey || item.openid.indexOf(searchKey) !== -1 || (item.nickName && item.nickName.indexOf(searchKey) !== -1)}}">
+        <view class="user-info">
+          <image class="user-avatar" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+          <view class="user-meta">
+            <text class="user-name">{{item.nickName || '未设置'}}</text>
+            <text class="user-id">{{item.openid}}</text>
+          </view>
+        </view>
+        <view class="user-action" bindtap="showEdit" data-openid="{{item.openid}}">
+          <text class="user-days">{{item.retentionDays ? item.retentionDays + '天' : (item.historyRetentionDays ? item.historyRetentionDays + '天' : '3天')}}</text>
+          <text class="user-edit">修改</text>
+        </view>
+      </view>
+    </block>
+    <view class="empty-tip" wx:if="{{users.length === 0}}">
+      <text>暂无用户数据</text>
+    </view>
+  </scroll-view>
+
+  <!-- 编辑弹窗 -->
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+    <view class="modal-box" catchtap="stopTap">
+      <view class="modal-header">
+        <view class="modal-accent"></view>
+        <text class="modal-title">修改保留天数</text>
+      </view>
+      <view class="modal-body">
+        <text class="modal-label">用户：{{editUser.nickName || editUser.openid || ''}}</text>
+        <!-- VIP剩余天数（只读显示） -->
+        <view class="modal-display-row" wx:if="{{editVipRemainDays > 0}}">
+          <text class="modal-input-label">VIP剩余天数</text>
+          <view class="modal-display-value">{{editVipRemainDays}}天</view>
+        </view>
+        <!-- 基础保留天数（可编辑） -->
+        <view class="modal-input-row">
+          <text class="modal-input-label">基础保留天数（1-36500）</text>
+          <input class="modal-input" type="number" value="{{editDays}}" bindinput="onEditDaysInput" placeholder="输入天数"/>
+        </view>
+        <view class="modal-hint">
+          <text>普通用户：实际保留天数=此值（默认3天）\nVIP用户：实际保留天数=VIP剩余天数+此值\n管理员：实际保留天数=此值（36500=永久）</text>
+        </view>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="closeEditModal">取消</view>
+        <view class="modal-btn modal-confirm" bindtap="saveRetention">保存</view>
+      </view>
+    </view>
+  </view>
+</view>
