@@ -1,0 +1,246 @@
+/* ========================================
+   二维码创建 - 暖浅色主题（与全站 var(--bg-page) 基调一致）
+   ======================================== */
+
+.pg {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: 0 28rpx;
+}
+
+/* ===== Tab ===== */
+.tabs {
+  display: flex;
+  padding: 28rpx 0 8rpx;
+}
+.tb {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: var(--text-4);
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s;
+}
+.tb.on {
+  color: #2B1D18;
+  font-weight: 700;
+}
+.tb.on::after {
+  content: '';
+  position: absolute;
+  bottom: 4rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36rpx;
+  height: 5rpx;
+  border-radius: 3rpx;
+  background: #C0553D;
+}
+
+/* ===== 输入区 ===== */
+.input-box {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20rpx;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  /* 边框加深，白卡在米色背景上轮廓清晰 */
+  border: 2rpx solid rgba(43, 29, 24, 0.12);
+  box-shadow: 0 4rpx 14rpx rgba(43, 29, 24, 0.06);
+  overflow: hidden;
+}
+
+.txt {
+  width: 100%;
+  min-height: 280rpx;
+  padding: 24rpx 24rpx 0;
+  font-size: 30rpx;
+  color: #2B1D18;
+  line-height: 1.7;
+  box-sizing: border-box;
+  background: transparent;
+}
+.ph {
+  color: #B7A99A;
+  font-size: 28rpx;
+}
+
+.input-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 24rpx 18rpx;
+  border-top: 1rpx solid #F0E8DB;
+  margin-top: 12rpx;
+}
+.ib-left {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 24rpx;
+  color: var(--text-4);
+  padding: 6rpx 12rpx;
+  border-radius: 8rpx;
+}
+.ib-left:active {
+  background: rgba(192, 85, 61, 0.08);
+}
+.ib-icon {
+  font-size: 24rpx;
+}
+.ib-count {
+  font-size: 22rpx;
+  color: var(--text-4);
+}
+
+/* 生成按钮：未激活态改为浅棕实底 + 深灰字（白底在米背景上隐形） */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 92rpx;
+  margin: 28rpx 0 calc(28rpx + env(safe-area-inset-bottom));
+  border-radius: 14rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text-4);
+  background: #F0E7D8;
+  border: 2rpx solid #E7DCC9;
+  transition: all 0.2s;
+}
+.btn.go {
+  color: #FFF;
+  background: #C0553D;
+  border-color: #C0553D;
+  box-shadow: 0 6rpx 16rpx rgba(192, 85, 61, 0.25);
+}
+.btn.loading {
+  opacity: 0.6;
+}
+
+/* ===== 结果弹层 ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.overlay.show {
+  pointer-events: auto;
+}
+.mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 16, 12, 0.5);
+  opacity: 0;
+  transition: opacity 0.28s;
+}
+.show .mask {
+  opacity: 1;
+}
+.sheet {
+  width: 100%;
+  max-height: 82vh;
+  background: #FFFFFF;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 48rpx 0 calc(32rpx + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+.show .sheet {
+  transform: translateY(0);
+}
+
+/* 关闭按钮 */
+.sh-close {
+  position: absolute;
+  top: 20rpx;
+  right: 24rpx;
+  width: 52rpx;
+  height: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 2;
+}
+.sh-close:active {
+  background: rgba(43, 29, 24, 0.06);
+}
+.sh-close text {
+  font-size: 30rpx;
+  color: var(--text-4);
+}
+
+/* QR 图片 */
+.qr-box {
+  display: flex;
+  justify-content: center;
+  padding: 0 40rpx 24rpx;
+}
+.qr-img {
+  width: 380rpx;
+  height: 380rpx;
+  border-radius: 12rpx;
+  background: #FFF;
+  border: 2rpx solid #F0E8DB;
+}
+
+/* 内容摘要 */
+.info {
+  margin: 0 32rpx 24rpx;
+  padding: 18rpx 24rpx;
+  background: #F5EEE2;
+  border-radius: 12rpx;
+}
+.info-txt {
+  font-size: 26rpx;
+  color: var(--text-3);
+  line-height: 1.6;
+  word-break: break-all;
+  display: block;
+}
+
+/* 按钮组 */
+.acts {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+.act {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+.act:active {
+  transform: scale(0.97);
+}
+.act.save {
+  background: #C0553D;
+  color: #FFF;
+}
+.act.retry {
+  background: transparent;
+  color: var(--text-4);
+  border: 2rpx solid #EFE6D8;
+}
+
+/* 离屏 Canvas：仅用于本地绘制并导出二维码，不参与布局 */
+.qr-canvas {
+  position: fixed;
+  left: -2000px;
+  top: -2000px;
+  width: 300px;
+  height: 300px;
+}

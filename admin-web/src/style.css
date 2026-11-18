@@ -1,0 +1,285 @@
+/* 后台全局样式：暖赤陶主题，与小程序端视觉同源 */
+:root {
+  --brand: #c0553d;
+  --brand-deep: #a8452f;
+  --amber: #e8a44c;
+  --bg-page: #f9f4eb;
+  --bg-card: #ffffff;
+  --text-1: #2b1d18;
+  --text-2: #5c4a40;
+  --text-3: #7d695f;
+  --line: #efe3d5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f3e7d8 0%, #f9f4eb 320px);
+  color: var(--text-1);
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 统一 TDesign 主色为赤陶（覆盖 CSS 变量） */
+:root {
+  --td-brand-color: #c0553d;
+  --td-brand-color-hover: #cb5f47;
+  --td-brand-color-active: #a8452f;
+  --td-brand-color-focus: #c0553d;
+  --td-brand-color-light: #f3e7d8;
+  --td-brand-color-light-hover: #e9d5bf;
+  --td-brand-color-light-active: #dfc4a8;
+  --td-brand-color-1: #f7ede2;
+  --td-brand-color-2: #f3e7d8;
+  --td-brand-color-3: #dfc4a8;
+  --td-brand-color-4: #f0c89a;
+  --td-brand-color-5: #e9b168;
+  --td-brand-color-6: #c97a45;
+  --td-brand-color-7: #cb5f47;
+  --td-brand-color-8: #c0553d;
+  --td-brand-color-9: #a8452f;
+  --td-brand-color-10: #2b1d18;
+  --td-radius-medium: 10px;
+  /* 成功/警告标签同步暖系 */
+  --td-success-color: #3e9b6e;
+  --td-warning-color: #d98f2b;
+  --td-error-color: #d63031;
+  --td-component-stroke: #efe3d5;
+  --td-table-header-bg: #faf5ec;
+}
+
+.page-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 32px rgba(43, 29, 24, 0.07);
+}
+
+/* ===== 页头体系 ===== */
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+.page-head-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 1px;
+}
+.page-head-desc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.page-head-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ===== 统计胶囊 ===== */
+.stat-chips {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.stat-chip {
+  flex: 1;
+  background: linear-gradient(135deg, #fdf9f2, #f7ede2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.stat-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(192, 85, 61, 0.10);
+}
+.stat-chip-num {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--brand);
+  line-height: 1;
+}
+.stat-chip-label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 1px;
+}
+/* 数值 + 单位：单位弱化，避免与主数据抢视线 */
+.stat-chip-top {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.stat-chip-unit {
+  font-size: 12px;
+  color: var(--text-3);
+}
+/* 比例条：仅表达构成，不替代数值 */
+.stat-chip-bar {
+  margin-top: 10px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(43, 29, 24, 0.08);
+  overflow: hidden;
+}
+.stat-chip-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e8a44c 0%, #c0553d 100%);
+  transition: width 0.3s ease;
+}
+.stat-chip.is-deep {
+  background: linear-gradient(135deg, #a8452f 0%, #8a3826 100%);
+  border-color: #8a3826;
+}
+.stat-chip.is-deep .stat-chip-num { color: #f2b04e; }
+.stat-chip.is-deep .stat-chip-label { color: rgba(255, 255, 255, 0.75); }
+.stat-chip.is-deep .stat-chip-unit { color: rgba(255, 255, 255, 0.6); }
+.stat-chip.is-deep .stat-chip-bar { background: rgba(255, 255, 255, 0.18); }
+.stat-chip.is-deep .stat-chip-bar i { background: #f2b04e; }
+
+/* 可点击的统计卡（工具页筛选） */
+.stat-chip.is-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+.stat-chip.is-clickable:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.stat-chip.is-clickable.active {
+  border-color: var(--brand);
+  background: linear-gradient(135deg, #fdf1e4 0%, #f8e3cf 100%);
+  box-shadow: 0 8px 20px rgba(192, 85, 61, 0.16);
+}
+.stat-chip.is-deep.is-clickable.active {
+  border-color: #f2b04e;
+  /* 选中态必须重申深色底，否则 .is-clickable.active 的浅色渐变（更高特异性）会盖掉 is-deep，白字压浅底导致不可读 */
+  background: linear-gradient(135deg, #a8452f 0%, #8a3826 100%);
+  box-shadow: 0 8px 20px rgba(168, 69, 47, 0.32);
+}
+.stat-note {
+  margin: -6px 0 14px;
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.5px;
+}
+
+/* 列表上方计数说明：先给总量，再看表格 */
+.table-caption {
+  margin: 2px 0 8px;
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.5px;
+}
+
+/* ===== 表格美化 ===== */
+.t-table {
+  --td-table-border-color: var(--line);
+}
+.page-card .t-table__header th {
+  background: #faf5ec !important;
+  color: var(--text-2);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.page-card .t-table__row:hover > td {
+  background: #fdf6ec !important;
+}
+.page-card .t-table__row > td {
+  transition: background 0.15s ease;
+}
+.page-card .t-table {
+  border-radius: 12px;
+  /* 注意：不要在此设置 overflow:hidden —— 会裁剪吸顶表头与行分隔线，
+     列宽超出容器触发横向滚动时表现为「表头消失」 */
+}
+
+/* 表格滚动容器：列宽总和超出内容区时，横向滚动发生在这里，
+   而不是把 .page-card 乃至整个页面撑宽 */
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===================== 移动端适配（≤820px） ===================== */
+@media (max-width: 820px) {
+  /* 页头：标题与操作区纵向堆叠 */
+  .page-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .page-head-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .page-head-actions .t-input {
+    flex: 1 1 140px;
+    width: auto !important;
+  }
+  .page-head-title { font-size: 19px; }
+
+  /* 卡片内边距收紧 */
+  .page-card { padding: 14px; border-radius: 12px; }
+
+  /* 统计卡片横向滚动，避免挤压变形 */
+  .stat-chips {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+  }
+  .stat-chip {
+    flex: 0 0 auto;
+    min-width: 120px;
+  }
+  .stat-note { margin-top: -2px; }
+
+  /* 表格：缩小字号，触控更易读；横向滚动由 .table-wrap 承担 */
+  .t-table { font-size: 12px; }
+  .t-table th,
+  .t-table td { padding: 8px 6px; }
+
+  /* 弹窗：适配窄屏 */
+  .t-dialog { width: 92vw !important; max-width: 92vw !important; }
+  .t-drawer { width: 94vw !important; }
+
+  /* 弹窗内表单标签改为上下排列 */
+  .t-form__item { flex-wrap: wrap; }
+  .t-form__label { width: auto !important; max-width: 100%; text-align: left !important; }
+
+  /* 分页居中，避免溢出 */
+  .pager { justify-content: center !important; }
+}
+
+/* ===== 标签圆润化 ===== */
+.t-tag {
+  border-radius: 999px !important;
+  font-weight: 600;
+}
+
+/* ===== 卡片内主推徽章 ===== */
+.featured-tag {
+  background: linear-gradient(135deg, #f2b04e, #e8a44c) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 3px 8px rgba(232, 164, 76, 0.35);
+}

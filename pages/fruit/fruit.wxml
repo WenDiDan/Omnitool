@@ -1,0 +1,145 @@
+<view class="tool-page">
+  <!-- 发布卡：常态显示，支持多次发布 -->
+  <view class="card">
+    <view class="publish-bar">
+      <view class="input-wrap">
+        <input
+          class="code-input"
+          type="text"
+          placeholder="填写 8-9 位水果券码"
+          placeholder-class="code-placeholder"
+          value="{{input}}"
+          bindinput="onInput"
+          maxlength="{{maxLen}}"
+          confirm-type="done"
+        />
+        <view class="album-chip" hover-class="chip-hover" bindtap="scanAlbum">
+          <view class="album-icon"></view>
+          <text>识别</text>
+        </view>
+      </view>
+      <view class="publish-btn {{publishing ? 'btn-disabled' : ''}}" hover-class="publish-hover" bindtap="publish">
+        立即发布
+      </view>
+    </view>
+
+    <view class="trust-row" bindtap="toggleAgree">
+      <view class="trust-check {{agreed ? 'checked' : ''}}">{{agreed ? '✓' : ''}}</view>
+      <text class="trust-text">请填写有效的水果卷码，诚信互助</text>
+      <text class="trust-more" catchtap="toggleTips">{{showTips ? '收起说明' : '展开说明'}}</text>
+    </view>
+
+    <view wx:if="{{showTips}}" class="tips-panel">
+      <text class="tips-line">1. 智能直达：点广场的「智能直达」会实时拉取可用券码并自动复制，直接用这个就行；</text>
+      <text class="tips-line">2. 发布：拼多多果园点「分享」保存海报，点「识别」从相册选图自动提取 8-9 位数字码，也可手动填写；</text>
+      <text class="tips-line">3. 一码一人：被领取后从广场下线，对方未完成组队时点「重置」可放回广场；</text>
+      <text class="tips-line">4. 举报与反馈：发现拉人头、减减卡类异常券码请截图反馈，核实后封禁处理。</text>
+    </view>
+  </view>
+
+  <!-- 我的记录入口（弹窗展示） -->
+  <view class="entry-bar" hover-class="entry-hover" bindtap="openRecords">
+    <view class="entry-left">
+      <text class="entry-title">我的记录</text>
+      <text class="entry-sub">我发布的 {{mines.length}} 条 · 我使用的 {{used.length}} 条</text>
+    </view>
+    <text class="entry-arrow">›</text>
+  </view>
+
+  <!-- 广场 -->
+  <view class="card">
+    <view class="pool-head">
+      <view class="pool-title-line">
+        <text class="card-title">可用邀请码</text>
+        <text class="pool-count">{{total}}</text>
+      </view>
+      <view class="pool-actions">
+        <text class="card-action refresh" bindtap="refreshAll">刷新</text>
+        <view class="auto-btn {{autoLoading ? 'btn-disabled' : ''}}" hover-class="help-btn-hover" bindtap="onAuto">
+          {{autoLoading ? '挑选中…' : '智能直达'}}
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+    <view wx:elif="{{!items.length}}" class="empty-tip">大家太热情啦，刷新看看有新的了没</view>
+
+    <block wx:else>
+      <view wx:for="{{items}}" wx:key="id" class="link-item">
+        <text class="owner-tag {{item.is_mine ? 'mine-tag' : ''}}">{{item.is_mine ? '我的口令' : item.owner_tag}}</text>
+        <view class="item-line">
+          <text class="masked-code">{{item.masked}}</text>
+          <text class="item-time">{{item.timeText}}</text>
+          <text wx:if="{{item.is_mine}}" class="self-chip">本人发布</text>
+          <view wx:else class="help-btn" hover-class="help-btn-hover" bindtap="onHelp" data-id="{{item.id}}" data-content="{{item.content}}">领取</view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{loadingMore}}" class="empty-tip">加载中…</view>
+    <view wx:elif="{{!hasMore && items.length > 4}}" class="empty-tip">— 到底啦 —</view>
+  </view>
+
+  <!-- 我的记录弹窗：我发布的 / 我使用的 -->
+  <view wx:if="{{showRecords}}" class="mask" bindtap="closeRecords">
+    <view class="modal" catchtap="noop">
+      <view class="modal-head">
+        <text class="modal-title">我的记录</text>
+        <text wx:if="{{tab === 'used'}}" class="modal-refresh" bindtap="loadUsed">刷新</text>
+      </view>
+
+      <view class="record-tabs">
+        <view class="record-tab {{tab === 'mine' ? 'active' : ''}}" data-tab="mine" bindtap="switchTab">我发布的</view>
+        <view class="record-tab {{tab === 'used' ? 'active' : ''}}" data-tab="used" bindtap="switchTab">我使用的</view>
+      </view>
+
+      <scroll-view scroll-y class="modal-body">
+        <!-- 我发布的（可多条） -->
+        <block wx:if="{{tab === 'mine'}}">
+          <view wx:if="{{!mines.length}}" class="empty-tip">还没有发布过邀请码，发布后更快获得福袋</view>
+          <block wx:else>
+            <view class="mine-item" wx:for="{{mines}}" wx:key="id">
+              <view class="mine-box">
+                <view class="mine-row">
+                  <text class="mine-code">{{item.content}}</text>
+                  <view class="copy-chip" hover-class="chip-hover" bindtap="copyMine" data-content="{{item.content}}">复制</view>
+                </view>
+                <view class="mine-meta-line">
+                  <text class="mine-use">已用 {{item.help_count}}/1 · {{item.timeText}}</text>
+                  <text wx:if="{{item.status === 'claimed'}}" class="mine-pill done">已用完</text>
+                  <text wx:else class="mine-pill open">待组队</text>
+                </view>
+              </view>
+              <view class="mine-ops">
+                <text wx:if="{{item.status === 'claimed'}}" class="mine-op" bindtap="resetMine" data-id="{{item.id}}">未组队？重置回广场</text>
+                <text class="mine-op danger" bindtap="removeMine" data-id="{{item.id}}">下架</text>
+              </view>
+            </view>
+          </block>
+        </block>
+
+        <!-- 我使用的 -->
+        <block wx:else>
+          <view wx:if="{{usedLoading && !used.length}}" class="empty-tip">加载中…</view>
+          <view wx:elif="{{!used.length}}" class="empty-tip">还没有领取记录，去广场看看吧</view>
+          <block wx:else>
+            <view class="used-item" wx:for="{{used}}" wx:key="id">
+              <view class="mine-box">
+                <view class="mine-row">
+                  <text class="mine-code">{{item.content || '（券码已下架）'}}</text>
+                  <view wx:if="{{item.content}}" class="copy-chip" hover-class="chip-hover" bindtap="copyUsed" data-content="{{item.content}}">复制</view>
+                </view>
+                <view class="mine-meta-line">
+                  <text class="mine-use">领取于 {{item.timeText}}</text>
+                  <text class="mine-pill done">已领取</text>
+                </view>
+              </view>
+            </view>
+          </block>
+        </block>
+      </scroll-view>
+
+      <view class="modal-close" hover-class="help-btn-hover" bindtap="closeRecords">关闭</view>
+    </view>
+  </view>
+</view>

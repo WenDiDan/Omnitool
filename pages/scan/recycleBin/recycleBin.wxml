@@ -1,0 +1,116 @@
+<view class="container">
+  <!-- 工具区：批量操作 + 记录信息（紧凑两行） -->
+  <view class="tool-area" wx:if="{{!isEmpty && recycledList.length > 0}}">
+    <view class="tool-row">
+      <view class="head-restore-btn" bindtap="restoreAll">
+        <text class="head-restore-text">全部恢复</text>
+      </view>
+      <view class="head-clear-btn" bindtap="clearAll">
+        <text class="head-clear-text">清空回收站</text>
+      </view>
+      <text class="test-data-btn-inline" wx:if="{{isAdmin}}" bindtap="insertTestData">生成测试数据</text>
+      <text class="tool-count" bindlongpress="debugExpire">{{recycledList.length}} 条记录</text>
+    </view>
+    <view class="tool-row tool-info">
+      <view class="desc-wrap">
+        <view class="desc-dot"></view>
+        <text class="desc-text">清空历史时存于此，{{retentionDaysText}}内可随时恢复，超期自动清除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{isEmpty}}" class="empty-state">
+    <view class="empty-icon">
+      <view class="empty-box">
+        <view class="empty-box-lid"></view>
+        <view class="empty-box-body">
+          <view class="empty-box-line"></view>
+          <view class="empty-box-line short"></view>
+        </view>
+      </view>
+    </view>
+    <text class="empty-title">回收站为空</text>
+    <text class="empty-hint">清空历史数据后会自动存入此处</text>
+    <view class="empty-btn" bindtap="goBack">
+      <text class="empty-btn-text">返回历史</text>
+    </view>
+    <text class="test-data-btn-inline empty-test-btn" wx:if="{{isAdmin}}" bindtap="insertTestData">生成测试数据</text>
+  </view>
+
+  <!-- 回收站列表 - 表格布局 -->
+  <view wx:else class="recycle-list">
+    <!-- 表格布局：紧凑单行展示，高度随内容自适应 -->
+    <view class="recycle-table" wx:if="{{recycledList.length > 0}}">
+      <view class="table-head">
+        <text class="th th-type">类型</text>
+        <text class="th th-main">内容</text>
+        <text class="th th-time">移入时间</text>
+        <text class="th th-ops">操作</text>
+      </view>
+      <view class="table-row" wx:for="{{recycledList}}" wx:key="code" bindtap="showDetail" data-code="{{item.code}}">
+        <view class="td td-type">
+          <view class="card-type-tag type-{{item.typeKey}}">
+            <text class="card-type-text">{{item.typeLabel || item.type}}</text>
+          </view>
+        </view>
+        <view class="td td-main">
+          <text class="cell-code">{{item.code}}</text>
+          <text class="cell-origin">原扫 {{item.time}}</text>
+        </view>
+        <text class="td td-time">{{item.recycledAtDisplay}}</text>
+        <view class="td td-ops">
+          <text class="op-btn op-restore" catchtap="restoreRecord" data-code="{{item.code}}">恢复</text>
+          <text class="op-btn op-del" catchtap="deleteRecord" data-code="{{item.code}}">删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 条码详情弹层 -->
+  <view class="overlay {{detail ? 'show' : ''}}" bindtap="closeDetail">
+    <view class="mask"></view>
+    <view class="sheet" catchtap="noop">
+      <view class="sh-close" catchtap="closeDetail">
+        <text>✕</text>
+      </view>
+      <text class="dt-title">条码详情</text>
+      <view class="dt-body" wx:if="{{detail}}">
+        <view class="dt-row">
+          <text class="dt-label">类型</text>
+          <text class="dt-value">{{detail.typeLabel || detail.type}}</text>
+        </view>
+        <view class="dt-row">
+          <text class="dt-label">条码内容</text>
+          <text class="dt-value dt-code" user-select>{{detail.code}}</text>
+        </view>
+        <view class="dt-row">
+          <text class="dt-label">原扫码时间</text>
+          <text class="dt-value">{{detail.time || '—'}}</text>
+        </view>
+        <view class="dt-row">
+          <text class="dt-label">移入回收站</text>
+          <text class="dt-value">{{detail.recycledAtDisplay || '—'}}</text>
+        </view>
+        <view class="dt-row">
+          <text class="dt-label">扫码次数</text>
+          <text class="dt-value">{{detail.count || 1}} 次</text>
+        </view>
+      </view>
+      <view class="dt-acts" wx:if="{{detail}}">
+        <view class="dt-act dt-copy" catchtap="copyDetailCode">
+          <text>复制条码</text>
+        </view>
+        <view class="dt-act dt-restore" catchtap="restoreDetail">
+          <text>恢复</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

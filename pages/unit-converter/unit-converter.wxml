@@ -1,0 +1,61 @@
+<view class="tool-page">
+  <!-- 类别切换 -->
+  <scroll-view class="cat-bar" scroll-x enhanced show-scrollbar="{{false}}">
+    <view
+      wx:for="{{categories}}"
+      wx:key="key"
+      class="cat-item {{activeKey === item.key ? 'cat-active' : ''}}"
+      bindtap="onCategoryTap"
+      data-key="{{item.key}}"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 换算卡片 -->
+  <view class="card">
+    <view class="field">
+      <text class="field-label">数值</text>
+      <input
+        class="field-input"
+        type="digit"
+        placeholder="请输入数值"
+        value="{{inputValue}}"
+        bindinput="onInput"
+      />
+    </view>
+
+    <view class="unit-row">
+      <view class="unit-col">
+        <text class="field-label">从</text>
+        <picker range="{{unitNames}}" value="{{fromIndex}}" bindchange="onFromChange">
+          <view class="unit-picker">
+            <text class="unit-value">{{unitNames[fromIndex]}}</text>
+            <text class="unit-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="swap-btn" bindtap="swap">⇄</view>
+
+      <view class="unit-col">
+        <text class="field-label">到</text>
+        <picker range="{{unitNames}}" value="{{toIndex}}" bindchange="onToChange">
+          <view class="unit-picker">
+            <text class="unit-value">{{unitNames[toIndex]}}</text>
+            <text class="unit-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 结果 -->
+  <view class="result-card" wx:if="{{result}}">
+    <view class="result-main" bindtap="copyResult">
+      <text class="result-num">{{result}}</text>
+      <text class="result-unit">{{unitNames[toIndex]}}</text>
+    </view>
+    <view class="result-copy" bindtap="copyResult">复制</view>
+  </view>
+
+  <view class="page-tip">输入即换算 · 点击结果可复制</view>
+</view>

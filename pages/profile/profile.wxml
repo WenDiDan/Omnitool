@@ -1,16 +1,18 @@
 <view class="page-wrap">
   <!-- 用户信息卡片 -->
-  <view class="user-card">
+  <view class="user-card reveal">
     <!-- 封禁提示 -->
     <view class="block-banner" wx:if="{{isLoggedIn && userInfo && userInfo.isBlocked}}">
-      <image class="block-icon" src="/images/icon_warning_white.png" mode="aspectFit"/>
+      <image class="block-icon" src="/images/ui_info_white.png" mode="aspectFit"/>
       <text class="block-text">您的账号已被封禁，仅能登录，无法使用其他功能</text>
+      <text class="block-reason" wx:if="{{userInfo.banReason}}">封禁原因：{{userInfo.banReason}}</text>
+      <text class="block-reason" wx:if="{{userInfo.bannedAt}}">封禁时间：{{userInfo.bannedAt}}</text>
     </view>
 
     <!-- 已登录 -->
     <view class="user-header" bindtap="onEditProfile">
       <view class="avatar-box">
-        <image class="avatar" src="{{avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+        <image class="avatar" src="{{avatarUrl || '/images/nav_user_white.png'}}" mode="aspectFill"/>
       </view>
       <view class="user-main">
         <view class="name-line">
@@ -40,50 +42,13 @@
     </view>
   </view>
 
-  <!-- 常用设置 -->
-  <view class="section">
-    <view class="section-title">常用设置</view>
-    <view class="menu-card">
-      <view class="menu-row" bindtap="goToHistory">
-        <view class="menu-icon icon-blue">
-          <image class="menu-icon-img" src="/images/icon_history_white.png" mode="aspectFit"/>
-        </view>
-        <view class="menu-text">
-          <text class="menu-title">扫描历史</text>
-          <text class="menu-desc">{{totalCount}} 条记录</text>
-        </view>
-        <text class="menu-arrow">></text>
-      </view>
-      <view class="menu-row" bindtap="goToRecycleBin">
-        <view class="menu-icon icon-orange">
-          <image class="menu-icon-img" src="/images/icon_delete_white.png" mode="aspectFit"/>
-        </view>
-        <view class="menu-text">
-          <text class="menu-title">回收站</text>
-          <text class="menu-desc">清空后的数据存于此，可恢复或彻底删除</text>
-        </view>
-        <text class="menu-arrow">></text>
-      </view>
-      <view class="menu-row menu-row-last" bindtap="goToSettings">
-        <view class="menu-icon icon-green">
-          <image class="menu-icon-img" src="/images/icon_settings_white.png" mode="aspectFit"/>
-        </view>
-        <view class="menu-text">
-          <text class="menu-title">扫码设置</text>
-          <text class="menu-desc">调整扫码类型、提示音和识别体验</text>
-        </view>
-        <text class="menu-arrow">></text>
-      </view>
-    </view>
-  </view>
-
   <!-- 更多服务 -->
-  <view class="section">
+  <view class="section reveal" style="animation-delay: 80ms">
     <view class="section-title">更多服务</view>
     <view class="menu-card">
       <view class="menu-row" bindtap="showAbout">
-        <view class="menu-icon icon-purple">
-          <image class="menu-icon-img" src="/images/icon_info_white.png" mode="aspectFit"/>
+        <view class="menu-icon icon-clay">
+          <image class="menu-icon-img" src="/images/ui_info_white.png" mode="aspectFit"/>
         </view>
         <view class="menu-text">
           <text class="menu-title">当前版本</text>
@@ -91,67 +56,57 @@
         </view>
         <view class="menu-right">
           <text class="version-text">V{{appVersion}}</text>
-          <text class="menu-arrow">></text>
+          <text class="menu-arrow">›</text>
         </view>
       </view>
       <view class="menu-row menu-row-btn">
         <view class="menu-icon icon-teal">
-          <image class="menu-icon-img" src="/images/icon_edit_white.png" mode="aspectFit"/>
+          <image class="menu-icon-img" src="/images/ui_edit_white.png" mode="aspectFit"/>
         </view>
         <view class="menu-text">
           <text class="menu-title">分享好友</text>
           <text class="menu-desc">把这款工具推荐给团队伙伴或朋友</text>
         </view>
-        <text class="menu-arrow">></text>
+        <text class="menu-arrow">›</text>
         <button class="menu-btn-overlay" open-type="share"></button>
       </view>
       <view class="menu-row menu-row-btn menu-row-last">
         <view class="menu-icon icon-pink">
-          <image class="menu-icon-img" src="/images/icon_user_white.png" mode="aspectFit"/>
+          <image class="menu-icon-img" src="/images/nav_user_white.png" mode="aspectFit"/>
         </view>
         <view class="menu-text">
           <text class="menu-title">联系客服</text>
           <text class="menu-desc">遇到问题可直接联系官方客服支持</text>
         </view>
-        <text class="menu-arrow">></text>
+        <text class="menu-arrow">›</text>
         <button class="menu-btn-overlay" open-type="contact"></button>
       </view>
     </view>
   </view>
 
   <!-- 管理功能 -->
-  <view class="section" wx:if="{{isAdmin}}">
+  <view class="section reveal" wx:if="{{isAdmin}}" style="animation-delay: 140ms">
     <view class="section-title">管理功能</view>
     <view class="menu-card">
-      <view class="menu-row" bindtap="goToUserManage">
-        <view class="menu-icon icon-dark">
-          <image class="menu-icon-img" src="/images/icon_settings_white.png" mode="aspectFit"/>
+      <view class="menu-row" bindtap="goToToolConfig">
+        <view class="menu-icon icon-amber">
+          <image class="menu-icon-img" src="/images/icon_device.png" mode="aspectFit"/>
         </view>
         <view class="menu-text">
-          <text class="menu-title">用户管理</text>
-          <text class="menu-desc">管理员专用</text>
+          <text class="menu-title">工具配置</text>
+          <text class="menu-desc">名称、描述、排序与上下线</text>
         </view>
-        <text class="menu-arrow">></text>
-      </view>
-      <view class="menu-row" bindtap="goToLog">
-        <view class="menu-icon icon-teal">
-          <image class="menu-icon-img" src="/images/icon_info_white.png" mode="aspectFit"/>
-        </view>
-        <view class="menu-text">
-          <text class="menu-title">操作日志</text>
-          <text class="menu-desc">查看用户操作记录</text>
-        </view>
-        <text class="menu-arrow">></text>
+        <text class="menu-arrow">›</text>
       </view>
       <view class="menu-row menu-row-last" bindtap="goToDataManage">
         <view class="menu-icon icon-pink">
           <image class="menu-icon-img" src="/images/icon_device.png" mode="aspectFit"/>
         </view>
         <view class="menu-text">
-          <text class="menu-title">数据管理</text>
-          <text class="menu-desc">管理用户历史保留天数</text>
+          <text class="menu-title">用户管理</text>
+          <text class="menu-desc">角色、VIP 与保留天数管理</text>
         </view>
-        <text class="menu-arrow">></text>
+        <text class="menu-arrow">›</text>
       </view>
     </view>
   </view>
@@ -172,7 +127,7 @@
       <view class="profile-edit-row">
         <text class="profile-edit-label">头像</text>
         <button class="profile-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onEditChooseAvatar">
-          <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
+          <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/nav_user_white.png'}}" mode="aspectFill"/>
           <text class="profile-avatar-hint">{{editAvatarUrl ? '更换' : '选择头像'}}</text>
         </button>
       </view>

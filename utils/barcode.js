@@ -279,9 +279,12 @@ function validateUPC(code) {
   return (10 - (sum % 10)) % 10 === digits[11];
 }
 
+/** 前缀长度降序（长前缀优先），避免 "49"(日本) 抢先匹配 "489"(中国香港) */
+const COUNTRY_PREFIXES = Object.keys(COUNTRY_MAP).sort((a, b) => b.length - a.length);
+
 function getCountry(code) {
-  for (const [prefix, country] of Object.entries(COUNTRY_MAP)) {
-    if (code.startsWith(prefix)) return country;
+  for (const prefix of COUNTRY_PREFIXES) {
+    if (code.startsWith(prefix)) return COUNTRY_MAP[prefix];
   }
   return '未知';
 }

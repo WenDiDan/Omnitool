@@ -1,6 +1,6 @@
-page-wrap {
+.page-wrap {
   min-height: 100vh;
-  background: #F9F4EB;
+  background: var(--bg-page);
   padding-bottom: 40rpx;
 }
 
@@ -28,40 +28,121 @@ page-wrap {
   flex-shrink: 0;
 }
 
-/* 用户列表 */
+/* 角色统计卡：与用户管理口径一致（全量） */
+.stat-cards {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 24rpx 8rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  border: 2rpx solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.stat-card.active {
+  border-color: #C0553D;
+  background: #FDF6EE;
+}
+
+.stat-num {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2B1D18;
+}
+
+.stat-vip {
+  color: #D4882A;
+}
+
+.stat-blocked {
+  color: var(--text-4);
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* 列表计数：先给总量，再看列表 */
+.list-caption {
+  padding: 4rpx 24rpx 12rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  background: #F7E5E0;
+  color: #C0553D;
+  border-radius: 10rpx;
+  padding: 2rpx 14rpx;
+}
+
+/* 用户列表：border-box 保证左右留白对称，避免 scroll-view 兼容差异导致卡片越界 */
 .user-list {
-  height: calc(100vh - 200rpx);
+  height: calc(100vh - 400rpx);
   padding: 0 24rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 触底加载状态 */
+.load-more-tip {
+  padding: 20rpx 0 40rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-4);
+  letter-spacing: 1rpx;
 }
 
 .user-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 20rpx;
   background: #fff;
   border-radius: 16rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  flex: 1;
+  box-shadow: 0 2rpx 10rpx rgba(43, 29, 24, 0.04);
+  /* 强制卡片不超出容器：内容再长也只在卡片内换行/省略 */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
 .user-avatar {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 36rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
   flex-shrink: 0;
-  background: #E0E0E0;
+  background: linear-gradient(135deg, #C79B7B, #A97A57);
+  border: 2rpx solid #E3BFA6;
 }
 
 .user-meta {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.user-name-line {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
   overflow: hidden;
 }
 
@@ -69,38 +150,153 @@ page-wrap {
   font-size: 28rpx;
   font-weight: 500;
   color: #2B1D18;
-  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.role-tag {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  background: #F0EBE3;
+  color: var(--text-3);
+}
+
+.role-admin {
+  background: #F7E5E0;
+  color: #C0553D;
+}
+
+.role-vip {
+  background: #F6ECD9;
+  color: #D4882A;
+}
+
+.role-blocked {
+  background: #EDE0CE;
+  color: #8A7970;
+}
+
+/* ID 行：前缀 + 可换行的 openid + 内联「复制」 */
+.user-id-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rpx 8rpx;
+  margin-top: 6rpx;
+  min-width: 0;
+}
+
+.id-label {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #B7A99A;
 }
 
 .user-id {
   font-size: 22rpx;
-  color: #999;
+  color: var(--text-3);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+/* 复制：标签样式，紧跟角色标签之后 */
+.copy-link {
+  flex-shrink: 0;
+  font-size: 20rpx;
+  color: #C0553D;
+  border: 2rpx solid rgba(192, 85, 61, 0.35);
+  border-radius: 8rpx;
+  padding: 2rpx 12rpx;
+  margin-left: 2rpx;
+}
+
+.user-sub {
   display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--text-4);
+  line-height: 1.5;
+}
+
+/* 保留天数独立行：标签灰、数值强调 */
+.sub-retain {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
   margin-top: 4rpx;
 }
 
-.user-action {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  flex-shrink: 0;
+.retain-label {
+  color: var(--text-4);
 }
 
-.user-days {
-  font-size: 26rpx;
+.retain-value {
   color: #C0553D;
   font-weight: 500;
 }
 
-.user-edit {
-  font-size: 24rpx;
-  color: #C0553D;
-  padding: 8rpx 16rpx;
-  background: #F3E7D8;
+/* 右侧操作列：纵向「天数 / 角色 / 删除」三个独立按钮 */
+.user-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  flex-shrink: 0;
+}
+
+.side-btn {
+  width: 104rpx;
+  text-align: center;
+  padding: 10rpx 0;
   border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #fff;
+  letter-spacing: 2rpx;
+}
+
+.btn-days {
+  background: linear-gradient(135deg, #EFAF5A, #E8A44C);
+  box-shadow: 0 4rpx 10rpx rgba(200, 149, 44, 0.28);
+}
+
+.btn-role {
+  background: linear-gradient(135deg, #E8B25C, #D4882A);
+  box-shadow: 0 4rpx 10rpx rgba(212, 136, 42, 0.25);
+}
+
+.btn-del {
+  background: linear-gradient(135deg, #E2705F, #C74A38);
+  box-shadow: 0 4rpx 10rpx rgba(199, 74, 56, 0.22);
+}
+
+.row-blocked {
+  opacity: 0.65;
+}
+
+.act-row {
+  display: flex;
+  gap: 10rpx;
+}
+
+.act-btn {
+  font-size: 22rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 12rpx;
+  background: #F3E7D8;
+  color: #C0553D;
+}
+
+.act-danger {
+  background: #F7E5E0;
+  color: #C0553D;
+}
+
+.row-blocked {
+  opacity: 0.65;
 }
 
 .empty-tip {
@@ -117,7 +313,7 @@ page-wrap {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(24, 16, 12, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -129,7 +325,7 @@ page-wrap {
   border-radius: 28rpx;
   width: 600rpx;
   overflow: hidden;
-  box-shadow: 0 24rpx 64rpx rgba(13,27,42,0.2);
+  box-shadow: 0 24rpx 64rpx rgba(43, 29, 24, 0.2);
 }
 
 .modal-header {
@@ -181,19 +377,19 @@ page-wrap {
 .modal-input {
   width: 100%;
   height: 80rpx;
-  border: 2rpx solid #E8E8E8;
+  border: 2rpx solid #EDE0CE;
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 28rpx;
   color: #2B1D18;
-  background: #FAFAFA;
+  background: #FBF6EC;
   box-sizing: border-box;
 }
 
 .modal-display-value {
   height: 80rpx;
   line-height: 80rpx;
-  background: #F5F5F5;
+  background: #FBF6EC;
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 28rpx;
@@ -225,8 +421,8 @@ page-wrap {
 }
 
 .modal-cancel {
-  background: #F0F0F0;
-  color: #6B6B6B;
+  background: #FBF6EC;
+  color: #8A7970;
 }
 
 .modal-confirm {

@@ -1,0 +1,292 @@
+<view class="scan-container">
+  <!-- 预览区域 -->
+  <view class="preview-area" wx:if="{{showPreview}}">
+    <camera id="camera" class="camera-preview" mode="scanCode" bindscancode="onScanCode" bindstop="onCameraStop" binderror="onCameraError" frame-size="medium" flash="{{flashOn ? 'torch' : 'off'}}"></camera>
+    <view class="scan-area">
+      <view class="scan-border">
+        <view class="scan-corner top-left"></view>
+        <view class="scan-corner top-right"></view>
+        <view class="scan-corner bottom-left"></view>
+        <view class="scan-corner bottom-right"></view>
+        <view class="scan-line"></view>
+      </view>
+      <text class="scan-tip">将条码/二维码放入框内</text>
+    </view>
+    <view class="flash-control" bindtap="toggleFlash">
+      <image class="flash-icon" src="/images/{{flashOn ? 'icon_flash_on_white' : 'icon_flash_off_white'}}.png" mode="aspectFit"/>
+    </view>
+    <view class="close-preview" bindtap="closePreview">
+      <image class="close-icon" src="/images/ui_close_white.png" mode="aspectFit"/>
+    </view>
+  </view>
+
+  <!-- 扫码按钮区域 -->
+  <view class="scan-button-area" wx:if="{{!showPreview}}">
+    <!-- 顶部标题 -->
+    <view class="scan-header">
+      <text class="scan-title">条码扫描</text>
+      <text class="scan-subtitle">扫描二维码或条码</text>
+    </view>
+
+    <!-- 扫描统计：今日为主指标，累计 / 占比为辅 -->
+    <view class="stats-strip">
+      <view class="stats-hero">
+        <text class="stats-hero-label">今日扫描</text>
+        <view class="stats-hero-row">
+          <text class="stats-hero-num">{{todayCount}}</text>
+          <text class="stats-hero-unit">次</text>
+        </view>
+        <text class="stats-hero-note">统计自今日 00:00</text>
+      </view>
+      <view class="stats-side">
+        <view class="stats-side-item">
+          <text class="stats-side-label">累计扫描</text>
+          <view class="stats-side-row">
+            <text class="stats-side-num">{{totalCount}}</text>
+            <text class="stats-side-unit">次</text>
+          </view>
+        </view>
+        <view class="stats-side-item">
+          <text class="stats-side-label">今日占比</text>
+          <view class="stats-side-row">
+            <text class="stats-side-num">{{todayPercent}}</text>
+            <text class="stats-side-unit">%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 白色卡片面板 -->
+    <view class="card-panel">
+      <view class="card-grid">
+        <view class="grid-card" bindtap="startScan">
+          <image class="grid-icon" src="/images/nav_scan_white.png" mode="aspectFit"/>
+          <text class="grid-title">单次扫码</text>
+          <text class="grid-desc">拍照识别条码/二维码</text>
+        </view>
+        <view class="grid-card" bindtap="goToContinuousScan">
+          <image class="grid-icon" src="/images/ui_camera_white.png" mode="aspectFit"/>
+          <text class="grid-title">连续扫码</text>
+          <text class="grid-desc">独立页面·高效批量扫描</text>
+        </view>
+        <view class="grid-card" bindtap="selectFromAlbum">
+          <image class="grid-icon" src="/images/ui_album_white.png" mode="aspectFit"/>
+          <text class="grid-title">图片解码</text>
+          <text class="grid-desc">从相册识别条码</text>
+        </view>
+        <view class="grid-card" bindtap="goToHistory">
+          <image class="grid-icon" src="/images/ui_clock_white.png" mode="aspectFit"/>
+          <text class="grid-title">扫码记录</text>
+          <text class="grid-desc">{{totalCount > 0 ? '共' + totalCount + '条记录' : '暂无记录'}}</text>
+        </view>
+        <view class="grid-card" bindtap="goToQRCode">
+          <image class="grid-icon" src="/images/nav_scan_white.png" mode="aspectFit"/>
+          <text class="grid-title">二维码创建</text>
+          <text class="grid-desc">生成自定义二维码</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 扫码结果底部弹窗 -->
+  <view class="result-backdrop" wx:if="{{!showPreview && showResult}}" bindtap="closeResult"></view>
+  <view class="result-inline {{resultHiding ? 'result-hiding' : ''}}" style="transform: translateY({{dragCurrentY}}px)" wx:if="{{!showPreview && showResult}}">
+    <!-- 顶部拖拽指示条 -->
+    <view class="result-close-bar" bindtouchstart="onDragStart" bindtouchmove="onDragMove" bindtouchend="onDragEnd">
+      <text class="result-close-btn" bindtap="closeResult">✕</text>
+    </view>
+
+    <!-- 条码内容 -->
+    <view class="result-code-section">
+      <view class="result-code-top">
+        <view class="result-type-tag">{{scanResult.type}}</view>
+        <text class="result-scan-count" wx:if="{{scanResult.count > 1}}">第{{scanResult.count}}次扫描</text>
+      </view>
+      <text class="result-code-text" user-select>{{scanResult.code}}</text>
+      <text class="result-code-time">{{scanResult.time}}</text>
+      <text class="result-code-source">来源: {{scanResult.wxScanType || scanResult.type}}</text>
+    </view>
+
+    <!-- 解码详情 -->
+    <view class="result-detail">
+      <view class="detail-section-title">解码详情</view>
+      
+      <!-- EAN-13 / ISBN -->
+      <block wx:if="{{decodedInfo.type == 'EAN-13' || decodedInfo.type == 'ISBN'}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">{{decodedInfo.type}}</text></view>
+        <view class="detail-row"><text class="detail-label">国家/地区</text><text class="detail-value">{{decodedInfo.country || '未知'}}</text></view>
+        <view class="detail-row"><text class="detail-label">厂商代码</text><text class="detail-value">{{decodedInfo.manufacturerCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">产品代码</text><text class="detail-value">{{decodedInfo.productCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">校验位</text><text class="detail-value {{decodedInfo.valid ? 'valid' : 'invalid'}}">{{decodedInfo.checkDigit}} ({{decodedInfo.valid ? '有效' : '无效'}})</text></view>
+        <view class="detail-row"><text class="detail-label">字符长度</text><text class="detail-value">{{decodedInfo.length}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap">
+              <text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text>
+              <text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text>
+            </view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+        <view class="detail-structure">
+          <text class="structure-label">条码结构：</text>
+          <text class="structure-code">{{decodedInfo.countryCode || scanResult.codeHead}} - {{decodedInfo.manufacturerCode}} - {{decodedInfo.productCode}} - {{decodedInfo.checkDigit}}</text>
+        </view>
+      </block>
+      
+      <!-- EAN-8 -->
+      <block wx:if="{{decodedInfo.type == 'EAN-8'}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">EAN-8</text></view>
+        <view class="detail-row"><text class="detail-label">国家代码</text><text class="detail-value">{{decodedInfo.countryCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">产品代码</text><text class="detail-value">{{decodedInfo.productCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">校验位</text><text class="detail-value {{decodedInfo.valid ? 'valid' : 'invalid'}}">{{decodedInfo.checkDigit}} ({{decodedInfo.valid ? '有效' : '无效'}})</text></view>
+        <view class="detail-row"><text class="detail-label">字符长度</text><text class="detail-value">{{decodedInfo.length}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+        <view class="detail-structure"><text class="structure-label">条码结构：</text><text class="structure-code">{{decodedInfo.countryCode}} - {{decodedInfo.productCode}} - {{decodedInfo.checkDigit}}</text></view>
+      </block>
+      
+      <!-- UPC-A -->
+      <block wx:if="{{decodedInfo.type == 'UPC-A'}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">UPC-A</text></view>
+        <view class="detail-row"><text class="detail-label">厂商代码</text><text class="detail-value">{{decodedInfo.manufacturerCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">产品代码</text><text class="detail-value">{{decodedInfo.productCode}}</text></view>
+        <view class="detail-row"><text class="detail-label">校验位</text><text class="detail-value {{decodedInfo.valid ? 'valid' : 'invalid'}}">{{decodedInfo.checkDigit}} ({{decodedInfo.valid ? '有效' : '无效'}})</text></view>
+        <view class="detail-row"><text class="detail-label">字符长度</text><text class="detail-value">{{decodedInfo.length}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- URL -->
+      <block wx:if="{{decodedInfo.domain}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">URL</text></view>
+        <view class="detail-row"><text class="detail-label">域名</text><text class="detail-value detail-link" bindtap="copyUrl">{{decodedInfo.domain}}</text></view>
+        <view class="detail-row"><text class="detail-label">完整链接</text><text class="detail-value" user-select>{{decodedInfo.url}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- WiFi -->
+      <block wx:if="{{decodedInfo.ssid}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">WiFi</text></view>
+        <view class="detail-row"><text class="detail-label">网络名称</text><text class="detail-value">{{decodedInfo.ssid}}</text></view>
+        <view class="detail-row"><text class="detail-label">加密方式</text><text class="detail-value">{{decodedInfo.encryption || '无'}}</text></view>
+        <view class="detail-row" wx:if="{{decodedInfo.password}}"><text class="detail-label">密码</text><text class="detail-value">{{decodedInfo.password}}</text><text class="detail-copy" bindtap="copyWifiPassword">复制</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- vCard -->
+      <block wx:if="{{decodedInfo.vcardName}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">vCard名片</text></view>
+        <view class="detail-row"><text class="detail-label">姓名</text><text class="detail-value">{{decodedInfo.vcardName}}</text></view>
+        <view class="detail-row" wx:if="{{decodedInfo.vcardPhone}}"><text class="detail-label">电话</text><text class="detail-value">{{decodedInfo.vcardPhone}}</text></view>
+        <view class="detail-row" wx:if="{{decodedInfo.vcardEmail}}"><text class="detail-label">邮箱</text><text class="detail-value">{{decodedInfo.vcardEmail}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- 邮箱 -->
+      <block wx:if="{{decodedInfo.email && !decodedInfo.vcardName}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">邮箱</text></view>
+        <view class="detail-row"><text class="detail-label">邮箱地址</text><text class="detail-value">{{decodedInfo.email}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- 电话 -->
+      <block wx:if="{{decodedInfo.phone && !decodedInfo.vcardName}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">电话</text></view>
+        <view class="detail-row"><text class="detail-label">电话号码</text><text class="detail-value">{{decodedInfo.phone}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+
+      <!-- 短信 -->
+      <block wx:if="{{decodedInfo.smsPhone}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">短信</text></view>
+        <view class="detail-row"><text class="detail-label">收件人</text><text class="detail-value">{{decodedInfo.smsPhone}}</text></view>
+        <view class="detail-row" wx:if="{{decodedInfo.smsBody}}"><text class="detail-label">短信内容</text><text class="detail-value">{{decodedInfo.smsBody}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+      
+      <!-- 数字条码 / 文本 -->
+      <block wx:if="{{decodedInfo.type == '数字条码' || decodedInfo.type == '文本'}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">{{decodedInfo.type}}</text></view>
+        <view class="detail-row"><text class="detail-label">字符长度</text><text class="detail-value">{{decodedInfo.length}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+      
+      <!-- 通用兜底 -->
+      <block wx:if="{{!decodedInfo.country && !decodedInfo.ssid && !decodedInfo.domain && decodedInfo.type != '数字条码' && decodedInfo.type != '文本' && decodedInfo.type != '电话' && decodedInfo.type != '邮箱' && decodedInfo.type != '短信' && !decodedInfo.vcardName}}">
+        <view class="detail-row"><text class="detail-label">条码类型</text><text class="detail-value">{{decodedInfo.type || scanResult.type}}</text></view>
+        <view class="detail-row"><text class="detail-label">字符长度</text><text class="detail-value">{{decodedInfo.length}}</text></view>
+        <block wx:if="{{decodedInfo.customData}}">
+          <view class="detail-row custom-rule-row">
+            <view class="detail-label-wrap"><text class="detail-label">{{decodedInfo.customLabel || '自定义'}}</text><text class="date-convert-tag" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].isDate}}">日期转换</text></view>
+            <text class="detail-value highlight-value">{{decodedInfo.customData}}</text>
+          </view>
+          <view class="raw-value" wx:if="{{decodedInfo.customRuleResults && decodedInfo.customRuleResults.length > 0 && decodedInfo.customRuleResults[0].rawValue && decodedInfo.customRuleResults[0].rawValue !== decodedInfo.customData}}">原始: {{decodedInfo.customRuleResults[0].rawValue}}</view>
+        </block>
+      </block>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="result-footer">
+      <button class="btn-copy" bindtap="copyResult">复制</button>
+      <button class="btn-history" bindtap="goToHistory">历史</button>
+      <button class="btn-continue" bindtap="continueScan">继续</button>
+    </view>
+  </view>
+</view>
+
+<!-- 隐藏的 Canvas 节点，供图片解码器使用（type="2d" 标准接口） -->
+<canvas type="2d" id="decode-canvas" class="decode-canvas"></canvas>

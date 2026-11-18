@@ -3,7 +3,7 @@
   "navigationBarBackgroundColor": "#2B1D18",
   "navigationBarTextStyle": "white",
   "usingComponents": {
-    "scan-panel": "/components/scan-panel/scan-panel",
-    "decode-panel": "/components/decode-panel/decode-panel"
+    "scan-panel": "./components/scan-panel/scan-panel",
+    "decode-panel": "./components/decode-panel/decode-panel"
   }
 }

@@ -8,11 +8,6 @@
       "timeout": 15
     },
     {
-      "name": "fetchWeb",
-      "runtime": "Nodejs16.13",
-      "timeout": 15
-    },
-    {
       "name": "userManage",
       "runtime": "Nodejs16.13",
       "timeout": 15
@@ -21,6 +16,30 @@
       "name": "toolsManage",
       "runtime": "Nodejs16.13",
       "timeout": 15
+    },
+    {
+      "name": "qrcodeGen",
+      "runtime": "Nodejs16.13",
+      "timeout": 15,
+      "installDependency": true
+    },
+    {
+      "name": "adminApi",
+      "runtime": "Nodejs16.13",
+      "timeout": 15,
+      "installDependency": true
+    },
+    {
+      "name": "fruitApi",
+      "runtime": "Nodejs16.13",
+      "timeout": 15,
+      "installDependency": true
+    },
+    {
+      "name": "coinPkApi",
+      "runtime": "Nodejs16.13",
+      "timeout": 15,
+      "installDependency": true
     }
   ],
   "ai": {

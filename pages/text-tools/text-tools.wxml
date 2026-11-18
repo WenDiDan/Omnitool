@@ -1,0 +1,58 @@
+<view class="tool-page">
+  <!-- 输入区 -->
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">输入文本</text>
+      <view class="card-actions">
+        <text class="card-action" bindtap="pasteInput">粘贴</text>
+        <text class="card-action" wx:if="{{input}}" bindtap="clearInput">清空</text>
+      </view>
+    </view>
+    <textarea
+      class="main-textarea"
+      placeholder="粘贴或输入需要处理的文本…"
+      value="{{input}}"
+      bindinput="onInput"
+      maxlength="-1"
+      auto-height
+    />
+    <!-- 实时统计 -->
+    <view class="stat-row">
+      <text class="stat-item">字符 {{statChars}}</text>
+      <text class="stat-item">不计空格 {{statNoSpace}}</text>
+      <text class="stat-item">行数 {{statLines}}</text>
+      <text class="stat-item">UTF-8 {{statBytes}}B</text>
+    </view>
+  </view>
+
+  <!-- 批量替换 -->
+  <view class="card">
+    <text class="card-title">批量替换</text>
+    <view class="replace-row">
+      <input class="replace-input" placeholder="查找内容" value="{{findText}}" bindinput="onFindInput"/>
+      <input class="replace-input" placeholder="替换为" value="{{replaceText}}" bindinput="onReplaceInput"/>
+      <view class="replace-btn" bindtap="doReplace">替换</view>
+    </view>
+  </view>
+
+  <!-- 功能按钮 -->
+  <view class="action-grid">
+    <view
+      wx:for="{{actions}}"
+      wx:key="key"
+      class="action-chip"
+      hover-class="action-chip-hover"
+      bindtap="onActionTap"
+      data-key="{{item.key}}"
+    >{{item.name}}</view>
+  </view>
+
+  <!-- 结果 -->
+  <view class="card" wx:if="{{hasResult}}">
+    <view class="card-head">
+      <text class="card-title">处理结果</text>
+      <text class="card-action copy" bindtap="copyResult">复制</text>
+    </view>
+    <view class="result-text">{{result}}</view>
+  </view>
+</view>

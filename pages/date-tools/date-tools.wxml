@@ -1,0 +1,161 @@
+<view class="tool-page">
+  <!-- 模式切换 -->
+  <scroll-view class="mode-bar" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="mode-tab {{mode === 'diff' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="diff">日期间隔</view>
+    <view class="mode-tab {{mode === 'calc' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="calc">日期推算</view>
+    <view class="mode-tab {{mode === 'timestamp' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="timestamp">时间戳</view>
+    <view class="mode-tab {{mode === 'countdown' ? 'tab-active' : ''}}" bindtap="switchMode" data-mode="countdown">倒计时</view>
+  </scroll-view>
+
+  <!-- ===== 日期间隔 ===== -->
+  <view wx:if="{{mode === 'diff'}}">
+    <view class="card">
+      <view class="date-row">
+        <view class="date-col">
+          <text class="field-label">开始日期</text>
+          <picker mode="date" value="{{startDate}}" bindchange="onStartDate">
+            <view class="date-picker">{{startDate}}</view>
+          </picker>
+        </view>
+        <view class="date-col">
+          <text class="field-label">结束日期</text>
+          <picker mode="date" value="{{endDate}}" bindchange="onEndDate">
+            <view class="date-picker">{{endDate}}</view>
+          </picker>
+        </view>
+      </view>
+      <text class="field-hint" wx:if="{{diffReverse}}">结束日期早于开始日期，已按绝对值计算</text>
+    </view>
+
+    <view class="card">
+      <view class="stat-grid">
+        <view class="stat-cell">
+          <text class="stat-num">{{diffDays}}</text>
+          <text class="stat-name">相差天数</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{diffDaysInclusive}}</text>
+          <text class="stat-name">含首尾天数</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{diffWorkdays}}</text>
+          <text class="stat-name">工作日</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{diffWeeks}}</text>
+          <text class="stat-name">周</text>
+        </view>
+      </view>
+      <text class="muted-note">工作日按周一至周五统计，不含法定节假日与调休</text>
+    </view>
+  </view>
+
+  <!-- ===== 日期推算 ===== -->
+  <view wx:if="{{mode === 'calc'}}">
+    <view class="card">
+      <text class="field-label">基准日期</text>
+      <picker mode="date" value="{{baseDate}}" bindchange="onBaseDate">
+        <view class="date-picker">{{baseDate}}</view>
+      </picker>
+
+      <text class="field-label mt">推算天数（负数表示往前）</text>
+      <input class="field-input" type="number" value="{{offsetDays}}" bindinput="onOffsetInput"/>
+
+      <view class="switch-row" bindtap="toggleWorkdays">
+        <text class="switch-label">按工作日推算</text>
+        <view class="switch {{offsetWorkdays ? 'switch-on' : ''}}">
+          <view class="switch-dot"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card result-card" wx:if="{{calcDate}}">
+      <view class="result-main">
+        <text class="result-num">{{calcDate}}</text>
+        <text class="result-sub">{{calcWeekday}}</text>
+      </view>
+      <view class="result-copy" bindtap="onCopyTap" data-text="{{calcDate}}">复制</view>
+    </view>
+  </view>
+
+  <!-- ===== 时间戳 ===== -->
+  <view wx:if="{{mode === 'timestamp'}}">
+    <view class="card">
+      <view class="card-head">
+        <text class="card-title">当前时间</text>
+        <text class="card-action" bindtap="refreshNow">刷新</text>
+      </view>
+      <text class="ts-now">{{nowTsText}}</text>
+      <text class="ts-now-num" bindtap="copyTs">{{nowTs}}</text>
+      <text class="muted-note">毫秒时间戳 · 点击可复制</text>
+    </view>
+
+    <view class="card">
+      <text class="field-label">时间戳 → 日期</text>
+      <input class="field-input" type="number" placeholder="粘贴 10 位或 13 位时间戳" value="{{tsInput}}" bindinput="onTsInput"/>
+      <text class="convert-result" wx:if="{{tsDate}}">{{tsDate}}</text>
+    </view>
+
+    <view class="card">
+      <text class="field-label">日期 → 时间戳</text>
+      <view class="date-row">
+        <view class="date-col">
+          <picker mode="date" value="{{dateForTs}}" bindchange="onDateForTs">
+            <view class="date-picker">{{dateForTs}}</view>
+          </picker>
+        </view>
+        <view class="date-col">
+          <picker mode="time" value="{{timeForTs}}" bindchange="onTimeForTs">
+            <view class="date-picker">{{timeForTs}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="ts-out-row" wx:if="{{dateTsResult}}">
+        <text class="ts-out">{{dateTsResult}}</text>
+        <text class="card-action" bindtap="onCopyTap" data-text="{{dateTsResult}}">复制</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 倒计时 ===== -->
+  <view wx:if="{{mode === 'countdown'}}">
+    <view class="card">
+      <text class="field-label">目标日期</text>
+      <view class="date-row">
+        <view class="date-col">
+          <picker mode="date" value="{{targetDate}}" bindchange="onTargetDate">
+            <view class="date-picker">{{targetDate}}</view>
+          </picker>
+        </view>
+        <view class="date-col">
+          <picker mode="time" value="{{targetTime}}" bindchange="onTargetTime">
+            <view class="date-picker">{{targetTime}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="primary-btn" bindtap="startCountdown">开始倒计时</view>
+    </view>
+
+    <view class="card" wx:if="{{cdRunning}}">
+      <view class="cd-grid">
+        <view class="cd-cell">
+          <text class="cd-num">{{cdDays}}</text>
+          <text class="cd-name">天</text>
+        </view>
+        <view class="cd-cell">
+          <text class="cd-num">{{cdHours}}</text>
+          <text class="cd-name">时</text>
+        </view>
+        <view class="cd-cell">
+          <text class="cd-num">{{cdMins}}</text>
+          <text class="cd-name">分</text>
+        </view>
+        <view class="cd-cell">
+          <text class="cd-num">{{cdSecs}}</text>
+          <text class="cd-name">秒</text>
+        </view>
+      </view>
+      <text class="muted-note">离开页面后倒计时停止，返回可重新开始</text>
+    </view>
+  </view>
+</view>

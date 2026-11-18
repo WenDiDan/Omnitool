@@ -1,14 +1,10 @@
 const app = getApp()
-const barcode = require('../../utils/barcode.js')
 const permission = require('../../utils/permission.js')
 
 Page({
   data: {
     avatarUrl: '',
     nickName: '',
-    totalCount: 0,
-    todayCount: 0,
-    typeCount: 0,
     cacheSize: '0KB',
     // 编辑弹窗
     showProfileModal: false,
@@ -52,7 +48,6 @@ Page({
   },
 
   onShow() {
-    this.loadData()
     this.calculateCacheSize()
     // 从权限缓存模块读取
     this.applyPermissionCache()
@@ -97,7 +92,6 @@ Page({
   onPullDownRefresh() {
     permission.syncFromCloud().then(() => {
       this.applyPermissionCache()
-      this.loadData()
       this.calculateCacheSize()
       wx.stopPullDownRefresh()
       wx.showToast({ title: '刷新完成', icon: 'none', duration: 800 })
@@ -177,7 +171,7 @@ Page({
         this.setData({
           showProfileModal: true,
           hasShownProfilePrompt: true,
-          editAvatarUrl: '/images/icon_user_white.png',
+          editAvatarUrl: '/images/nav_user_white.png',
           editNickName: '',
           isFirstLogin: true
         })
@@ -319,7 +313,7 @@ Page({
       })
     } else {
       // 没有新头像，直接使用原路径
-      this.saveProfileToLocalAndCloud(tempAvatarUrl || '/images/icon_user_white.png', nickName)
+      this.saveProfileToLocalAndCloud(tempAvatarUrl || '/images/nav_user_white.png', nickName)
     }
   },
 
@@ -428,16 +422,6 @@ Page({
     })
   },
 
-  // 跳转到用户管理页面
-  goToUserManage() {
-    wx.navigateTo({ url: '/pages/userManage/userManage' })
-  },
-
-  // 跳转到日志页面
-  goToLog() {
-    wx.navigateTo({ url: '/pages/log/log' })
-  },
-
   // ===== 通用功能 =====
 
   // 根据openid获取云存储头像URL
@@ -448,7 +432,7 @@ Page({
   // 获取头像URL（简化版）- 强制刷新避免缓存
   async getAvatarUrl(avatarUrl) {
     console.log('getAvatarUrl called with:', avatarUrl)
-    if (!avatarUrl) return '/images/icon_user_white.png'
+    if (!avatarUrl) return '/images/nav_user_white.png'
     
     // 已经是https链接，直接返回
     if (avatarUrl.startsWith('https://')) {
@@ -490,30 +474,15 @@ Page({
       } catch (e) {
         console.error('获取云存储头像失败', e)
       }
-      return '/images/icon_user_white.png'
+      return '/images/nav_user_white.png'
     }
     
     // 本地默认头像
     console.log('Unknown avatar type, returning default')
-    return avatarUrl || '/images/icon_user_white.png'
+    return avatarUrl || '/images/nav_user_white.png'
   },
 
   // ===== 通用功能 =====
-  loadData() {
-    const history = app.globalData.scanHistory || []
-    const today = this.formatDate(new Date())
-    const todayCount = history.filter(item => item.time && item.time.indexOf(today) === 0).length
-    const types = new Set(history.map(item => barcode.identifyBarcodeType(item.code)))
-    this.setData({ totalCount: history.length, todayCount, typeCount: types.size })
-  },
-
-  formatDate(date) {
-    const y = date.getFullYear()
-    const m = String(date.getMonth() + 1).padStart(2, '0')
-    const d = String(date.getDate()).padStart(2, '0')
-    return y + '-' + m + '-' + d
-  },
-
   formatDateTime(date) {
     const y = date.getFullYear()
     const m = String(date.getMonth() + 1).padStart(2, '0')
@@ -530,25 +499,18 @@ Page({
     } catch (e) {}
   },
 
-  goToHistory() {
-    wx.navigateTo({ url: '/pages/history/history' })
-  },
-
-  goToRecycleBin() {
-    wx.navigateTo({ url: '/pages/recycleBin/recycleBin' })
-  },
-
-  goToSettings() {
-    wx.navigateTo({ url: '/package1/pages/settings/settings' })
-  },
-
   clearCache() {
     wx.showModal({
       title: '确认清除',
       content: '清除缓存不会影响扫描历史记录和设置，确定要清除吗？',
       success: (res) => {
         if (res.confirm) {
-          const keep = ['scanHistory', 'settings', 'hideRecentScans', 'userAvatar', 'userNickName', 'isLoggedIn']
+          // 只清理可再生缓存；身份、权限与用户配置必须保留，否则会出现「已登录但权限失效」
+          const keep = [
+            'scanHistory', 'settings', 'customRules', 'hideRecentScans',
+            'userAvatar', 'userNickName', 'userOpenid', 'isLoggedIn',
+            'loginTime', 'lastActiveTime', 'userPermission'
+          ]
           const backup = {}
           keep.forEach(k => { const v = wx.getStorageSync(k); if (v) backup[k] = v })
           wx.clearStorageSync()
@@ -574,12 +536,17 @@ Page({
     return {
       title: '工具箱 - 多合一实用工具',
       path: '/pages/home/home',
-      imageUrl: '/images/icon_scan.png'
+      imageUrl: '/images/nav_scan.png'
     }
   },
 
   // 跳转到数据管理页面
   goToDataManage() {
     wx.navigateTo({ url: '/pages/admin/data-manage' })
+  },
+
+  // 工具配置（管理员）：名称、描述、排序与上下线
+  goToToolConfig() {
+    wx.navigateTo({ url: '/pages/admin/tool-config' })
   }
 })

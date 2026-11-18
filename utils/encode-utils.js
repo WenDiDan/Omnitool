@@ -17,6 +17,9 @@ const encodeTools = {
   },
 
   base64Decode(str) {
+    // 先做字符集校验：Node 的 Buffer.from 对非法输入不抛错而是产出乱码，
+    // 会导致同一份数据在 Node 与小程序端表现不一致
+    if (!/^[A-Za-z0-9+/\s]*={0,2}$/.test(String(str))) return '无效的Base64';
     try {
       return Buffer.from(str, 'base64').toString('utf-8');
     } catch (e) {

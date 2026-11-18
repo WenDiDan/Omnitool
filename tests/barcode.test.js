@@ -466,8 +466,9 @@ describe('validateEAN13', () => {
     expect(barcode.validateEAN13('6901234567890')).toBe(false);
   });
 
-  test('全零 EAN-13 校验失败', () => {
-    expect(barcode.validateEAN13('0000000000000')).toBe(false);
+  test('全零 EAN-13 校验位计算为合法（算法层面）', () => {
+    // 全零输入按校验位算法计算通过；业务上是否为真实商品码不在校验函数职责内
+    expect(barcode.validateEAN13('0000000000000')).toBe(true);
   });
 
   test('校验位 0 的正确条码', () => {
@@ -494,8 +495,9 @@ describe('validateUPC', () => {
     expect(barcode.validateUPC('042100005264')).toBe(true);
   });
 
-  test('无效 UPC-A', () => {
-    expect(barcode.validateUPC('123456789012')).toBe(false);
+  test('无效 UPC-A（校验位不符）', () => {
+    // 123456789012 的校验位应为 2（即原值本身有效），改末位构造真正无效的样本
+    expect(barcode.validateUPC('123456789013')).toBe(false);
   });
 });
 

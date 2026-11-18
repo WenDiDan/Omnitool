@@ -5,7 +5,11 @@
   "scripts": {
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:verbose": "jest --verbose"
+    "test:verbose": "jest --verbose",
+    "check": "node scripts/final-check.js",
+    "verify": "node scripts/verify-refs.js",
+    "sync:cloud": "node scripts/sync-cloud-shared.js",
+    "build:admin": "npm --prefix admin-web run build"
   },
   "devDependencies": {
     "jest": "^29.7.0"
@@ -13,12 +17,17 @@
   "jest": {
     "testEnvironment": "node",
     "testMatch": [
-      "**/__tests__/**/*.test.js"
+      "**/tests/**/*.test.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/miniprogram_npm/"
     ],
     "collectCoverageFrom": [
       "utils/**/*.js",
       "!utils/image-decoder.js",
-      "!utils/canvas-decoder.js"
+      "!utils/canvas-decoder.js",
+      "!utils/vendor/**"
     ],
     "coverageThreshold": {
       "global": {

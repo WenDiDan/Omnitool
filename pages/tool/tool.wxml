@@ -11,6 +11,13 @@
   </view>
 
   <block wx:else>
+    <!-- 后台封禁提示：账号被限制，互助操作不可用 -->
+    <view class="blocked-bar" wx:if="{{blocked}}">
+      <text class="blocked-title">账号已被封禁</text>
+      <text class="blocked-desc" wx:if="{{blockedReason}}">封禁原因：{{blockedReason}}</text>
+      <text class="blocked-desc">当前账号已被限制使用互助功能，如有疑问请联系客服</text>
+    </view>
+
     <!-- 顶部工具条：三个 Tab 共用 -->
     <view class="top-bar">
       <view class="back-btn" wx:if="{{activeTab > 0}}" bindtap="goBackBoard">← 返回助力</view>
@@ -31,7 +38,7 @@
 
     <!-- ===== Tab 0：开始助力 ===== -->
     <block wx:if="{{activeTab === 0}}">
-      <view class="board-card">
+      <view class="board-card reveal">
         <view class="board-head">
           <text class="board-title">随缘互助</text>
           <text class="board-help" bindtap="toggleRules">帮助</text>
@@ -104,7 +111,7 @@
             </view>
 
             <view class="task-command">
-              <text class="task-command-text" selectable>{{current.task.command}}</text>
+              <text class="task-command-text" user-select>{{current.task.command}}</text>
             </view>
 
             <view class="task-copy" bindtap="copyTaskCommand">一键复制</view>
@@ -127,7 +134,7 @@
               <text class="command-btn command-btn-primary" catchtap="copyCommand">复制</text>
             </view>
           </view>
-          <text class="command-text" wx:if="{{current.command}}" selectable>{{current.command}}</text>
+          <text class="command-text" wx:if="{{current.command}}" user-select>{{current.command}}</text>
           <text class="command-empty" wx:else>{{current.publishHint}}</text>
           <text class="command-hint">受助机会：注册即赠 1 次，成功助力 +1，被助力 -1；不按天补充，亏欠需先助力补齐才能发布</text>
         </view>
@@ -221,7 +228,7 @@
     <!-- ===== Tab 2：个人中心 ===== -->
     <block wx:else>
       <text class="page-title">个人中心</text>
-      <view class="user-card">
+      <view class="user-card reveal">
         <view class="user-row">
           <view class="avatar" wx:if="{{avatarPreview}}">
             <image class="avatar-img" src="{{avatarPreview}}" mode="aspectFill"/>
@@ -280,9 +287,18 @@
 
     <!-- 底部导航：仅切换内容区 -->
     <view class="bottom-nav">
-      <view class="nav-item {{activeTab === 0 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="0">开始助力</view>
-      <view class="nav-item {{activeTab === 1 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="1">记录</view>
-      <view class="nav-item {{activeTab === 2 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="2">个人中心</view>
+      <view class="nav-item {{activeTab === 0 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="0">
+        <image class="nav-icon" src="{{activeTab === 0 ? '/images/nav_help_on.png' : '/images/nav_help.png'}}" mode="aspectFit"/>
+        <text class="nav-label">开始助力</text>
+      </view>
+      <view class="nav-item {{activeTab === 1 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="1">
+        <image class="nav-icon" src="{{activeTab === 1 ? '/images/nav_record_on.png' : '/images/nav_record.png'}}" mode="aspectFit"/>
+        <text class="nav-label">记录</text>
+      </view>
+      <view class="nav-item {{activeTab === 2 ? 'nav-active' : ''}}" bindtap="switchTab" data-index="2">
+        <image class="nav-icon" src="{{activeTab === 2 ? '/images/nav_user_on.png' : '/images/nav_user.png'}}" mode="aspectFit"/>
+        <text class="nav-label">个人中心</text>
+      </view>
     </view>
   </block>
 

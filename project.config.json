@@ -74,6 +74,38 @@
       {
         "value": "cloudfunctions",
         "type": "folder"
+      },
+      {
+        "value": "admin-web",
+        "type": "folder"
+      },
+      {
+        "value": ".npmcache",
+        "type": "folder"
+      },
+      {
+        "value": "package-lock.json",
+        "type": "file"
+      },
+      {
+        "value": "project.config.json",
+        "type": "file"
+      },
+      {
+        "type": "folder",
+        "value": "/minitest"
+      },
+      {
+        "type": "folder",
+        "value": "coverage"
+      },
+      {
+        "type": "folder",
+        "value": "design"
+      },
+      {
+        "type": "folder",
+        "value": "generated-images"
       }
     ],
     "include": []
@@ -151,5 +183,6 @@
   },
   "simulatorPluginLibVersion": {},
   "editorSetting": {},
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "testRoot": "minitest/"
 }

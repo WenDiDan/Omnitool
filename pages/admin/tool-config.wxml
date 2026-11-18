@@ -1,0 +1,94 @@
+<view class="page-wrap">
+  <view class="list-caption">
+    <text>共 {{tools.length}} 个工具 · 点「编辑」修改入口信息，左侧开关快速上下线</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty-tip">加载中…</view>
+  <view wx:elif="{{!tools.length}}" class="empty-tip">暂无工具</view>
+
+  <view class="tool-list" wx:else>
+    <view class="tool-row {{item.status === 'offline' ? 'row-offline' : ''}}" wx:for="{{tools}}" wx:key="tool_key">
+      <view class="tool-main">
+        <view class="tool-title-line">
+          <text class="tool-name">{{item.name}}</text>
+          <text wx:if="{{item.featured}}" class="tag-featured">主推</text>
+          <text wx:if="{{item.tag}}" class="tag-custom">{{item.tag}}</text>
+          <text class="tag-status {{item.status === 'online' ? 'status-on' : 'status-off'}}">{{item.status === 'online' ? '已上线' : '已下线'}}</text>
+        </view>
+        <text class="tool-desc">{{item.desc || '（无描述）'}}</text>
+        <view class="tool-meta-line">
+          <text class="tool-key">{{item.tool_key}}</text>
+          <text class="tool-sort">排序 {{item.sort}}</text>
+          <text class="tool-nav">{{item.navType}}</text>
+        </view>
+      </view>
+      <view class="tool-actions">
+        <switch class="tool-switch" checked="{{item.status === 'online'}}" color="#2F6C60"
+                data-key="{{item.tool_key}}" data-status="{{item.status}}" bindchange="onToggleStatus"/>
+        <text class="edit-btn" bindtap="openEdit" data-key="{{item.tool_key}}">编辑</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+  <view class="modal-box" catchtap="stopTap">
+    <view class="modal-header">
+      <text class="modal-title">编辑工具 · {{editing.tool_key}}</text>
+      <text class="modal-close" bindtap="closeModal">×</text>
+    </view>
+
+    <scroll-view class="modal-body" scroll-y>
+      <view class="form-row">
+        <text class="form-label">名称</text>
+        <input class="form-input" value="{{editing.name}}" data-field="name" bindinput="onFieldInput" maxlength="40" placeholder="工具名称"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">所属应用</text>
+        <input class="form-input" value="{{editing.app_name}}" data-field="app_name" bindinput="onFieldInput" maxlength="20" placeholder="如 淘宝 / 拼多多"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">描述</text>
+        <input class="form-input" value="{{editing.desc}}" data-field="desc" bindinput="onFieldInput" maxlength="120" placeholder="首页卡片副标题"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">分类</text>
+        <input class="form-input" value="{{editing.category}}" data-field="category" bindinput="onFieldInput" maxlength="20" placeholder="如 互助 / 效率工具"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">标签</text>
+        <input class="form-input" value="{{editing.tag}}" data-field="tag" bindinput="onFieldInput" maxlength="10" placeholder="如 互助"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">徽章</text>
+        <input class="form-input" value="{{editing.badge}}" data-field="badge" bindinput="onFieldInput" maxlength="6" placeholder="卡片左侧文字徽章"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">跳转地址</text>
+        <input class="form-input" value="{{editing.url}}" data-field="url" bindinput="onFieldInput" maxlength="200" placeholder="如 /pages/home/home 或 https://"/>
+      </view>
+      <view class="form-row">
+        <text class="form-label">跳转方式</text>
+        <picker mode="selector" range="{{navOptions}}" range-key="label" value="{{navIndex}}" bindchange="onNavChange">
+          <view class="form-picker">{{navOptions[navIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="form-row">
+        <text class="form-label">排序值</text>
+        <input class="form-input" type="number" value="{{editing.sort}}" data-field="sort" bindinput="onFieldInput" placeholder="数值越小越靠前"/>
+      </view>
+      <view class="form-row form-row-inline">
+        <text class="form-label">主推位</text>
+        <switch checked="{{editing.featured}}" color="#C0553D" bindchange="onToggleFeatured"/>
+        <text class="form-hint">开启后占据首页主推大卡</text>
+      </view>
+      <view class="form-tip">互助类工具的业务配置（次数/文案/模式）请到管理后台维护；此处只调整入口展示。</view>
+    </scroll-view>
+
+    <view class="modal-footer">
+      <view class="btn-ghost" bindtap="closeModal">取消</view>
+      <view class="btn-primary {{saving ? 'btn-disabled' : ''}}" bindtap="save">{{saving ? '保存中…' : '保存'}}</view>
+    </view>
+  </view>
+</view>

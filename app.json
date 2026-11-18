@@ -3,24 +3,29 @@
         "pages/home/home",
         "pages/scan/scan",
         "pages/profile/profile",
-        "pages/history/history",
-        "pages/recycleBin/recycleBin",
-        "pages/userManage/userManage",
-        "pages/log/log",
+        "pages/scan/history/history",
+        "pages/scan/recycleBin/recycleBin",
         "pages/admin/data-manage",
-        "pages/continuousScan/continuousScan",
-        "pages/qrcode/qrcode",
-        "pages/tool/tool"
+        "pages/admin/tool-config",
+        "pages/scan/continuousScan/continuousScan",
+        "pages/scan/qrcode/qrcode",
+        "pages/tool/tool",
+        "pages/scan/settings/settings",
+        "pages/regcode/regcode",
+        "pages/unit-converter/unit-converter",
+        "pages/text-tools/text-tools",
+        "pages/date-tools/date-tools",
+        "pages/fruit/fruit"
     ],
-    "lazyCodeLoading": "requiredComponents",
     "entryPagePath": "pages/home/home",
+    "lazyCodeLoading": "requiredComponents",
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#2B1D18",
         "navigationBarTitleText": "工具箱",
         "navigationBarTextStyle": "white",
         "enablePullDownRefresh": false,
-        "backgroundColor": "#F9F4EB",
+        "backgroundColor": "#FBF6EC",
         "pageOrientation": "portrait",
         "navigationStyle": "default"
     },
@@ -30,7 +35,7 @@
         "weui": true
     },
     "tabBar": {
-        "color": "#999999",
+        "color": "#8A7970",
         "selectedColor": "#C0553D",
         "backgroundColor": "#ffffff",
         "borderStyle": "black",
@@ -38,28 +43,17 @@
             {
                 "pagePath": "pages/home/home",
                 "text": "首页",
-                "iconPath": "images/home.png",
-                "selectedIconPath": "images/home_selected.png"
+                "iconPath": "images/nav_home.png",
+                "selectedIconPath": "images/nav_home_on.png"
             },
             {
                 "pagePath": "pages/profile/profile",
                 "text": "我的",
-                "iconPath": "images/my.png",
-                "selectedIconPath": "images/my_selected.png"
+                "iconPath": "images/nav_user.png",
+                "selectedIconPath": "images/nav_user_on.png"
             }
         ]
     },
-    "subPackages": [
-        {
-            "root": "package1",
-            "name": "tools",
-            "pages": [
-                "pages/settings/settings",
-                "pages/browser/browser",
-                "pages/regcode/regcode"
-            ]
-        }
-    ],
     "requiredPrivateInfos": [],
     "debug": false,
     "networkTimeout": {

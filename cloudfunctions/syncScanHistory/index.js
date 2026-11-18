@@ -1,37 +1,29 @@
 const cloud = require('wx-server-sdk')
+const { calcRetentionDays } = require('./_shared/retention')
+const { ensureCollection } = require('./_shared/db')
+const { bjTime } = require('./_shared/time')
+
+// 依赖回收站集合的 action：首次调用时确保集合存在，避免「静默插入 0 条」
+const RECYCLE_ACTIONS = [
+  'recycle',
+  'getRecycled',
+  'restoreRecycled',
+  'restoreAllRecycled',
+  'deleteRecycled',
+  'clearRecycled',
+  'insertTestData'
+]
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
 
-// 获取用户历史保留天数（动态计算）
-// 普通用户：返回管理员设置的 historyRetentionDays（默认3）
-// VIP 用户：返回 VIP剩余天数 + historyRetentionDays（默认3），最少3天
-// 管理员：返回 historyRetentionDays（默认36500）
+// 获取用户历史保留天数（统一实现见 cloudfunctions/_shared/retention.js）
+// 普通用户默认 3 天；VIP 取「基础天数 / VIP 剩余天数」较大值；管理员默认 365 天
 async function getRetentionDays(openid, usersCollection) {
   try {
     const { data } = await usersCollection.where({ openid }).get()
-    if (data.length === 0) return 3
-    const user = data[0]
-    const baseDays = user.historyRetentionDays || 3
-
-    const role = user.role || 'user'
-    if (role === 'admin') {
-      return user.historyRetentionDays || 365
-    }
-    if (role === 'vip') {
-      // 计算 VIP 剩余天数
-      const vipExpiresAt = user.vipExpiresAt
-      if (!vipExpiresAt) return baseDays // 无 VIP 过期时间，按普通用户算
-      const expireDate = new Date(vipExpiresAt)
-      const now = new Date()
-      if (expireDate <= now) return baseDays // VIP 已过期，按普通用户算
-      const remainDays = Math.ceil((expireDate - now) / (24 * 60 * 60 * 1000))
-      // VIP 用户保留天数 = VIP 剩余时间（不低于基础天数）
-      return Math.max(baseDays, remainDays)
-    }
-    // 普通用户：管理员可自定义保留天数（默认3天）
-    return baseDays
+    return calcRetentionDays(data[0])
   } catch (e) {
     return 3
   }
@@ -47,6 +39,12 @@ exports.main = async (event, context) => {
 
   const usersCollection = db.collection('users')
   const recycleBinCollection = db.collection('scan_recycle_bin')
+
+  // 回收站集合不存在时，首次调用自动创建（新环境常见）
+  if (RECYCLE_ACTIONS.includes(action)) {
+    const ready = await ensureCollection(db, 'scan_recycle_bin', 'syncScanHistory')
+    if (!ready) return { success: false, error: '回收站集合初始化失败，请稍后重试' }
+  }
 
   switch (action) {
     case 'setRetention':
@@ -108,17 +106,11 @@ async function getRetention(callerOpenid, targetOpenid, usersCollection) {
   return { success: true, days }
 }
 
-// 生成用于字符串比较的本地时间格式（yyyy-MM-dd HH:mm:ss）
+// 生成用于字符串比较的北京时间格式（yyyy-MM-dd HH:mm:ss，UTC+8）
 // 同一格式下，字典序 = 时间顺序，可作为 db.command.lt 的安全参数
+// 云函数运行在 UTC，getHours 等本地时区方法会偏差 8 小时，统一走 _shared/time.js 的 bjTime
 function formatLocalTime(dateOrTs) {
-  const d = dateOrTs instanceof Date ? dateOrTs : new Date(dateOrTs)
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  const h = String(d.getHours()).padStart(2, '0')
-  const mi = String(d.getMinutes()).padStart(2, '0')
-  const s = String(d.getSeconds()).padStart(2, '0')
-  return `${y}-${m}-${day} ${h}:${mi}:${s}`
+  return bjTime(dateOrTs)
 }
 
 // ==================== 回收站相关 ====================
@@ -299,32 +291,17 @@ async function insertTestData(openid, recycleBinCollection) {
     const oneDayMs = 24 * 60 * 60 * 1000
     const types = ['QR', 'EAN', 'URL', 'WIFI', 'TEL']
 
+    // 批次时间戳（北京时间 MMddHHmmss），保证每次生成的条码内容都不同
+    const stamp = formatLocalTime(now).replace(/[-: ]/g, '').slice(4) // 20261112164830 → 1112164830
+
     const insertList = []
-    // 生成 10 条 4 天前的记录
-    for (let i = 0; i < 10; i++) {
-      const ts = now - 4 * oneDayMs - i * 60000 // 每条隔1分钟，避免时间完全相同
+    const push = (tag, idx, ts, typeIndex, count) => {
       insertList.push({
         _openid: openid,
-        code: `TEST-4D-${String(i + 1).padStart(2, '0')}`,
-        type: types[i % types.length],
+        code: `TEST-${tag}-${stamp}-${String(idx).padStart(2, '0')}`,
+        type: types[typeIndex % types.length],
         time: formatLocalTime(ts),
-        count: 1,
-        wxScanType: 'test',
-        recycledAt: formatLocalTime(ts),
-        recycledAtTs: ts,
-        createdAt: new Date(ts),
-        updatedAt: new Date(ts)
-      })
-    }
-    // 生成 10 条 1 天前的记录
-    for (let i = 0; i < 10; i++) {
-      const ts = now - 1 * oneDayMs - i * 60000
-      insertList.push({
-        _openid: openid,
-        code: `TEST-1D-${String(i + 1).padStart(2, '0')}`,
-        type: types[(i + 2) % types.length],
-        time: formatLocalTime(ts),
-        count: 1,
+        count: count || 1,
         wxScanType: 'test',
         recycledAt: formatLocalTime(ts),
         recycledAtTs: ts,
@@ -333,19 +310,46 @@ async function insertTestData(openid, recycleBinCollection) {
       })
     }
 
-    // 逐条插入
+    // 6 条「刚刚/今天」：最近 5~55 分钟内，验证「最新」展示（相对时间显示为 X 分钟前）
+    const minuteMs = 60 * 1000
+    for (let i = 0; i < 6; i++) {
+      push('NOW', i + 1, now - (5 + i * 10) * minuteMs, i, 1)
+    }
+    // 7 条「1 天前」：覆盖昨天/相对时间边界
+    for (let i = 0; i < 7; i++) {
+      push('1D', i + 1, now - 1 * oneDayMs - i * minuteMs, (i + 2) % types.length, 1)
+    }
+    // 7 条「4 天前」：超过普通用户 3 天保留期，用于验证过期清理
+    for (let i = 0; i < 7; i++) {
+      push('4D', i + 1, now - 4 * oneDayMs - i * minuteMs, i, 1)
+    }
+
+    // 逐条插入；记录最后一条错误，便于前端提示与排查
     let inserted = 0
+    let lastError = ''
     for (const item of insertList) {
       try {
         await recycleBinCollection.add({ data: item })
         inserted++
       } catch (e) {
+        lastError = (e && e.message) || String(e)
         console.error('[测试数据] 插入失败', item.code, e)
       }
     }
 
-    console.log(`[测试数据] 用户 ${openid} 插入了 ${inserted}/20 条测试记录`)
-    return { success: true, inserted, total: 20, message: `已生成 ${inserted} 条测试数据（10条4天前 + 10条1天前）` }
+    console.log(`[测试数据] 用户 ${openid} 插入了 ${inserted}/20 条测试记录`, lastError)
+    // 一条都没插入时不要返回成功，否则前端会出现「已生成 0 条」的误导提示
+    if (inserted === 0) {
+      return { success: false, error: '插入失败：' + (lastError || '请稍后重试') }
+    }
+    return {
+      success: true,
+      inserted,
+      total: 20,
+      message: inserted === 20
+        ? '已生成 20 条测试数据（6条今天 + 7条1天前 + 7条4天前）'
+        : `已生成 ${inserted}/20 条测试数据`
+    }
   } catch (err) {
     return { success: false, error: err.message || String(err) }
   }

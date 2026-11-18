@@ -2,28 +2,70 @@
   <!-- 搜索栏 -->
   <view class="search-bar">
     <input class="search-input" placeholder="搜索用户ID或昵称" value="{{searchKey}}" bindinput="onSearchInput"/>
-    <text class="search-btn" bindtap="loadUsers">刷新</text>
+    <text class="search-btn" bindtap="onRefresh">刷新</text>
   </view>
 
-  <!-- 用户列表 -->
-  <scroll-view class="user-list" scroll-y>
+  <!-- 角色统计卡（全量口径，点击可筛选列表） -->
+  <view class="stat-cards">
+    <view class="stat-card {{activeRole === 'admin' ? 'active' : ''}}" bindtap="tapStat" data-role="admin">
+      <text class="stat-num">{{stats.admin}}</text>
+      <text class="stat-label">管理员</text>
+    </view>
+    <view class="stat-card {{activeRole === 'vip' ? 'active' : ''}}" bindtap="tapStat" data-role="vip">
+      <text class="stat-num stat-vip">{{stats.vip}}</text>
+      <text class="stat-label">VIP</text>
+    </view>
+    <view class="stat-card {{activeRole === 'user' ? 'active' : ''}}" bindtap="tapStat" data-role="user">
+      <text class="stat-num">{{stats.user}}</text>
+      <text class="stat-label">用户</text>
+    </view>
+    <view class="stat-card {{activeRole === 'blocked' ? 'active' : ''}}" bindtap="tapStat" data-role="blocked">
+      <text class="stat-num stat-blocked">{{stats.blocked}}</text>
+      <text class="stat-label">封禁</text>
+    </view>
+  </view>
+
+  <!-- 列表计数：先给总量，再看列表 -->
+  <view class="list-caption">
+    <text wx:if="{{activeRole}}" class="filter-chip" bindtap="clearRoleFilter">{{activeRoleLabel}} ✕</text>
+    <text>共 {{total}} 位用户 · 已加载 {{users.length}} · 点击 ID 可复制</text>
+  </view>
+
+  <!-- 用户列表：触底加载下一页 -->
+  <scroll-view class="user-list" scroll-y bindscrolltolower="loadMore" lower-threshold="80">
     <block wx:for="{{users}}" wx:key="openid">
-      <view class="user-row" wx:if="{{!searchKey || item.openid.indexOf(searchKey) !== -1 || (item.nickName && item.nickName.indexOf(searchKey) !== -1)}}">
-        <view class="user-info">
-          <image class="user-avatar" src="{{item.avatarUrl || '/images/icon_user_white.png'}}" mode="aspectFill"/>
-          <view class="user-meta">
+      <view class="user-row {{item.role === 'blocked' ? 'row-blocked' : ''}}">
+        <image class="user-avatar" src="{{item.avatarUrl || '/images/nav_user_white.png'}}" mode="aspectFill"/>
+        <view class="user-meta">
+          <view class="user-name-line">
             <text class="user-name">{{item.nickName || '未设置'}}</text>
+            <text class="role-tag role-{{item.role}}">{{item.roleLabel}}</text>
+            <text class="copy-link" bindtap="copyOpenid" data-openid="{{item.openid}}">复制</text>
+          </view>
+          <view class="user-id-line">
+            <text class="id-label">ID:</text>
             <text class="user-id">{{item.openid}}</text>
           </view>
+          <text class="user-sub">加入: {{item.joinedText || '—'}}{{item.vipText ? ' · ' + item.vipText : ''}}</text>
+          <view class="user-sub sub-retain">
+            <text class="retain-label">保留:</text>
+            <text class="retain-value">{{item.retentionDays || item.historyRetentionDays || 3}} 天</text>
+          </view>
         </view>
-        <view class="user-action" bindtap="showEdit" data-openid="{{item.openid}}">
-          <text class="user-days">{{item.retentionDays ? item.retentionDays + '天' : (item.historyRetentionDays ? item.historyRetentionDays + '天' : '3天')}}</text>
-          <text class="user-edit">修改</text>
+        <view class="user-side">
+          <text class="side-btn btn-days" bindtap="showEdit" data-openid="{{item.openid}}">天数</text>
+          <text class="side-btn btn-role" bindtap="showRoleEdit" data-openid="{{item.openid}}">角色</text>
+          <text class="side-btn btn-del" wx:if="{{item.openid !== myOpenid}}" bindtap="confirmDelete" data-openid="{{item.openid}}">删除</text>
         </view>
       </view>
     </block>
     <view class="empty-tip" wx:if="{{users.length === 0}}">
-      <text>暂无用户数据</text>
+      <text>{{searchKey ? '没有匹配的用户' : '暂无用户数据'}}</text>
+    </view>
+    <view class="load-more-tip" wx:if="{{users.length > 0}}">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:elif="{{hasMore}}">上拉加载更多</text>
+      <text wx:else>已全部加载</text>
     </view>
   </scroll-view>
 
@@ -47,7 +89,7 @@
           <input class="modal-input" type="number" value="{{editDays}}" bindinput="onEditDaysInput" placeholder="输入天数"/>
         </view>
         <view class="modal-hint">
-          <text>普通用户：实际保留天数=此值（默认3天）\nVIP用户：实际保留天数=VIP剩余天数+此值\n管理员：实际保留天数=此值（36500=永久）</text>
+          <text>普通用户：实际保留天数=此值（默认3天）\nVIP用户：实际保留天数=此值与VIP剩余天数取大者；永久VIP=永久\n管理员：实际保留天数=此值（36500=永久）</text>
         </view>
       </view>
       <view class="modal-btns">

@@ -1,0 +1,10 @@
+{
+  "name": "adminApi",
+  "version": "1.0.0",
+  "description": "后台管理系统 P1 云函数：工具配置/用户管理/审计日志",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "bcryptjs": "^2.4.3"
+  }
+}

@@ -4,6 +4,7 @@
   "description": "生成二维码图片",
   "main": "index.js",
   "dependencies": {
-    "qrcode": "^1.5.3"
+    "qrcode": "^1.5.3",
+    "wx-server-sdk": "~2.6.3"
   }
 }

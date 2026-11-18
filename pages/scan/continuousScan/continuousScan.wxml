@@ -1,0 +1,112 @@
+<!-- 连续扫码页面 - 支持持续扫描条码/二维码，记录扫描历史，提供整体复制、导出和详情查看功能 -->
+<!-- 页面结构：顶部标题栏（返回、标题、操作按钮） → 扫码记录列表/空状态 → 底部扫码按钮 -->
+<!-- 关键数据：scanList 扫码记录列表，continuousActive 是否持续扫描中，expandedIndex/expandedDetail 内联展开详情 -->
+<view class="container">
+  <!-- 顶部标题栏 -->
+  <view class="header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="header-title">连续扫码</text>
+      <text wx:if="{{continuousActive}}" class="scanning-dot">●</text>
+    </view>
+    <view class="header-right" wx:if="{{scanList.length > 0}}">
+      <text class="header-action" bindtap="copyAllList">整体复制</text>
+      <text class="header-action" bindtap="exportList">导出</text>
+      <text class="header-action header-clear" bindtap="clearAllList">清空</text>
+    </view>
+  </view>
+
+  <!-- 扫码记录区域 -->
+  <view class="record-area">
+    <view class="record-border">
+      <view class="record-scroll-wrap">
+        <!-- 有记录时显示列表 -->
+        <scroll-view class="record-list" scroll-y wx:if="{{scanList.length > 0}}" enhanced show-scrollbar>
+          <view
+            class="record-item {{expandedIndex === index ? 'item-expanded' : ''}}"
+            wx:for="{{scanList}}"
+            wx:key="index"
+            bindtap="toggleDetail"
+            data-index="{{index}}"
+          >
+            <view class="item-row">
+              <view class="type-tag {{item.typeColor || 'tag-default'}}">{{item.type}}</view>
+              <text class="item-time">{{item.time}}</text>
+            </view>
+            <text class="item-code" user-select>{{item.code}}</text>
+            <view class="item-actions">
+              <view class="action-btn" catchtap="copyItem" data-index="{{index}}">复制</view>
+              <view class="action-btn action-open" catchtap="copyUrl" data-index="{{index}}" wx:if="{{item.isUrl}}">复制</view>
+              <view class="action-btn action-toggle" catchtap="toggleDetail" data-index="{{index}}">
+                {{expandedIndex === index ? '收起 ▲' : '详情'}}
+              </view>
+            </view>
+
+            <!-- 内联展开详情 -->
+            <view class="item-detail" wx:if="{{expandedIndex === index}}">
+              <view class="detail-code-box">
+                <text class="detail-code" user-select>{{expandedDetail.code}}</text>
+              </view>
+
+              <block wx:if="{{expandedDetail.customData}}">
+                <view class="detail-highlight">
+                  <text class="highlight-label">{{expandedDetail.customLabel || '解析结果'}}</text>
+                  <text class="highlight-value">{{expandedDetail.customData}}</text>
+                </view>
+              </block>
+
+              <view class="detail-info-list">
+                <view class="d-info-row">
+                  <text class="d-label">字符长度</text>
+                  <text class="d-value">{{expandedDetail.codeLength}}</text>
+                </view>
+                <view class="d-info-row" wx:if="{{expandedDetail.country}}">
+                  <text class="d-label">国家/地区</text>
+                  <text class="d-value">{{expandedDetail.country}}</text>
+                </view>
+                <view class="d-info-row" wx:if="{{expandedDetail.domain}}">
+                  <text class="d-label">域名</text>
+                  <text class="d-value">{{expandedDetail.domain}}</text>
+                </view>
+                <view class="d-info-row">
+                  <text class="d-label">扫描时间</text>
+                  <text class="d-value">{{item.time}}</text>
+                </view>
+              </view>
+
+              <view class="detail-actions">
+                <button class="d-btn d-copy" catchtap="copyExpandedCode">复制</button>
+                <button class="d-btn d-url" catchtap="copyExpandedUrl" wx:if="{{item.isUrl}}">复制链接</button>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:else>
+          <text class="empty-icon">📋</text>
+          <text class="empty-text">暂无扫码记录</text>
+          <text class="empty-hint">点击下方按钮开始持续扫描</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 计数标签 -->
+    <view class="count-bar" wx:if="{{scanList.length > 0}}">
+      <text class="count-text">共 {{scanList.length}} 条记录{{continuousActive ? ' · 持续扫描中' : ''}}</text>
+    </view>
+  </view>
+
+  <!-- 扫码按钮 -->
+  <view class="bottom-area">
+    <view 
+      class="scan-btn {{continuousActive ? 'btn-active' : ''}}" 
+      bindtap="toggleScan"
+    >
+      <text class="scan-btn-icon">{{continuousActive ? '⏹' : '📷'}}</text>
+      <text class="scan-btn-text">{{continuousActive ? '停止扫码' : '扫码'}}</text>
+    </view>
+  </view>
+
+
+</view>

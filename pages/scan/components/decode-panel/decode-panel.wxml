@@ -1,0 +1,340 @@
+<view class="decode-page">
+  <!-- 统计看板 -->
+  <view class="stats-section">
+    <view class="stats-header" bindtap="toggleStats">
+      <view class="stats-title-area">
+        <view class="stats-dot"></view>
+        <view class="stats-heading">
+          <text class="stats-title">扫码统计</text>
+          <text class="stats-sub">近 7 天 · 单位：次</text>
+        </view>
+      </view>
+      <text class="stats-toggle">{{showStats ? '收起' : '展开'}}</text>
+    </view>
+    <view class="stats-body" wx:if="{{showStats}}">
+      <!-- 主次指标：今日为主，本周/最常类型为辅 -->
+      <view class="stats-metrics">
+        <view class="metric-primary">
+          <text class="metric-label">今日扫码</text>
+          <view class="metric-value-row">
+            <text class="metric-value">{{statsToday}}</text>
+            <text class="metric-unit">次</text>
+          </view>
+        </view>
+        <view class="metric-secondary">
+          <view class="metric-mini">
+            <text class="metric-mini-label">本周累计</text>
+            <view class="metric-mini-value-row">
+              <text class="metric-mini-value">{{statsWeek}}</text>
+              <text class="metric-mini-unit">次</text>
+            </view>
+          </view>
+          <view class="metric-mini-divider"></view>
+          <view class="metric-mini">
+            <text class="metric-mini-label">最常类型</text>
+            <text class="metric-mini-value metric-mini-text">{{statsTopTypes.length > 0 ? statsTopTypes[0].type : '—'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- TOP 类型：横向比例条 -->
+      <view class="stats-types" wx:if="{{statsTopTypes.length > 0}}">
+        <view class="stats-block-head">
+          <text class="stats-block-title">类型分布</text>
+          <text class="stats-block-note">本周 · 按扫码次数</text>
+        </view>
+        <view class="type-row" wx:for="{{statsTopTypes}}" wx:key="type">
+          <text class="type-row-name">{{item.type}}</text>
+          <view class="type-row-track">
+            <view class="type-row-fill" style="width:{{item.percent}}%"></view>
+          </view>
+          <text class="type-row-count">{{item.count}}</text>
+        </view>
+      </view>
+
+      <!-- 7 日趋势图 -->
+      <view class="stats-trend">
+        <view class="stats-block-head">
+          <text class="stats-block-title">近 7 天趋势</text>
+          <text class="stats-block-note">单位：次</text>
+        </view>
+        <canvas type="2d" id="trendCanvas" class="stats-trend-canvas"></canvas>
+        <text class="stats-empty" wx:if="{{!statsHasData}}">近 7 天暂无扫码记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-header">
+      <text class="input-title">输入内容</text>
+      <view class="input-actions">
+        <text class="input-action" bindtap="pasteFromClipboard">粘贴</text>
+        <text class="input-action" wx:if="{{inputCode}}" bindtap="clearInput">清空</text>
+      </view>
+    </view>
+    <view class="input-box">
+      <textarea
+        class="code-textarea"
+        placeholder="输入条码、网址、WiFi信息、vCard等内容"
+        value="{{inputCode}}"
+        bindinput="onInput"
+        maxlength="-1"
+        auto-height
+      />
+      <view class="type-badge" wx:if="{{detectType}}">
+        <text class="type-badge-text">{{detectType}}</text>
+      </view>
+    </view>
+    <view class="decode-btn-area">
+      <view class="decode-btn" bindtap="decode">
+        <image class="decode-btn-icon" src="/images/nav_scan.png" mode="aspectFit"/>
+        <text class="decode-btn-text">解码分析</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 解码结果 -->
+  <view class="result-section" wx:if="{{decodedResult}}">
+    <!-- 类型识别卡 -->
+    <view class="type-card">
+      <view class="type-card-left">
+        <view class="type-icon-box {{typeIconClass}}">
+          <text class="type-icon-text">{{typeIconLabel}}</text>
+        </view>
+        <view class="type-info">
+          <text class="type-name">{{decodedResult.type}}</text>
+          <text class="type-data" user-select>{{decodedResult.data}}</text>
+        </view>
+      </view>
+      <view class="type-status" wx:if="{{decodedResult.valid !== undefined}}">
+        <text class="status-{{decodedResult.valid ? 'valid' : 'invalid'}}">{{decodedResult.valid ? '有效' : '无效'}}</text>
+      </view>
+    </view>
+
+    <!-- 解码详情 -->
+    <view class="detail-card" wx:if="{{hasDetails}}">
+      <text class="detail-card-title">解析详情</text>
+
+      <!-- 自定义规则命中（置顶，优先级高于内置解析） -->
+      <block wx:if="{{decodedResult.customData}}">
+        <view class="detail-row custom-rule-row">
+          <view class="detail-label-wrap">
+            <text class="detail-label">{{decodedResult.customLabel || '自定义'}}</text>
+            <text class="date-convert-tag" wx:if="{{decodedResult.customRuleResults && decodedResult.customRuleResults.length > 0 && decodedResult.customRuleResults[0].isDate}}">日期转换</text>
+          </view>
+          <text class="detail-value highlight-value">{{decodedResult.customData}}</text>
+        </view>
+        <view class="raw-value" wx:if="{{decodedResult.customRuleResults && decodedResult.customRuleResults.length > 0 && decodedResult.customRuleResults[0].rawValue && decodedResult.customRuleResults[0].rawValue !== decodedResult.customData}}">原始: {{decodedResult.customRuleResults[0].rawValue}}</view>
+      </block>
+
+      <!-- EAN/ISBN -->
+      <block wx:if="{{decodedResult.country}}">
+        <view class="detail-row">
+          <text class="detail-label">国家/地区</text>
+          <text class="detail-value">{{decodedResult.country}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.isbn}}">
+        <view class="detail-row">
+          <text class="detail-label">ISBN</text>
+          <text class="detail-value">{{decodedResult.isbn}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.manufacturerCode}}">
+        <view class="detail-row">
+          <text class="detail-label">厂商代码</text>
+          <text class="detail-value">{{decodedResult.manufacturerCode}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.productCode}}">
+        <view class="detail-row">
+          <text class="detail-label">产品代码</text>
+          <text class="detail-value">{{decodedResult.productCode}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.checkDigit}}">
+        <view class="detail-row">
+          <text class="detail-label">校验位</text>
+          <text class="detail-value">{{decodedResult.checkDigit}}</text>
+        </view>
+      </block>
+
+      <!-- URL -->
+      <block wx:if="{{decodedResult.domain}}">
+        <view class="detail-row">
+          <text class="detail-label">域名</text>
+          <text class="detail-value detail-link" bindtap="copyUrl">{{decodedResult.domain}}</text>
+        </view>
+      </block>
+
+      <!-- WiFi -->
+      <block wx:if="{{decodedResult.ssid}}">
+        <view class="detail-row">
+          <text class="detail-label">网络名称</text>
+          <text class="detail-value">{{decodedResult.ssid}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{decodedResult.encryption}}">
+          <text class="detail-label">加密方式</text>
+          <text class="detail-value">{{decodedResult.encryption}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{decodedResult.password}}">
+          <text class="detail-label">密码</text>
+          <text class="detail-value">{{decodedResult.password}}</text>
+          <text class="detail-copy-btn" bindtap="copyWifiPassword">复制</text>
+        </view>
+      </block>
+
+      <!-- vCard -->
+      <block wx:if="{{decodedResult.vcardName}}">
+        <view class="detail-row">
+          <text class="detail-label">姓名</text>
+          <text class="detail-value">{{decodedResult.vcardName}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.vcardPhone}}">
+        <view class="detail-row">
+          <text class="detail-label">电话</text>
+          <text class="detail-value">{{decodedResult.vcardPhone}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.vcardEmail}}">
+        <view class="detail-row">
+          <text class="detail-label">邮箱</text>
+          <text class="detail-value">{{decodedResult.vcardEmail}}</text>
+        </view>
+      </block>
+      <block wx:if="{{decodedResult.vcardOrg}}">
+        <view class="detail-row">
+          <text class="detail-label">公司</text>
+          <text class="detail-value">{{decodedResult.vcardOrg}}</text>
+        </view>
+      </block>
+
+      <!-- 邮箱 -->
+      <block wx:if="{{decodedResult.email}}">
+        <view class="detail-row">
+          <text class="detail-label">邮箱地址</text>
+          <text class="detail-value">{{decodedResult.email}}</text>
+        </view>
+      </block>
+
+      <!-- 电话 -->
+      <block wx:if="{{decodedResult.phone}}">
+        <view class="detail-row">
+          <text class="detail-label">电话号码</text>
+          <text class="detail-value">{{decodedResult.phone}}</text>
+        </view>
+      </block>
+
+      <!-- 短信 -->
+      <block wx:if="{{decodedResult.smsPhone}}">
+        <view class="detail-row">
+          <text class="detail-label">收信号码</text>
+          <text class="detail-value">{{decodedResult.smsPhone}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{decodedResult.smsBody}}">
+          <text class="detail-label">短信内容</text>
+          <text class="detail-value">{{decodedResult.smsBody}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 编码转换 -->
+    <view class="encode-card">
+      <view class="encode-header" bindtap="toggleEncodeTools">
+        <text class="encode-title">编码转换</text>
+        <text class="encode-toggle">{{showEncodeTools ? '收起' : '展开'}}</text>
+      </view>
+      <view class="encode-body" wx:if="{{showEncodeTools}}">
+        <block wx:for="{{encodeList}}" wx:key="key">
+          <view class="encode-row" wx:if="{{item.value}}">
+            <text class="encode-label">{{item.label}}</text>
+            <text class="encode-value" user-select>{{item.value}}</text>
+            <text class="encode-copy" bindtap="copyEncodeResult" data-key="{{item.key}}">复制</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 快捷操作 -->
+    <view class="action-section">
+      <text class="action-title">快捷操作</text>
+      <view class="action-grid">
+        <view class="action-btn" bindtap="copyResult">
+          <image class="action-icon" src="/images/ui_album_white.png" mode="aspectFit"/>
+          <text class="action-label">复制</text>
+        </view>
+        <view class="action-btn" wx:if="{{decodedResult.domain}}" bindtap="copyUrl">
+          <image class="action-icon" src="/images/ui_info.png" mode="aspectFit"/>
+          <text class="action-label">打开</text>
+        </view>
+        <view class="action-btn" wx:if="{{decodedResult.password}}" bindtap="copyWifiPassword">
+          <image class="action-icon" src="/images/ui_edit_white.png" mode="aspectFit"/>
+          <text class="action-label">复制密码</text>
+        </view>
+        <view class="action-btn" wx:if="{{decodedResult.phone || detectType === '电话'}}" bindtap="callPhone">
+          <image class="action-icon" src="/images/icon_device.png" mode="aspectFit"/>
+          <text class="action-label">拨打</text>
+        </view>
+        <view class="action-btn" wx:if="{{decodedResult.email}}" bindtap="copyEmail">
+          <image class="action-icon" src="/images/ui_info.png" mode="aspectFit"/>
+          <text class="action-label">复制邮箱</text>
+        </view>
+        <view class="action-btn" wx:if="{{decodedResult.vcardName}}" bindtap="saveContact">
+          <image class="action-icon" src="/images/nav_user_white.png" mode="aspectFit"/>
+          <text class="action-label">保存联系人</text>
+        </view>
+        <view class="action-btn" bindtap="generateQrCode">
+          <image class="action-icon" src="/images/nav_scan_white.png" mode="aspectFit"/>
+          <text class="action-label">生成二维码</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 二维码弹窗 -->
+  <view class="qr-modal" wx:if="{{showQrCode}}" bindtap="closeQrCode">
+    <view class="qr-modal-content" catchtap="">
+      <text class="qr-modal-title">二维码已生成</text>
+      <image class="qr-modal-image" src="{{qrImagePath}}" mode="widthFix"/>
+      <text class="qr-modal-hint">长按图片可保存，或点击下方按钮</text>
+      <view class="qr-modal-actions">
+        <view class="qr-modal-btn" bindtap="saveQrCode">保存到相册</view>
+        <view class="qr-modal-btn qr-modal-btn-outline" bindtap="closeQrCode">关闭</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐藏的 Canvas -->
+  <canvas type="2d" id="qrCanvas" style="width:200px;height:200px;position:fixed;left:-9999px;top:-9999px;"></canvas>
+
+
+  <!-- 资料设置弹窗 -->
+  <view class="modal-mask" wx:if="{{showProfileModal}}" catchtap="skipProfile">
+    <view class="modal-box" catchtap="stopTap">
+      <view class="modal-header">
+        <view class="modal-accent-bar"></view>
+        <text class="modal-title">{{isFirstLogin ? '设置头像昵称' : '编辑资料'}}</text>
+      </view>
+      <view class="profile-edit-tip" wx:if="{{isFirstLogin}}">
+        <text class="profile-tip-text">获取微信头像和昵称，提升个性化体验</text>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">头像</text>
+        <button class="profile-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onEditChooseAvatar">
+          <image class="profile-avatar-preview" src="{{editAvatarUrl || '/images/nav_user_white.png'}}" mode="aspectFill"/>
+          <text class="profile-avatar-hint">{{editAvatarUrl ? '更换' : '选择头像'}}</text>
+        </button>
+      </view>
+      <view class="profile-edit-row">
+        <text class="profile-edit-label">昵称</text>
+        <input class="profile-nick-input" type="nickname" value="{{editNickName}}" placeholder="点击此处获取微信昵称" bindinput="onEditNickInput"/>
+      </view>
+      <view class="modal-btns">
+        <view class="modal-btn modal-cancel" bindtap="skipProfile">跳过</view>
+        <view class="modal-btn modal-confirm" bindtap="confirmProfile">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

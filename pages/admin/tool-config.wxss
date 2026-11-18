@@ -1,0 +1,276 @@
+.page-wrap {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: 20rpx 24rpx 60rpx;
+  box-sizing: border-box;
+}
+
+.list-caption {
+  font-size: 22rpx;
+  color: #94817A;
+  line-height: 1.6;
+  padding: 8rpx 8rpx 20rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--text-4);
+  padding: 60rpx 0;
+}
+
+/* ===== 工具列表 ===== */
+.tool-list {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(43, 29, 24, 0.05);
+}
+
+.tool-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 2rpx solid #F5EDE1;
+}
+
+.tool-row:last-child {
+  border-bottom: none;
+}
+
+.tool-row.row-offline {
+  opacity: 0.62;
+}
+
+.tool-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-title-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.tool-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2B1D18;
+}
+
+.tag-featured {
+  font-size: 18rpx;
+  color: #C0553D;
+  background: #FBEDE9;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.tag-custom {
+  font-size: 18rpx;
+  color: #8A5B2C;
+  background: #FBF1DF;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.tag-status {
+  font-size: 18rpx;
+  border-radius: 6rpx;
+  padding: 2rpx 10rpx;
+}
+
+.tag-status.status-on {
+  color: #2F6C60;
+  background: #E3EFEA;
+}
+
+.tag-status.status-off {
+  color: #94817A;
+  background: #F1EBE4;
+}
+
+.tool-desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #6B5A52;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.tool-meta-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 10rpx;
+}
+
+.tool-key {
+  font-size: 20rpx;
+  color: var(--text-4);
+  font-family: 'Menlo', 'Consolas', monospace;
+}
+
+.tool-sort,
+.tool-nav {
+  font-size: 20rpx;
+  color: var(--text-4);
+}
+
+.tool-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.tool-switch {
+  transform: scale(0.72);
+  transform-origin: center;
+}
+
+.edit-btn {
+  font-size: 22rpx;
+  color: #C0553D;
+  font-weight: 700;
+  padding: 4rpx 18rpx;
+  border: 2rpx solid #EBD6CE;
+  border-radius: 20rpx;
+}
+
+/* ===== 编辑弹窗 ===== */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 12, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.modal-box {
+  width: 100%;
+  max-height: 86vh;
+  background: #FFFDF9;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 28rpx 28rpx calc(24rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #F3E7D8;
+}
+
+.modal-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #2B1D18;
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: var(--text-4);
+  line-height: 1;
+  padding: 0 8rpx;
+}
+
+.modal-body {
+  flex: 1;
+  max-height: 62vh;
+  padding-top: 8rpx;
+}
+
+.form-row {
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid #F7EDE2;
+}
+
+.form-row-inline {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 22rpx;
+  color: #94817A;
+  margin-bottom: 8rpx;
+}
+
+.form-row-inline .form-label {
+  margin-bottom: 0;
+}
+
+.form-input {
+  font-size: 28rpx;
+  color: #2B1D18;
+  min-height: 44rpx;
+}
+
+.form-picker {
+  font-size: 28rpx;
+  color: #2B1D18;
+  line-height: 1.5;
+}
+
+.form-hint {
+  font-size: 20rpx;
+  color: var(--text-4);
+}
+
+.form-tip {
+  font-size: 20rpx;
+  color: var(--text-4);
+  line-height: 1.6;
+  padding: 20rpx 0 4rpx;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding-top: 20rpx;
+}
+
+.btn-ghost {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: #F5EDE1;
+  color: #2B1D18;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.btn-primary {
+  flex: 2;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: #C0553D;
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.btn-disabled {
+  opacity: 0.6;
+}

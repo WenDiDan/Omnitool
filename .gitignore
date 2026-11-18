@@ -12,3 +12,9 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+
+# npm 缓存（开发者工具生成，不应入库）
+.npmcache/
+
+# Jest 测试覆盖率报告（每次 npm test 重新生成）
+coverage/

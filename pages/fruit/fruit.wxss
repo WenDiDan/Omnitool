@@ -1,0 +1,542 @@
+.tool-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: var(--sp-4) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* .card / .card-head / .card-title / .card-action 统一由 app.wxss 提供 */
+
+.card-action.danger {
+  color: var(--brand-primary-deep);
+}
+
+.card-action.refresh {
+  color: #C8952C;
+}
+
+/* ===== 发布：单行输入 + 行内粘贴 + 右侧发布按钮 ===== */
+.publish-bar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-3);
+}
+
+.input-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: var(--surface-2);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  padding: 0 12rpx 0 var(--sp-4);
+  min-height: 92rpx;
+  box-sizing: border-box;
+}
+
+.code-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+}
+
+.code-placeholder {
+  color: var(--text-4);
+  font-family: inherit;
+}
+
+/* 行内「识别」：相册选图 OCR，图标 + 文字的方形小按钮 */
+.album-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  width: 92rpx;
+  flex-shrink: 0;
+  font-size: var(--fs-micro);
+  color: var(--text-2);
+  font-weight: 700;
+}
+
+.chip-hover {
+  opacity: 0.6;
+}
+
+/* 相册图标：圆角矩形 + 左上太阳 + 底部山形 */
+.album-icon {
+  width: 32rpx;
+  height: 28rpx;
+  border: 3rpx solid var(--text-2);
+  border-radius: 6rpx;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.album-icon::before {
+  content: '';
+  position: absolute;
+  top: 4rpx;
+  left: 5rpx;
+  width: 7rpx;
+  height: 7rpx;
+  background: var(--text-2);
+  border-radius: 50%;
+}
+
+.album-icon::after {
+  content: '';
+  position: absolute;
+  bottom: 2rpx;
+  right: 3rpx;
+  width: 16rpx;
+  height: 10rpx;
+  background: var(--text-2);
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+
+.publish-btn {
+  flex-shrink: 0;
+  padding: 0 var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #CB5F47, var(--brand-primary));
+  color: var(--text-invert);
+  border-radius: var(--r-md);
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  min-height: 92rpx;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-brand);
+}
+
+.publish-hover {
+  opacity: 0.85;
+}
+
+/* 诚信互助提示行 */
+.trust-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: 18rpx;
+}
+
+.trust-check {
+  width: 28rpx;
+  height: 28rpx;
+  line-height: 24rpx;
+  text-align: center;
+  border-radius: 50%;
+  border: 2rpx solid var(--brand-green);
+  background: transparent;
+  color: var(--text-invert);
+  font-size: 18rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.trust-check.checked {
+  background: var(--brand-green);
+}
+
+.trust-text {
+  flex: 1;
+  font-size: var(--fs-note);
+  color: var(--text-1);
+  font-weight: 700;
+}
+
+.trust-more {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+/* 展开的说明面板 */
+.tips-panel {
+  margin-top: var(--sp-3);
+  background: var(--brand-tint-2);
+  border-radius: var(--r-sm);
+  padding: 18rpx 20rpx;
+}
+
+.tips-line {
+  display: block;
+  font-size: var(--fs-tiny);
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.btn-disabled {
+  opacity: 0.55;
+}
+
+.muted-note {
+  display: block;
+  font-size: var(--fs-tiny);
+  color: var(--text-4);
+  margin-top: var(--sp-3);
+  line-height: 1.5;
+}
+
+.muted-note.inline {
+  display: inline;
+  margin-top: 0;
+}
+
+/* ===== 广场 ===== */
+.link-item {
+  padding: 10rpx 0;
+  border-bottom: 2rpx solid var(--brand-line);
+}
+
+.link-item:last-child {
+  border-bottom: none;
+  padding-bottom: 4rpx;
+}
+
+/* 左上角元信息小标签 */
+.owner-tag {
+  display: block;
+  font-size: var(--fs-micro);
+  color: var(--text-3);
+  font-weight: 700;
+  margin-bottom: 2rpx;
+  padding-left: 6rpx;
+}
+
+.owner-tag.mine-tag {
+  color: var(--brand-primary);
+}
+
+.item-time {
+  font-size: var(--fs-tiny);
+  color: var(--text-4);
+  flex-shrink: 0;
+}
+
+/* 一行：口令 + 时间 + 领取按钮 */
+.item-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: #FFFDF8;
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  padding: 8rpx var(--sp-4);
+  box-sizing: border-box;
+}
+
+.masked-code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 32rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+  line-height: 1.2;
+  color: var(--brand-primary);
+  white-space: nowrap;
+}
+
+.item-line .help-btn {
+  flex-shrink: 0;
+  padding: 10rpx 28rpx;
+}
+
+/* 自己发布的口令：广场内不可领取，仅作标记 */
+.self-chip {
+  flex-shrink: 0;
+  padding: 10rpx 22rpx;
+  border: 2rpx dashed var(--brand-line);
+  border-radius: var(--r-full);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EFAF5A, var(--brand-strong));
+  color: var(--text-invert);
+  border-radius: var(--r-full);
+  font-size: var(--fs-note);
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(232, 164, 76, 0.28);
+}
+
+.help-btn-hover {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.empty-tip {
+  text-align: center;
+  font-size: var(--fs-note);
+  color: var(--text-4);
+  padding: var(--sp-5) 0;
+}
+
+/* ===== 我的记录入口 ===== */
+.entry-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.entry-hover {
+  opacity: 0.85;
+}
+
+.entry-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.entry-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.entry-sub {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+}
+
+.entry-arrow {
+  font-size: 40rpx;
+  color: var(--text-4);
+  line-height: 1;
+}
+
+/* ===== 我的记录弹窗（.mask / .modal / .modal-head / .modal-title / .modal-close 复用全局） ===== */
+.modal-refresh {
+  font-size: var(--fs-note);
+  color: #C8952C;
+  font-weight: 700;
+}
+
+.modal-body {
+  flex: 1;
+  max-height: 52vh;
+  margin-top: var(--sp-1);
+}
+
+.record-tabs {
+  display: flex;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 6rpx;
+  gap: 6rpx;
+}
+
+.record-tab {
+  padding: 10rpx var(--sp-5);
+  font-size: var(--fs-note);
+  color: var(--text-3);
+  border-radius: var(--r-xs);
+  font-weight: 700;
+}
+
+.record-tab.active {
+  background: var(--surface);
+  color: var(--brand-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.mine-top {
+  margin-top: 4rpx;
+}
+
+.mine-item {
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--brand-line);
+}
+
+.mine-item:first-child {
+  padding-top: 4rpx;
+}
+
+.mine-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mine-box {
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 20rpx var(--sp-4);
+}
+
+.mine-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.mine-code {
+  font-family: var(--font-mono);
+  font-size: 34rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+  line-height: 1.5;
+  color: var(--text-1);
+}
+
+.copy-chip {
+  flex-shrink: 0;
+  padding: 10rpx 28rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  color: var(--brand-primary);
+  font-size: var(--fs-note);
+  font-weight: 700;
+}
+
+.mine-meta-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+.mine-use {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+}
+
+.mine-pill {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: var(--r-xs);
+}
+
+.mine-pill.open {
+  background: var(--brand-green-tint);
+  color: var(--brand-green);
+}
+
+.mine-pill.done {
+  background: var(--surface-3);
+  color: var(--text-3);
+}
+
+.mine-ops {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+
+.mine-op {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: var(--r-md);
+  background: var(--brand-tint-2);
+  color: var(--text-2);
+  font-size: var(--fs-note);
+  font-weight: 700;
+}
+
+.mine-op.danger {
+  background: #FBEDE9;
+  color: var(--brand-primary-deep);
+}
+
+.mine-actions {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 18rpx;
+}
+
+.mine-btn {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: var(--r-md);
+  background: var(--brand-tint-2);
+  color: var(--text-2);
+  font-size: var(--fs-note);
+  font-weight: 700;
+}
+
+.mine-btn.danger {
+  background: #FBEDE9;
+  color: var(--brand-primary-deep);
+}
+
+/* 我使用的记录 */
+.used-item {
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid var(--brand-line);
+}
+
+.used-item:first-child {
+  padding-top: 4rpx;
+}
+
+.used-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* ===== 广场头部 ===== */
+.pool-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-1);
+}
+
+.pool-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+}
+
+.pool-count {
+  font-family: var(--font-mono);
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.pool-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.auto-btn {
+  padding: 10rpx 24rpx;
+  background: linear-gradient(135deg, #CB5F47, var(--brand-primary));
+  color: var(--text-invert);
+  border-radius: var(--r-full);
+  font-size: var(--fs-tiny);
+  font-weight: 700;
+  letter-spacing: 1rpx;
+  box-shadow: 0 4rpx 12rpx rgba(192, 85, 61, 0.22);
+}

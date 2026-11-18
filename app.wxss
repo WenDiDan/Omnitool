@@ -1,42 +1,79 @@
 /* =============================================
-   全局设计令牌 · 墨绿设计体系
-   主色 #C0553D / 强调 #E8A44C / 深色 #2B1D18
-   底色 #F9F4EB / 卡片 #FFFFFF
+   全局设计体系 · 暖纸编辑风（Paper Editorial）
+   主色 棕红 #C0553D / 强调 琥珀 #E8A44C
+   纸底 #FBF6EC / 卡片 #FFFFFF / 墨 #2B1D18
    ============================================= */
 page {
-  background-color: #F9F4EB;
-  font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #FBF6EC;
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  color: #2B1D18;
   -webkit-font-smoothing: antialiased;
 
   /* ===== 品牌色 ===== */
   --brand-primary: #C0553D;
+  --brand-primary-deep: #A8452F;
   --brand-strong: #E8A44C;
+  --brand-accent: #F2B04E;
   --brand-deep: #2B1D18;
   --brand-mid: #3A2A20;
-  --brand-accent: #F2B04E;
   --brand-tint: #F3E7D8;
   --brand-tint-2: #F7EDE2;
-  --brand-line: #EFE3D5;
-  --bg-page: #F9F4EB;
+  --brand-line: #E8D5BC;
+  --brand-green: #2F6C60;
+  --brand-green-tint: #E3EFEA;
+
+  /* ===== 背景 / 表面 ===== */
+  --bg-page: #FBF6EC;
+  --bg-page-grad: linear-gradient(180deg, #F4E2C8 0%, #FBF6EC 560rpx);
+  --surface: #FFFFFF;
+  --surface-2: #FBF6EC;
+  --surface-3: #F6EEDF;
+  /* 彩色卡片底：给页面制造"有色块"的节奏，不再清一色白 */
+  --surface-warm: #FDF3E7;
+  --surface-clay: #FBEDE6;
+  --surface-amber: #FCF3DF;
 
   /* ===== 文字层级 ===== */
   --text-1: #2B1D18;
   --text-2: #5C4A40;
-  --text-3: #7D695F;
-  --text-4: #B3A29A;
+  --text-3: #8A7970;
+  --text-4: #96837A;
+  --text-invert: #FFFFFF;
 
   /* ===== 圆角体系 ===== */
+  --r-xs: 8rpx;
   --r-sm: 12rpx;
   --r-md: 16rpx;
   --r-lg: 24rpx;
   --r-xl: 32rpx;
   --r-full: 999rpx;
 
-  /* ===== 阴影体系（三层） ===== */
-  --shadow-sm: 0 2rpx 8rpx rgba(43, 29, 24, 0.05);
-  --shadow-md: 0 6rpx 24rpx rgba(43, 29, 24, 0.08);
-  --shadow-lg: 0 12rpx 36rpx rgba(43, 29, 24, 0.16);
-  --shadow-brand: 0 10rpx 28rpx rgba(192, 85, 61, 0.28);
+  /* ===== 间距体系 ===== */
+  --sp-1: 8rpx;
+  --sp-2: 12rpx;
+  --sp-3: 16rpx;
+  --sp-4: 24rpx;
+  --sp-5: 32rpx;
+  --sp-6: 40rpx;
+
+  /* ===== 阴影体系（单层轻阴影 + 描边） ===== */
+  --shadow-sm: 0 4rpx 14rpx rgba(43, 29, 24, 0.06);
+  --shadow-md: 0 10rpx 26rpx rgba(43, 29, 24, 0.11);
+  --shadow-lg: 0 18rpx 44rpx rgba(43, 29, 24, 0.20);
+  --shadow-brand: 0 14rpx 34rpx rgba(192, 85, 61, 0.28);
+
+  /* ===== 字号体系（拉开层级，标题更大、正文不动） ===== */
+  --fs-display: 56rpx;
+  --fs-h1: 44rpx;
+  --fs-h2: 36rpx;
+  --fs-h3: 30rpx;
+  --fs-body: 26rpx;
+  --fs-note: 24rpx;
+  --fs-tiny: 22rpx;
+  --fs-micro: 20rpx;
+
+  /* ===== 等宽字体（数字 / 券码 / 编号） ===== */
+  --font-mono: 'Menlo', 'Consolas', 'Courier New', monospace;
 
   /* ===== TDesign 主题定制 ===== */
   --td-brand-color: #C0553D;
@@ -60,22 +97,134 @@ page {
   --td-warning-color: #C8952C;
   --td-error-color: #D63031;
   --td-success-color: #3E9B6E;
+
+  /* ===== TDesign 组件对齐纸卡体系（描边 + 小圆角，不用大胶囊） ===== */
+  --td-button-border-radius: 16rpx;
+  --td-button-border-width: 2rpx;
+  --td-button-primary-bg-color: #C0553D;
+  --td-button-primary-border-color: #C0553D;
+  --td-button-primary-active-bg-color: #A8452F;
+  --td-button-primary-active-border-color: #A8452F;
+  --td-button-primary-disabled-bg: #D8C7B6;
+  --td-button-primary-disabled-border-color: #D8C7B6;
+  --td-button-default-color: #5C4A40;
+  --td-button-default-bg-color: #FFFFFF;
+  --td-button-default-border-color: #EDE0CE;
+  --td-button-default-active-bg-color: #FBF6EC;
+  --td-button-default-active-border-color: #EDE0CE;
 }
 
-/* ===== 通用组件 ===== */
+/* =============================================
+   一、布局容器
+   ============================================= */
 .container {
-  padding: 20rpx;
   min-height: 100vh;
+  background: var(--bg-page-grad);
+  padding: var(--sp-4) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
+/* 无顶部渐变的纯纸底容器 */
+.page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: var(--sp-4) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* =============================================
+   二、卡片与分组
+   ============================================= */
+.card {
+  background: var(--surface);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-5) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.card-flat {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: var(--sp-5) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  box-sizing: border-box;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.card-title {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 1rpx;
+}
+
+.card-sub {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+}
+
+.card-action {
+  font-size: var(--fs-note);
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+/* 分区小标题：左侧短竖线 + 字距 */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-note);
+  font-weight: 700;
+  color: var(--text-2);
+  letter-spacing: 2rpx;
+  margin-bottom: var(--sp-3);
+}
+
+.section-title::before {
+  content: '';
+  width: 6rpx;
+  height: 24rpx;
+  border-radius: var(--r-xs);
+  background: var(--brand-primary);
+}
+
+.divider {
+  height: 2rpx;
+  background: var(--brand-line);
+  margin: var(--sp-4) 0;
+}
+
+/* =============================================
+   三、按钮
+   ============================================= */
 .btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  padding: 0 var(--sp-5);
   background: linear-gradient(135deg, #CB5F47 0%, #C0553D 100%);
-  color: white;
+  color: var(--text-invert);
   border-radius: var(--r-md);
-  padding: 24rpx;
-  text-align: center;
-  font-size: 32rpx;
-  font-weight: 600;
+  font-size: 30rpx;
+  font-weight: 700;
   letter-spacing: 1rpx;
   box-shadow: var(--shadow-brand);
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -84,36 +233,203 @@ page {
 .btn-primary:active {
   opacity: 0.88;
   transform: scale(0.98);
-  background: linear-gradient(135deg, #A8452F 0%, #9E3F2B 100%);
 }
 
-.card {
-  background-color: white;
-  border-radius: var(--r-lg);
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-  box-shadow: var(--shadow-md);
+/* 琥珀胶囊按钮：列表行尾的主操作 */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 30rpx;
+  background: linear-gradient(135deg, #EFAF5A, #E8A44C);
+  color: var(--text-invert);
+  border-radius: var(--r-full);
+  font-size: var(--fs-note);
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(232, 164, 76, 0.28);
 }
 
-.text-primary {
-  color: #E07A5F;
-}
-
-.text-secondary {
+/* 次级描边按钮 */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 28rpx;
+  background: var(--surface-2);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-full);
   color: var(--text-2);
+  font-size: var(--fs-note);
+  font-weight: 700;
 }
 
-.text-muted {
+.btn-hover {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.btn-disabled {
+  opacity: 0.55;
+}
+
+/* =============================================
+   四、标签 / 徽标 / 码
+   ============================================= */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: var(--r-xs);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.tag-brand {
+  background: var(--brand-tint);
+  color: var(--brand-primary);
+}
+
+.tag-green {
+  background: var(--brand-green-tint);
+  color: var(--brand-green);
+}
+
+.tag-muted {
+  background: var(--surface-3);
   color: var(--text-3);
-  font-size: 24rpx;
 }
 
-.divider {
-  height: 1rpx;
-  background-color: var(--brand-line);
-  margin: 20rpx 0;
+/* 左上角小标签：列表条目元信息 */
+.list-tag {
+  display: block;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--text-3);
+  margin-bottom: var(--sp-1);
 }
 
+.list-tag-brand {
+  color: var(--brand-primary);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  line-height: 1.5;
+}
+
+/* =============================================
+   五、列表行
+   ============================================= */
+.list-item {
+  padding: var(--sp-4) 0;
+  border-bottom: 2rpx solid var(--brand-line);
+}
+
+.list-item:first-child {
+  padding-top: var(--sp-1);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: 20rpx var(--sp-4);
+  box-sizing: border-box;
+}
+
+/* =============================================
+   六、空态 / 提示
+   ============================================= */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx var(--sp-4);
+  text-align: center;
+}
+
+.empty-text {
+  text-align: center;
+  font-size: var(--fs-note);
+  color: var(--text-4);
+  padding: var(--sp-5) 0;
+  line-height: 1.6;
+}
+
+.hint {
+  display: block;
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+/* =============================================
+   七、弹窗 / 遮罩
+   ============================================= */
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(24, 16, 12, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  width: 640rpx;
+  max-height: 78vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  box-sizing: border-box;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-3);
+}
+
+.modal-title {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.modal-close {
+  margin-top: var(--sp-4);
+  padding: var(--sp-4) 0;
+  text-align: center;
+  border-radius: var(--r-md);
+  background: linear-gradient(90deg, var(--brand-primary-deep), var(--brand-strong));
+  color: var(--text-invert);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  letter-spacing: 6rpx;
+}
+
+/* =============================================
+   八、弹性工具类
+   ============================================= */
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -135,4 +451,42 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.flex-1 {
+  flex: 1;
+  min-width: 0;
+}
+
+.text-primary {
+  color: var(--brand-primary);
+}
+
+.text-secondary {
+  color: var(--text-2);
+}
+
+.text-muted {
+  color: var(--text-3);
+  font-size: var(--fs-note);
+}
+
+/* =============================================
+   九、入场动效（编辑风：短距离上浮）
+   backwards 填充：延迟期间保持隐藏，动画结束后回到常态，
+   不占用 transform，避免覆盖 hover 造成的位移
+   ============================================= */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(16rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }

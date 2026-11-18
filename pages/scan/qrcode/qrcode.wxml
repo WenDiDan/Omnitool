@@ -1,0 +1,71 @@
+<view class="pg">
+  <!-- Tab 切换 -->
+  <view class="tabs">
+    <block wx:for="{{tabs}}" wx:key="name">
+      <view
+        class="tb {{currentTab === index ? 'on' : ''}}"
+        data-index="{{index}}"
+        bindtap="switchTab"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 输入区 -->
+  <view class="input-box">
+    <textarea
+      class="txt"
+      value="{{inputText}}"
+      placeholder="{{placeholderText}}"
+      placeholder-class="ph"
+      maxlength="{{maxLength}}"
+      auto-height
+      bindinput="onInput"
+      bindblur="onInputBlur"
+      cursor-color="#FF5E3A"
+      show-confirm-bar="{{false}}"
+      focus="{{true}}"
+    />
+    <view class="input-bar">
+      <view class="ib-left" bindtap="pasteFromClipboard">
+        <text>粘贴</text>
+      </view>
+      <text class="ib-count">{{inputText.length}}/{{maxLength}}</text>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="btn {{canGenerate ? 'go' : ''}} {{generating ? 'loading' : ''}}" bindtap="generateQR">
+    <text>{{generating ? '生成中...' : '生成二维码'}}</text>
+  </view>
+
+  <!-- 结果弹层 -->
+  <view class="overlay {{showResult ? 'show' : ''}}" wx:if="{{showResult || resultAnimating}}">
+    <view class="mask" bindtap="closeResult"></view>
+    <view class="sheet {{showResult ? 'up' : ''}}" catchtap="noop">
+      <view class="sh-close" bindtap="closeResult">
+        <text>✕</text>
+      </view>
+
+      <!-- QR 图片 -->
+      <view class="qr-box">
+        <image class="qr-img" src="{{qrcodePath}}" mode="aspectFit" show-menu-by-longpress="{{true}}" />
+      </view>
+
+      <!-- 内容 -->
+      <view class="info">
+        <text class="info-txt selectable">{{inputText}}</text>
+      </view>
+
+      <!-- 按钮 -->
+      <view class="acts">
+        <view class="act save" bindtap="saveQR"><text>保存相册</text></view>
+        <view class="act retry" bindtap="clearQR"><text>重新生成</text></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 离屏 Canvas：本地绘制二维码后导出图片，不依赖网络 -->
+  <canvas type="2d" id="qrCanvas" class="qr-canvas"></canvas>
+</view>

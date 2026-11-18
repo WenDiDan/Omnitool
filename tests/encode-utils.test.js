@@ -258,9 +258,9 @@ describe('encodeTools - HTML 实体', () => {
     test('回环测试', () => {
       const original = '<div class="test">A&B\'s</div>';
       const encoded = encodeTools.htmlEncode(original);
-      // Note: ' is not encoded by htmlEncode, only & < > " are encoded
+      // htmlEncode 只转义 & < > "，单引号原样保留，解码后应与原文完全一致
       const decoded = encodeTools.htmlDecode(encoded);
-      expect(decoded).toBe(original.replace(/'/g, ''));
+      expect(decoded).toBe(original);
     });
 
     test('空字符串', () => {

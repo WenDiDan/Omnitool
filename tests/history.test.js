@@ -15,7 +15,16 @@
 const mockWx = {
   showModal: jest.fn(),
   showToast: jest.fn(),
-  switchTab: jest.fn()
+  switchTab: jest.fn(),
+  navigateTo: jest.fn(),
+  setClipboardData: jest.fn(),
+  // permission.js 读写缓存依赖这两个 API
+  getStorageSync: jest.fn(() => null),
+  setStorageSync: jest.fn(),
+  // 清空历史前会先上云存档到回收站
+  cloud: {
+    callFunction: jest.fn(() => Promise.resolve({ result: { success: true } }))
+  }
 };
 
 const mockApp = {
@@ -34,7 +43,7 @@ global.getApp = jest.fn(() => mockApp);
 global.wx = mockWx;
 
 // --------------- require 页面（触发 Page 注册）---------------
-require('../pages/history/history.js');
+require('../pages/scan/history/history.js');
 
 // --------------- helpers ---------------
 
@@ -74,14 +83,14 @@ beforeEach(() => {
 });
 
 /* ===================================================================
-   getTypeLabel()  — 纯函数，核心测试
+   getTypeLabel()  — 已抽至 pages/scan/utils/scan-utils.js，按公共工具测试
    =================================================================== */
 
 describe('getTypeLabel(type)', () => {
   let getTypeLabel;
 
   beforeAll(() => {
-    getTypeLabel = pageDefinition.getTypeLabel;
+    getTypeLabel = require('../pages/scan/utils/scan-utils.js').getTypeLabel;
   });
 
   /* ---- EAN 分支 ---- */
@@ -195,7 +204,7 @@ describe('loadHistory()', () => {
 
     pageDefinition.loadHistory.call(ctx);
 
-    expect(ctx.setData).toHaveBeenCalledWith({ historyList: [] });
+    expect(ctx.setData.mock.calls[0][0]).toEqual(expect.objectContaining({ historyList: [] }));
   });
 
   it('scanHistory 不存在 → 安全降级为空数组', () => {
@@ -204,7 +213,43 @@ describe('loadHistory()', () => {
 
     pageDefinition.loadHistory.call(ctx);
 
-    expect(ctx.setData).toHaveBeenCalledWith({ historyList: [] });
+    expect(ctx.setData.mock.calls[0][0]).toEqual(expect.objectContaining({ historyList: [] }));
+  });
+
+  it('记录超过一页时只渲染首屏，并标记还有更多', () => {
+    mockApp.globalData.scanHistory = Array.from({ length: 65 }, (_, i) =>
+      makeHistoryItem({ code: 'C' + i, time: '2025-01-01 12:00:00' })
+    );
+    const ctx = setupPageContext();
+
+    pageDefinition.loadHistory.call(ctx);
+
+    const patch = ctx.setData.mock.calls[0][0];
+    expect(patch.historyList).toHaveLength(65);
+    expect(patch.visibleList).toHaveLength(30);
+    expect(patch.hasMore).toBe(true);
+  });
+
+  it('触底加载按页追加，全部加载后 hasMore 为 false', () => {
+    mockApp.globalData.scanHistory = Array.from({ length: 65 }, (_, i) =>
+      makeHistoryItem({ code: 'C' + i })
+    );
+    const ctx = setupPageContext();
+    pageDefinition.loadHistory.call(ctx);
+    Object.assign(ctx.data, ctx.setData.mock.calls[0][0]);
+
+    pageDefinition.onReachBottom.call(ctx);
+    expect(ctx.data.visibleList).toHaveLength(60);
+    expect(ctx.data.hasMore).toBe(true);
+
+    pageDefinition.onReachBottom.call(ctx);
+    expect(ctx.data.visibleList).toHaveLength(65);
+    expect(ctx.data.hasMore).toBe(false);
+
+    // 已无更多时不再触发 setData
+    const calls = ctx.setData.mock.calls.length;
+    pageDefinition.onReachBottom.call(ctx);
+    expect(ctx.setData.mock.calls.length).toBe(calls);
   });
 });
 
@@ -223,15 +268,18 @@ describe('clearHistory()', () => {
     expect(mockWx.showModal.mock.calls[0][0].content).toContain('清空所有');
   });
 
-  it('用户确认 → 调用 clearScanHistory + 重新加载 + toast', () => {
+  it('用户确认 → 先上云存档，再调用 clearScanHistory + toast', async () => {
     const ctx = setupPageContext();
-    // 模拟 confirm
     mockWx.showModal.mockImplementation(({ success }) => success({ confirm: true }));
 
     pageDefinition.clearHistory.call(ctx);
+    // 清空是异步流程（先存云端回收站再清理本地）
+    await new Promise((r) => setTimeout(r, 0));
 
     expect(mockApp.clearScanHistory).toHaveBeenCalledTimes(1);
-    expect(mockWx.showToast).toHaveBeenCalledWith(expect.objectContaining({ title: '已清空' }));
+    expect(mockWx.showToast).toHaveBeenCalledWith(
+      expect.objectContaining({ title: expect.stringContaining('已清空') })
+    );
   });
 
   it('用户取消 → 不做任何清理', () => {
@@ -250,14 +298,16 @@ describe('clearHistory()', () => {
    =================================================================== */
 
 describe('viewDetail(e)', () => {
-  it('设置 pendingScanCode 并 switchTab 到 scan 页', () => {
+  it('打开页内详情弹层并带入扫码数据', () => {
     const ctx = setupPageContext();
+    mockApp.globalData.scanHistory = [makeHistoryItem({ code: 'https://example.com', type: 'URL' })];
     const e = { currentTarget: { dataset: { code: 'https://example.com' } } };
 
     pageDefinition.viewDetail.call(ctx, e);
 
-    expect(mockApp.globalData.pendingScanCode).toBe('https://example.com');
-    expect(mockWx.switchTab).toHaveBeenCalledWith({ url: '/pages/scan/scan' });
+    expect(ctx.data.showDetail).toBe(true);
+    expect(ctx.data.scanResult.code).toBe('https://example.com');
+    expect(mockWx.switchTab).not.toHaveBeenCalled();
   });
 
   it('code 为空字符串也可正常处理', () => {
@@ -266,8 +316,8 @@ describe('viewDetail(e)', () => {
 
     pageDefinition.viewDetail.call(ctx, e);
 
-    expect(mockApp.globalData.pendingScanCode).toBe('');
-    expect(mockWx.switchTab).toHaveBeenCalled();
+    expect(ctx.data.showDetail).toBe(true);
+    expect(ctx.data.scanResult.code).toBe('');
   });
 });
 
@@ -281,7 +331,7 @@ describe('goToScan()', () => {
 
     pageDefinition.goToScan.call(ctx);
 
-    expect(mockWx.switchTab).toHaveBeenCalledWith({ url: '/pages/scan/scan' });
+    expect(mockWx.navigateTo).toHaveBeenCalledWith({ url: '/pages/scan/scan' });
   });
 });
 

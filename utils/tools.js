@@ -2,20 +2,31 @@
  * 工具清单数据层
  *
  * 数据源优先级：
- *   云端 tools 集合（经由 toolsManage 云函数） > 本地缓存 > 内置兜底
+ *   云端 tools 集合（经由 toolsManage 云函数） > 本地缓存（云端快照） > 内置兜底
  *
  * 目标：新增一个工具只需往云端 tools 集合插入一行，前端无需改代码、无需发版。
  * 云端不可用（未部署 / 无网络 / 超时）时自动回退，保证首页不白屏。
+ *
+ * 内置兜底（FALLBACK_TOOLS）只放「无云端配置也能独立运行」的固定工具（扫一扫、注册码、单位换算、文本、随机、日期）。
+ * 依赖云函数/云端数据的线上工具（如多多水果互助 pdd_fruit）不放这里，仅在云端 tools 集合配置后下发。
+ * 这些工具页面已打包进小程序，因此会与云端清单合并展示（mergeBuiltinTools），
+ * 云端漏配（未播种 / 旧版云函数）时也不会从首页消失。
+ * 互助类工具（tb_coin_pk 等）的规则/次数/文案完全由云端驱动，不内置：
+ * 云端不可用时首页不展示它们，避免展示与云端不一致的旧规则。
  */
 
 const CACHE_KEY = 'toolsCache'
+const VERSION_CACHE_KEY = 'toolsVersionCache' // 云端清单版本号（配置变化自动刷新用）
 const CACHE_TTL = 30 * 60 * 1000 // 本地缓存 30 分钟
 const TIMEOUT = 6000
+const MAX_ATTEMPTS = 2 // 云函数冷启动可能超过单次超时，失败后自动重试一次
 const CLOUD_FUNCTION = 'toolsManage'
 // 内置工具配置变更时递增，使旧缓存自动失效
-const CACHE_VERSION = 6
+const CACHE_VERSION = 17 // v17：图标路径迁移为 nav_* / ui_*，旧缓存需失效
 
 let memoryCache = null
+let memorySource = '' // 'cloud' 云端成功写入 | 'storage' 本地缓存恢复 | 'fallback' 内置兜底
+let offlineKeysCache = [] // 最近一次云端下发的下线工具 key，供离线兜底使用
 let _refreshPromise = null
 
 /** 内置兜底清单：与云端首次播种的默认数据保持一致 */
@@ -24,7 +35,7 @@ const FALLBACK_TOOLS = [
     tool_key: 'scan',
     name: '扫一扫 · 解码',
     desc: '相机扫码 / 相册识别 · 内容解析与编码转换',
-    icon: '/images/icon_scan_white.png',
+    icon: '/images/nav_scan_white.png',
     iconBg: '#CB5F47',
     tag: '',
     url: '/pages/scan/scan',
@@ -37,68 +48,116 @@ const FALLBACK_TOOLS = [
     tool_key: 'regcode',
     name: '注册码',
     desc: '生成 / 解析 / 校验',
-    icon: '/images/icon_settings_white.png',
+    icon: '/images/nav_settings_white.png',
     iconBg: '#A8452F',
     tag: 'VIP',
-    url: '/package1/pages/regcode/regcode',
+    url: '/pages/regcode/regcode',
     navType: 'navigateTo',
     featured: false,
     category: '效率工具',
     sort: 3
   },
   {
-    tool_key: 'tb_coin_pk',
-    name: '淘金币互助·赛车助力',
-    app_name: '淘宝',
-    desc: '个人赛车加能量 / 车队助力加里程 · 个人赛每日各 10 次，车队每日各 6 次',
-    summary: '按名额发布助力需求，完成后上传明细图供受助者核对',
+    tool_key: 'unit_convert',
+    name: '单位换算',
+    desc: '长度 / 重量 / 温度 / 面积 / 速度实时换算',
     icon: '',
-    iconBg: '#FFF3E0',
-    badge: '金币',
-    badgeColor: '#FF6B35',
-    tag: '互助',
-    url: '',
-    navType: 'tool',
-    modes: '个人赛车（加能量） / 车队助力（加里程）',
-    mode_tabs: ['个人赛车（加能量）', '车队助力（加里程）'],
-    board_notice: '今日次数已用完，明天零点恢复领取机会；实际助力结果以淘宝明细为准。',
-    daily_help_limit: 10,
-    daily_receive_limit: 10,
-    daily_help_limit_solo: 10,
-    daily_help_limit_team: 6,
-    daily_receive_limit_solo: 10,
-    daily_receive_limit_team: 6,
-    task_seconds: 300,
-    quota_full_text: '今日受助名额已用完，包含正在助力的任务。',
-    claim_title: '今日领取已完成',
-    claim_desc: '明天零点恢复领取机会。已有记录可到「今日助人」查看。',
-    detail_title: '今日助力明细图',
-    detail_desc: '今日次数已用完，可以上传明细图了。还有 10 笔已完成任务没有明细图。',
-    detail_note: '自愿补充，不影响任务操作；相关受助者可直接查看完整总图。',
-    arrange_text: '今天设置的受助人数已安排完，暂不安排新助力。',
-    result_note: '实际助力结果以淘宝明细为准。',
-    rules_text: [
-      '【互助平台侧 · 两种模式】个人赛车（加能量）与车队助力（加里程）分开参与，在页面顶部切换。',
-      '【互助平台侧 · 先助人后发布】受助机会注册即赠 1 次，成功助力他人 +1 次，被他人助力 -1 次；不按天补充，亏欠会原样结转到次日，需继续助力补齐才能发布口令进入受助池。',
-      '【互助平台侧 · 今日助人】个人赛每日上限 10 次、车队 PK 每日上限 6 次，用完显示「剩余 0 次」；已用记录可到「今日助人」查看。',
-      '【互助平台侧 · 今日受助】个人赛每日上限 10 次、车队 PK 每日上限 6 次，名额包含正在助力的任务；当日名额安排完后不再安排新助力。',
-      '【互助平台侧 · 领取与恢复】今日领取完成后，明天零点恢复领取机会。',
-      '【互助平台侧 · 助力明细图】次数用完后可上传「今日助力明细图」；属自愿补充，不影响任务操作。',
-      '【互助平台侧 · 结果认定】实际助力结果以淘宝明细为准，平台记录仅供参考。'
-    ].join('\n'),
-    proof_label: '助力明细图',
-    proof_placeholder: '上传今日助力明细图，或粘贴助力链接 / 淘口令',
-    need_min: 1,
-    need_max: 5,
-    point_default: 1,
-    source_note: '平台侧规则依据互助界面截图整理；淘宝活动侧规则依据公开攻略整理。两类次数上限口径不同（平台 10 次 / 官方 6 次），均以各自页面实时显示为准。',
+    iconBg: '#F3E7D8',
+    badge: '换',
+    badgeColor: '#C0553D',
+    tag: '',
+    url: '/pages/unit-converter/unit-converter',
+    navType: 'navigateTo',
     featured: false,
-    category: '淘金币互助',
-    sort: 4
+    category: '效率工具',
+    sort: 5
+  },
+  {
+    tool_key: 'text_tools',
+    name: '文本工具箱',
+    desc: '去重 / 去空行 / 排序 / 批量替换 / 标点转换',
+    icon: '',
+    iconBg: '#F7EDE2',
+    badge: '文',
+    badgeColor: '#2F6C60',
+    tag: '',
+    url: '/pages/text-tools/text-tools',
+    navType: 'navigateTo',
+    featured: false,
+    category: '效率工具',
+    sort: 6
+  },
+  {
+    tool_key: 'date_tools',
+    name: '日期工具',
+    desc: '日期间隔 / 日期推算 / 时间戳 / 倒计时',
+    icon: '',
+    iconBg: '#F3E7D8',
+    badge: '日',
+    badgeColor: '#A8452F',
+    tag: '',
+    url: '/pages/date-tools/date-tools',
+    navType: 'navigateTo',
+    featured: false,
+    category: '效率工具',
+    sort: 8
   }
 ]
 
-/** 字段规整 + 过滤无效项 + 按 sort 排序 */
+// 说明：互助类工具（如 tb_coin_pk）不内置到本地兜底清单
+// 其规则、次数上限、文案完全由云端配置驱动，本地保留副本容易与云端不一致而误导用户，
+// 因此仅在云端可用时展示；云端失效时首页只显示上面这些真正内置的工具。
+
+/**
+ * 内置工具路由表（以 tool_key 为准）
+ * 云端配置的 url 只是「可编辑的展示项」，历史数据里可能残留已废弃路径（如分包合并前的
+ * /package1/pages/xxx），导致点击静默失败。此处作为唯一可信来源，云端 url 仅兜底。
+ */
+const TOOL_ROUTES = {
+  scan: '/pages/scan/scan',
+  regcode: '/pages/regcode/regcode',
+  settings: '/pages/scan/settings/settings',
+  unit_convert: '/pages/unit-converter/unit-converter',
+  text_tools: '/pages/text-tools/text-tools',
+  date_tools: '/pages/date-tools/date-tools'
+}
+
+/**
+ * 解析工具的跳转地址
+ * @param {string} toolKey 工具标识
+ * @param {string} url 云端配置的地址（兜底）
+ * @returns {string} 可直接用于 navigateTo 的绝对路径，无法解析时返回空串
+ */
+function resolveRoute(toolKey, url) {
+  if (toolKey && TOOL_ROUTES[toolKey]) return TOOL_ROUTES[toolKey]
+  const raw = String(url || '').trim()
+  if (!raw) return ''
+  // 归一化：去掉分包/多余前缀，只保留 pages/ 之后的部分
+  const idx = raw.indexOf('pages/')
+  return idx >= 0 ? '/' + raw.slice(idx) : raw
+}
+
+/**
+ * 旧图标路径迁移表
+ * 全站图标已统一为 nav_* / ui_* 线稿，旧的实心图标文件已从 images/ 移除。
+ * 云端 tools 集合里仍可能存着旧路径，直接下发会渲染成空白块，这里统一改写到新文件。
+ */
+const LEGACY_ICON_MAP = {
+  '/images/icon_scan_white.png': '/images/nav_scan_white.png',
+  '/images/icon_settings_white.png': '/images/nav_settings_white.png',
+  '/images/icon_user_white.png': '/images/nav_user_white.png',
+  '/images/icon_delete_white.png': '/images/ui_trash_white.png',
+  '/images/icon_history_white.png': '/images/ui_clock_white.png',
+  '/images/icon_camera_white.png': '/images/ui_camera_white.png',
+  '/images/icon_album_white.png': '/images/ui_album_white.png',
+  '/images/icon_close_white.png': '/images/ui_close_white.png',
+  '/images/icon_edit_white.png': '/images/ui_edit_white.png',
+  '/images/icon_info_white.png': '/images/ui_info_white.png',
+  '/images/icon_scan.png': '/images/nav_scan.png',
+  '/images/icon_close.png': '/images/ui_close.png',
+  '/images/icon_info.png': '/images/ui_info.png'
+}
+
 function normalize(list) {
   if (!Array.isArray(list)) return []
   return list
@@ -109,8 +168,8 @@ function normalize(list) {
       app_name: item.app_name || '',
       desc: item.desc || item.summary || '',
       summary: item.summary || '',
-      icon: item.icon || '/images/icon_info.png',
-      iconBg: item.iconBg || '#E6F7F5',
+      icon: LEGACY_ICON_MAP[item.icon] || item.icon || '/images/ui_info.png',
+      iconBg: item.iconBg || '#F3E7D8',
       badge: item.badge || '',
       badgeColor: item.badgeColor || '#E8A44C',
       tag: item.tag || '',
@@ -150,10 +209,48 @@ function normalize(list) {
     .sort((a, b) => a.sort - b.sort)
 }
 
+/**
+ * 合并「内置固定工具」：本地页面已经打包进小程序，只要工具页存在就应可用，
+ * 不能因为云端（旧版本云函数 / 未播种 / 后台漏加）没下发就整条消失。
+ * 云端已配置的同名工具优先（可在后台改名、改描述、改排序），只补缺不覆盖。
+ */
+/**
+ * 合并「内置固定工具」：本地页面已经打包进小程序，只要工具页存在就应可用，
+ * 不能因为云端（旧版本云函数 / 未播种 / 后台漏加）没下发就整条消失。
+ * 云端已配置的同名工具优先（可在后台改名、改描述、改排序），只补缺不覆盖。
+ * offlineKeys：云端明确下线的工具，即使属于内置清单也不再展示（后台下线立即生效）
+ */
+function mergeBuiltinTools(list, offlineKeys) {
+  const merged = Array.isArray(list) ? list.slice() : []
+  const keys = new Set(merged.map(t => t.tool_key))
+  const offline = new Set(Array.isArray(offlineKeys) ? offlineKeys : [])
+  normalize(FALLBACK_TOOLS).forEach(t => {
+    if (keys.has(t.tool_key) || offline.has(t.tool_key)) return
+    merged.push(t)
+  })
+  return merged.sort((a, b) => a.sort - b.sort)
+}
+
 /** 按 tool_key 查询单个工具（供工具详情页使用） */
 function getTool(toolKey) {
   const list = getCachedTools()
-  return list.find(t => t.tool_key === toolKey) || null
+  const hit = list.find(t => t.tool_key === toolKey)
+  if (hit) return hit
+  // 兜底：云端配置缺失/被下线时退回内置清单，保证互助类工具不因配置异常而无法进入
+  const fb = normalize(FALLBACK_TOOLS).find(t => t.tool_key === toolKey)
+  return fb || null
+}
+
+/**
+ * 云端失效时可用于展示的清单
+ * 返回完整内置兜底清单（可离线独立运行的工具）：
+ * 云端失败/超时属于临时状态，内置工具是本地能力，优先保证可用；
+ * 云端下线状态（offline_keys）只在云端成功路径生效。
+ * 缓存里的云端工具一律不展示——互助类等线上工具（pdd_fruit / tb_coin_pk）的页面内容
+ * 依赖云端配置渲染，云端不可用时进入只会看到空白或过期数据
+ */
+function offlineTools() {
+  return mergeBuiltinTools([])
 }
 
 /** 同步读取：内存缓存 > 本地缓存 > 内置兜底，用于首屏立即渲染 */
@@ -163,30 +260,68 @@ function getCachedTools() {
   try {
     const raw = wx.getStorageSync(CACHE_KEY)
     if (raw && raw.version === CACHE_VERSION && Array.isArray(raw.list) && raw.list.length && (Date.now() - raw.at) < CACHE_TTL) {
-      memoryCache = normalize(raw.list)
+      offlineKeysCache = Array.isArray(raw.offlineKeys) ? raw.offlineKeys : []
+      memoryCache = mergeBuiltinTools(normalize(raw.list), offlineKeysCache)
+      memorySource = 'storage' // 本地快照 ≠ 云端确认可用，refreshTools 不得据此短路
       return memoryCache
     }
   } catch (e) { /* 忽略缓存读取异常 */ }
 
+  memorySource = 'fallback'
   return normalize(FALLBACK_TOOLS)
 }
 
-function saveCache(list) {
+function saveToolsCache(list, offlineKeys, cloudVersion) {
   memoryCache = list
+  memorySource = 'cloud'
+  offlineKeysCache = Array.isArray(offlineKeys) ? offlineKeys : []
+  if (typeof cloudVersion === 'number') saveLocalVersion(cloudVersion)
   try {
-    wx.setStorageSync(CACHE_KEY, { list, at: Date.now(), version: CACHE_VERSION })
+    wx.setStorageSync(CACHE_KEY, { list, offlineKeys: offlineKeysCache, at: Date.now(), version: CACHE_VERSION })
   } catch (e) { /* 忽略缓存写入异常 */ }
 }
 
+function localVersion() {
+  try { return Number(wx.getStorageSync(VERSION_CACHE_KEY)) || 0 } catch (e) { return 0 }
+}
+
+function saveLocalVersion(v) {
+  if (typeof v !== 'number' || v < 0) return
+  try { wx.setStorageSync(VERSION_CACHE_KEY, v) } catch (e) { /* 忽略 */ }
+}
+
 /**
- * 从云端刷新工具清单（带互斥锁与超时保护）
+ * 版本比对同步：供首页 onShow 调用
+ * 只发一次轻量 version 请求；版本与本地一致返回 null（零成本），变化则强制拉全量并返回最新清单
+ */
+function syncIfChanged() {
+  return new Promise((resolve) => {
+    wx.cloud.callFunction({
+      name: CLOUD_FUNCTION,
+      data: { action: 'version' },
+      success: (res) => {
+        const result = res && res.result
+        if (!result || !result.success || typeof result.version !== 'number') return resolve(null)
+        if (result.version === localVersion()) return resolve(null)
+        refreshTools(true).then((r) => resolve(r.success ? r : null)).catch(() => resolve(null))
+      },
+      fail: () => resolve(null)
+    })
+  })
+}
+
+/**
+ * 从云端刷新工具清单（带互斥锁、超时与自动重试保护）
+ * 重试主要覆盖云函数冷启动：部署后首次调用可能超过单次超时，失败后立即重试一次
  * @param {boolean} force 忽略内存缓存强制请求
  * @returns {Promise<{ success: boolean, tools: Array, source: string, error?: string }>}
  */
 function refreshTools(force) {
   if (_refreshPromise) return _refreshPromise
 
-  if (!force && memoryCache && memoryCache.length) {
+  // 内存短路仅限「本次会话中云端成功写入」的清单；
+  // 从本地存储恢复的旧快照（可能是已失效云端的残留）必须真实请求，否则失效探测会被跳过
+  if (!force && memorySource === 'cloud' && memoryCache && memoryCache.length) {
     return Promise.resolve({ success: true, tools: memoryCache, source: 'memory' })
   }
 
@@ -195,42 +330,73 @@ function refreshTools(force) {
     const finish = (result) => {
       if (done) return
       done = true
-      clearTimeout(timer)
       _refreshPromise = null
       resolve(result)
     }
 
-    const timer = setTimeout(() => {
-      finish({ success: false, tools: getCachedTools(), source: 'timeout', error: '请求超时' })
-    }, TIMEOUT)
-
-    wx.cloud.callFunction({
-      name: CLOUD_FUNCTION,
-      data: { action: 'list' },
-      success: (res) => {
-        const result = res && res.result
-        if (result && result.success && Array.isArray(result.tools) && result.tools.length) {
-          const list = normalize(result.tools)
-          saveCache(list)
-          finish({ success: true, tools: list, source: 'cloud' })
-        } else {
-          finish({
-            success: false,
-            tools: getCachedTools(),
-            source: 'empty',
-            error: (result && result.error) || '云端暂无工具'
-          })
-        }
-      },
-      fail: (err) => {
+    const handleResult = (result) => {
+      if (result && result.success && Array.isArray(result.tools) && result.tools.length) {
+        // 云端清单 + 内置固定工具合并：云端漏配（旧版云函数 / 未播种）时内置工具仍可进入
+        const list = mergeBuiltinTools(normalize(result.tools), result.offline_keys)
+        saveToolsCache(list, result.offline_keys, result.version)
+        finish({ success: true, tools: list, source: 'cloud' })
+      } else if (result && result.success && Array.isArray(result.tools)) {
+        // 云端正常应答但无上线工具（管理员全部下线 / 集合为空）：确定性的空，
+        // 页面据此清空计数与卡片（不能沿用缓存数量造成「02 个工具 + 暂无工具」）
+        finish({ success: false, tools: [], source: 'empty', error: '云端暂无上线工具' })
+      } else {
+        // 云端异常应答（未部署 / 权限 / 数据格式变化）：按「云端不可用」回退本地清单，
+        // 不能误判为「空」导致把可用工具清没
         finish({
           success: false,
-          tools: getCachedTools(),
+          tools: offlineTools(),
           source: 'error',
-          error: (err && err.errMsg) || '云端读取失败'
+          error: (result && result.error) || '云端返回异常'
         })
       }
-    })
+    }
+
+    const attemptOnce = (attempt) => {
+      let timer = null
+      let settled = false
+      // 只让首个回调生效，防止超时定时器与响应回调竞争
+      const wrap = (fn) => (...args) => {
+        if (settled) return
+        settled = true
+        clearTimeout(timer)
+        fn(...args)
+      }
+
+      timer = setTimeout(wrap(() => {
+        // 超时：多为云函数冷启动，自动重试一次
+        if (attempt < MAX_ATTEMPTS) {
+          attemptOnce(attempt + 1)
+          return
+        }
+        finish({ success: false, tools: offlineTools(), source: 'timeout', error: '请求超时' })
+      }), TIMEOUT)
+
+      wx.cloud.callFunction({
+        name: CLOUD_FUNCTION,
+        data: { action: 'list' },
+        success: wrap((res) => handleResult(res && res.result)),
+        fail: wrap((err) => {
+          // 网络失败：自动重试一次
+          if (attempt < MAX_ATTEMPTS) {
+            attemptOnce(attempt + 1)
+            return
+          }
+          finish({
+            success: false,
+            tools: offlineTools(),
+            source: 'error',
+            error: (err && err.errMsg) || '云端读取失败'
+          })
+        })
+      })
+    }
+
+    attemptOnce(1)
   })
 
   return _refreshPromise
@@ -238,7 +404,12 @@ function refreshTools(force) {
 
 module.exports = {
   FALLBACK_TOOLS,
+  TOOL_ROUTES,
+  CACHE_VERSION,
+  resolveRoute,
   getCachedTools,
+  offlineTools,
   refreshTools,
+  syncIfChanged,
   getTool
 }

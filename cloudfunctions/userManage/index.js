@@ -1,8 +1,11 @@
 const cloud = require('wx-server-sdk')
+const { bjTime } = require('./_shared/time')
+const { calcRetentionDays } = require('./_shared/retention')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
+const _ = db.command
 
 // 辅助：获取用户创建时间（优先级：createdAt > _createTime > _id 中的时间戳）
 function getCreateTime(doc) {
@@ -107,7 +110,7 @@ exports.main = async (event, context) => {
     case 'deleteUser':
       return await deleteUser(OPENID, event.targetOpenid, usersCollection)
     case 'listUsers':
-      return await listUsers(OPENID, event.page || 1, event.pageSize || 20, usersCollection)
+      return await listUsers(OPENID, event.page || 1, event.pageSize || 20, usersCollection, event.keyword, event.role)
     case 'checkPermission':
       return await checkPermission(OPENID, event.requiredLevel || 1, usersCollection)
     default:
@@ -125,6 +128,11 @@ async function ensureCreatedAt(openid, doc, usersCollection) {
   return ts
 }
 
+// 生成默认昵称（新用户 / 老用户昵称为空时兜底），如「用户4832」
+function genNickname() {
+  return '用户' + String(Math.floor(1000 + Math.random() * 9000))
+}
+
 // 获取当前用户信息，不存在则自动创建
 async function getUserInfo(openid, usersCollection) {
   try {
@@ -135,6 +143,15 @@ async function getUserInfo(openid, usersCollection) {
 
       // 检查VIP是否过期（过期会自动降级写库）
       const vipResult = await checkVipExpiry(user, usersCollection)
+
+      // 老用户昵称为空时补一个自动昵称（只写一次，避免列表里全是「未设置」）
+      let nickName = user.nickName || ''
+      if (!nickName) {
+        nickName = genNickname()
+        try {
+          await usersCollection.where({ openid }).update({ data: { nickName } })
+        } catch (e) { /* 写库失败时本次展示仍使用生成值 */ }
+      }
 
       // 计算有效保留天数（与 syncScanHistory 逻辑一致）
       let effectiveDays = user.historyRetentionDays || 3
@@ -156,11 +173,13 @@ async function getUserInfo(openid, usersCollection) {
           role: vipResult.role,
           roleLabel: vipResult.roleLabel,
           level: vipResult.level,
-          nickName: user.nickName || '',
+          nickName,
           avatarUrl: user.avatarUrl || '',
           avatarVersion: user.avatarVersion || 1,
           createdAt,
           isBlocked: vipResult.role === 'blocked',
+          banReason: vipResult.role === 'blocked' ? (user.ban_reason || '') : '',
+          bannedAt: vipResult.role === 'blocked' ? bjTime(user.bannedAt) : '',
           vipExpiresAt: vipResult.vipExpiresAt || '',
           historyRetentionDays: effectiveDays
         }
@@ -180,10 +199,11 @@ async function getUserInfo(openid, usersCollection) {
 
 async function createUser(openid, usersCollection) {
   const now = new Date().toISOString()
+  const nickName = genNickname()
 
-  // 创建用户记录
+  // 创建用户记录（自动生成默认昵称，可随时在个人中心修改）
   await usersCollection.add({
-    data: { openid, role: 'user', nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
+    data: { openid, role: 'user', nickName, avatarUrl: '', avatarVersion: 1, createdAt: now }
   })
 
   // 检查是否是第一个用户，自动设为管理员
@@ -194,7 +214,7 @@ async function createUser(openid, usersCollection) {
       await usersCollection.where({ openid }).update({ data: { role: 'admin' } })
       return {
         success: true,
-        user: { openid, role: 'admin', roleLabel: '管理员', level: 3, nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
+        user: { openid, role: 'admin', roleLabel: '管理员', level: 3, nickName, avatarUrl: '', avatarVersion: 1, createdAt: now }
       }
     }
   } catch (e) {
@@ -204,7 +224,7 @@ async function createUser(openid, usersCollection) {
 
   return {
     success: true,
-    user: { openid, role: 'user', roleLabel: '普通用户', level: 1, nickName: '', avatarUrl: '', avatarVersion: 1, createdAt: now }
+    user: { openid, role: 'user', roleLabel: '普通用户', level: 1, nickName, avatarUrl: '', avatarVersion: 1, createdAt: now }
   }
 }
 
@@ -327,20 +347,47 @@ async function deleteUser(callerOpenid, targetOpenid, usersCollection) {
   return { success: true, message: '用户已删除' }
 }
 
-// 管理员列出所有用户
-async function listUsers(callerOpenid, page, pageSize, usersCollection) {
+// 管理员列出所有用户（分页 + 关键词检索，保留天数随列表返回）
+async function listUsers(callerOpenid, page, pageSize, usersCollection, keyword, role) {
   // 验证管理员权限
   const { data: callerData } = await usersCollection.where({ openid: callerOpenid }).get()
   if (!callerData.length || callerData[0].role !== 'admin') {
     return { success: false, error: '权限不足，仅管理员可查看' }
   }
 
-  const skip = (page - 1) * pageSize
-  
-  // 并行执行查询和统计
-  const [usersResult, countResult] = await Promise.all([
-    usersCollection.skip(skip).limit(pageSize).get(),
-    usersCollection.count()
+  // 分页参数兜底：page ≥ 1，pageSize 限制在 10-100，避免一次拉取过多
+  const pageNum = Math.max(1, Number(page) || 1)
+  const sizeNum = Math.min(100, Math.max(10, Number(pageSize) || 50))
+  const skip = (pageNum - 1) * sizeNum
+
+  // 角色筛选（统计卡点击，可选）+ 关键词：昵称 / openid 模糊匹配（正则转义并限制长度）
+  const VALID_ROLES = ['admin', 'vip', 'user', 'blocked']
+  const roleFilter = VALID_ROLES.includes(role) ? role : ''
+  const kw = String(keyword || '').trim().slice(0, 50)
+  const conditions = []
+  if (roleFilter) conditions.push({ role: roleFilter })
+  if (kw) {
+    const safe = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    conditions.push(_.or([
+      { nickName: db.RegExp({ regexp: safe, options: 'i' }) },
+      { openid: db.RegExp({ regexp: safe, options: 'i' }) }
+    ]))
+  }
+  let query = usersCollection
+  if (conditions.length === 1) {
+    query = usersCollection.where(conditions[0])
+  } else if (conditions.length === 2) {
+    query = usersCollection.where(_.and(conditions))
+  }
+
+  // 并行执行查询和统计（角色统计为全量口径，与关键词过滤无关）
+  const [usersResult, countResult, adminCount, vipCount, userCount, blockedCount] = await Promise.all([
+    query.skip(skip).limit(sizeNum).get(),
+    query.count(),
+    usersCollection.where({ role: 'admin' }).count(),
+    usersCollection.where({ role: 'vip' }).count(),
+    usersCollection.where({ role: 'user' }).count(),
+    usersCollection.where({ role: 'blocked' }).count()
   ])
 
   // 收集需要转换的云存储头像
@@ -388,29 +435,30 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
     .filter(u => !u.createdAt)
     .forEach(u => ensureCreatedAt(u.openid, u, usersCollection))
 
-  // 批量检查VIP过期（后台异步，不阻塞）
+  // 批量检查 VIP 过期：并行执行，避免逐个等待；完成后按同一筛选条件重读
   const vipUsers = usersResult.data.filter(u => u.role === 'vip' && u.vipExpiresAt)
   if (vipUsers.length > 0) {
-    for (const vip of vipUsers) {
-      await checkVipExpiry(vip, usersCollection)
-    }
-    // 重新读取更新后的数据
-    const refreshed = await usersCollection.skip(skip).limit(pageSize).get()
+    await Promise.all(vipUsers.map(vip => checkVipExpiry(vip, usersCollection)))
+    const refreshed = await query.skip(skip).limit(sizeNum).get()
     usersResult.data = refreshed.data
   }
 
+  // 管理员浏览到的空昵称用户就地补齐（与 getUserInfo 同一口径，仅首次写库）
+  const emptyNickUsers = usersResult.data.filter(u => !u.nickName)
+  if (emptyNickUsers.length > 0) {
+    await Promise.all(emptyNickUsers.map(async (u) => {
+      const nick = genNickname()
+      try {
+        await usersCollection.where({ openid: u.openid }).update({ data: { nickName: nick } })
+        u.nickName = nick
+      } catch (e) { /* 写库失败则本次仍显示未设置 */ }
+    }))
+  }
+
   const users = usersResult.data.map(u => {
-    // 动态计算有效保留天数（与 syncScanHistory 的 getRetentionDays 逻辑一致）
-    let effectiveDays = u.historyRetentionDays || 3
+    // 保留天数统一由 _shared/retention.js 计算，避免与 getRetention 逻辑分叉
+    const effectiveDays = calcRetentionDays(u)
     const role = u.role || 'user'
-    if (role === 'vip' && u.vipExpiresAt) {
-      const expireDate = new Date(u.vipExpiresAt)
-      const now = new Date()
-      if (expireDate > now) {
-        const remainDays = Math.ceil((expireDate - now) / (24 * 60 * 60 * 1000))
-        effectiveDays = Math.max(effectiveDays, remainDays)
-      }
-    }
 
     return {
       openid: u.openid,
@@ -420,13 +468,23 @@ async function listUsers(callerOpenid, page, pageSize, usersCollection) {
       avatarUrl: processAvatarUrl(u.avatarUrl),
       createdAt: getCreateTime(u) || new Date().toISOString(),
       vipExpiresAt: u.vipExpiresAt || '',
-      historyRetentionDays: effectiveDays
+      retentionDays: effectiveDays,     // 有效保留天数（页面直接使用）
+      historyRetentionDays: effectiveDays // 兼容旧字段名
     }
   })
 
   return {
     success: true,
     total: countResult.total,
+    page: pageNum,
+    pageSize: sizeNum,
+    // 全量角色统计：供后台顶部统计卡展示
+    stats: {
+      admin: adminCount.total,
+      vip: vipCount.total,
+      user: userCount.total,
+      blocked: blockedCount.total
+    },
     users: users
   }
 }

@@ -1,0 +1,499 @@
+/* pages/recycleBin/recycleBin.wxss */
+
+/* 容器 */
+.container {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding-bottom: 120rpx;
+}
+
+/* ===== 工具区：批量操作行 + 信息行 ===== */
+.tool-area {
+  padding: 20rpx 12rpx 4rpx;
+}
+
+.tool-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.tool-count {
+  margin-left: auto;
+  font-size: 24rpx;
+  color: var(--text-4);
+  letter-spacing: 1rpx;
+}
+
+.tool-info {
+  margin-top: 14rpx;
+  justify-content: space-between;
+}
+
+.desc-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.desc-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #C0553D;
+  flex-shrink: 0;
+}
+
+.desc-text {
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 0.5rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 管理员测试按钮（仅管理员可见）：白底 + 暖灰描边，不再与米色背景融合 */
+.test-data-btn-inline {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: var(--text-3);
+  padding: 8rpx 24rpx;
+  background: #FFFFFF;
+  border: 1rpx solid rgba(43, 29, 24, 0.16);
+  border-radius: 20rpx;
+}
+
+/* ===== 加载态 ===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.loading-spinner {
+  width: 52rpx;
+  height: 52rpx;
+  border: 3rpx solid rgba(192, 85, 61, 0.18);
+  border-top-color: #C0553D;
+  border-radius: 50%;
+  animation: recycle-spin 0.8s linear infinite;
+}
+
+@keyframes recycle-spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: var(--text-4);
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 140rpx;
+}
+
+.empty-icon {
+  margin-bottom: 36rpx;
+}
+
+.empty-box {
+  position: relative;
+  width: 120rpx;
+}
+
+.empty-box-lid {
+  width: 100rpx;
+  height: 16rpx;
+  background: rgba(192, 85, 61, 0.35);
+  border-radius: 2rpx 2rpx 0 0;
+  margin-left: 10rpx;
+}
+
+.empty-box-body {
+  width: 120rpx;
+  height: 80rpx;
+  background: #EFE3D2;
+  border: 2rpx solid rgba(192, 85, 61, 0.25);
+  border-radius: 0 0 6rpx 6rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+.empty-box-line {
+  width: 48rpx;
+  height: 4rpx;
+  background: rgba(192, 85, 61, 0.2);
+  border-radius: 2rpx;
+}
+
+.empty-box-line.short {
+  width: 30rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2B1D18;
+  letter-spacing: 1rpx;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: var(--text-4);
+  letter-spacing: 0.5rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-btn {
+  padding: 16rpx 52rpx;
+  border: 1rpx solid rgba(192, 85, 61, 0.4);
+  border-radius: 32rpx;
+}
+
+.empty-btn-text {
+  font-size: 26rpx;
+  color: #C0553D;
+  letter-spacing: 1rpx;
+}
+
+/* 空态下的测试数据按钮（仅管理员）：与返回按钮拉开间距 */
+.empty-test-btn {
+  margin-top: 40rpx;
+}
+
+/* ===== 批量操作按钮（工具区内使用） ===== */
+.head-clear-btn {
+  padding: 8rpx 24rpx;
+  background: #FFFFFF;
+  border: 1rpx solid rgba(192, 85, 61, 0.45);
+  border-radius: var(--r-lg);
+}
+
+.head-clear-text {
+  font-size: 22rpx;
+  color: #C0553D;
+}
+
+.head-restore-btn {
+  padding: 8rpx 24rpx;
+  background: #C0553D;
+  border: 1rpx solid #C0553D;
+  border-radius: var(--r-lg);
+  box-shadow: 0 4rpx 10rpx rgba(192, 85, 61, 0.22);
+}
+
+.head-restore-text {
+  font-size: 22rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* ===== 条码详情弹层 ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.overlay.show {
+  pointer-events: auto;
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 16, 12, 0.5);
+  opacity: 0;
+  transition: opacity 0.28s;
+}
+
+.overlay.show .mask {
+  opacity: 1;
+}
+
+.sheet {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 40rpx 0 calc(32rpx + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.overlay.show .sheet {
+  transform: translateY(0);
+}
+
+.sh-close {
+  position: absolute;
+  top: 20rpx;
+  right: 24rpx;
+  width: 52rpx;
+  height: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.sh-close:active {
+  background: rgba(43, 29, 24, 0.06);
+}
+
+.sh-close text {
+  font-size: 28rpx;
+  color: var(--text-4);
+}
+
+.dt-title {
+  display: block;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2B1D18;
+  letter-spacing: 2rpx;
+  margin-bottom: 24rpx;
+}
+
+.dt-body {
+  margin: 0 32rpx 28rpx;
+  background: #F5EEE2;
+  border-radius: 12rpx;
+  padding: 8rpx 24rpx;
+}
+
+.dt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 14rpx 0;
+}
+
+.dt-label {
+  width: 160rpx;
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--text-4);
+}
+
+.dt-value {
+  flex: 1;
+  font-size: 24rpx;
+  color: #2B1D18;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.dt-code {
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.dt-acts {
+  display: flex;
+  gap: 16rpx;
+  margin: 0 32rpx;
+}
+
+.dt-act {
+  flex: 1;
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.dt-act:active {
+  transform: scale(0.97);
+}
+
+.dt-copy {
+  border: 2rpx solid #EFE6D8;
+  color: var(--text-4);
+}
+
+.dt-restore {
+  background: #C0553D;
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 10rpx rgba(192, 85, 61, 0.22);
+}
+
+/* ===== 表格列表 ===== */
+.recycle-list {
+  padding: 0 12rpx 40rpx;
+}
+
+.recycle-table {
+  margin: 0;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(43, 29, 24, 0.06);
+  box-shadow: 0 2rpx 12rpx rgba(43, 29, 24, 0.05);
+  overflow: hidden;
+}
+
+.table-head,
+.table-row {
+  display: flex;
+  align-items: center;
+  padding-left: 16rpx;
+  padding-right: 16rpx;
+}
+
+.table-head {
+  background: #F5EEE2;
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+
+.th {
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+}
+
+.th-type { width: 112rpx; flex-shrink: 0; }
+.th-main { flex: 1; }
+.th-time { width: 116rpx; flex-shrink: 0; text-align: right; }
+.th-ops  { width: 132rpx; flex-shrink: 0; text-align: right; }
+
+/* 类型标签 */
+.card-type-tag {
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  background: rgba(160, 141, 130, 0.18);
+}
+
+/* 类型标签分色：底色加重 + 深色文字，保证 22rpx 字号下可读 */
+.card-type-tag.type-ean { background: rgba(47, 108, 96, 0.16); }
+.card-type-tag.type-ean .card-type-text { color: #2F6C60; }
+.card-type-tag.type-qr { background: rgba(192, 85, 61, 0.16); }
+.card-type-tag.type-qr .card-type-text { color: #A8452F; }
+.card-type-tag.type-url { background: rgba(200, 149, 44, 0.18); }
+.card-type-tag.type-url .card-type-text { color: #96601A; }
+.card-type-tag.type-wifi { background: rgba(138, 91, 44, 0.18); }
+.card-type-tag.type-wifi .card-type-text { color: #8A5B2C; }
+.card-type-tag.type-card { background: rgba(192, 85, 61, 0.16); }
+.card-type-tag.type-card .card-type-text { color: #A84530; }
+.card-type-tag.type-tel { background: rgba(179, 90, 0, 0.16); }
+.card-type-tag.type-tel .card-type-text { color: #B35A00; }
+
+.card-type-text {
+  font-size: 22rpx;
+  color: #2B1D18;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+}
+
+/* 表格行 */
+.table-row {
+  padding-top: 18rpx;
+  padding-bottom: 18rpx;
+  border-top: 1rpx solid rgba(43, 29, 24, 0.08);
+}
+
+.table-row:active {
+  background: rgba(192, 85, 61, 0.04);
+}
+
+/* 单元格 */
+.td-type {
+  width: 112rpx;
+  flex-shrink: 0;
+  display: flex;
+}
+
+/* 表格内类型标签收紧内边距，避免挤占内容列 */
+.td-type .card-type-tag {
+  padding: 4rpx 10rpx;
+}
+
+.td-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+/* 条码：最多两行截断，URL 也能看到更多内容且行高可控 */
+.cell-code {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2B1D18;
+  letter-spacing: 1rpx;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.cell-origin {
+  display: block;
+  font-size: 22rpx;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.td-time {
+  width: 116rpx;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+.td-ops {
+  width: 132rpx;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12rpx;
+}
+
+/* 行内小按钮：加高热区，避免难点中 */
+.op-btn {
+  width: 60rpx;
+  padding: 10rpx 0;
+  text-align: center;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.op-restore {
+  background: #C0553D;
+  color: #FFFFFF;
+}
+
+.op-del {
+  background: rgba(192, 85, 61, 0.08);
+  color: #C0553D;
+  border: 1rpx solid rgba(192, 85, 61, 0.45);
+}

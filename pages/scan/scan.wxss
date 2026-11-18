@@ -1,11 +1,11 @@
 /* ===== 容器页（样式对齐互助工具页 pages/tool） ===== */
 page {
-  background: #FDF9F2;
+  background: var(--bg-page);
 }
 
 .hub-page {
   min-height: 100vh;
-  background: #FDF9F2;
+  background: var(--bg-page);
 }
 
 /* 面板外层容器 */
@@ -28,20 +28,141 @@ page {
   align-items: center;
   justify-content: space-around;
   background: #fff;
-  border-top: 2rpx solid #EFE3D5;
-  padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 2rpx solid var(--brand-line);
+  padding: 14rpx 24rpx calc(14rpx + env(safe-area-inset-bottom));
   z-index: 999;
 }
 
+/* 与原生 tabBar 同构：图标在上、文字在下，选中只变品牌色不套药丸 */
 .nav-item {
-  font-size: 26rpx;
-  color: #8A766C;
-  padding: 16rpx 64rpx;
-  border-radius: 14rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 0;
+  margin: 0 6rpx;
+  border-radius: var(--r-md);
+  transition: transform 0.15s ease;
 }
 
-.nav-active {
-  background: #F3DFCB;
-  color: #C0553D;
+.nav-item:active {
+  transform: scale(0.94);
+}
+
+.nav-icon {
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.nav-label {
+  font-size: 22rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+}
+
+.nav-active .nav-label {
+  color: var(--brand-primary);
   font-weight: 700;
+}
+
+/* ===== 设置页签 ===== */
+.settings-page {
+  padding: 40rpx 32rpx;
+  box-sizing: border-box;
+}
+
+/* 标题：墨色 + 品牌竖条，与互助页 page-title 同一套语言 */
+.settings-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 1rpx;
+  margin: 8rpx 8rpx 24rpx;
+}
+
+.settings-heading::before {
+  content: '';
+  width: 8rpx;
+  height: 36rpx;
+  border-radius: var(--r-xs);
+  background: var(--brand-primary);
+}
+
+/* 纸卡：描边 + 单层轻阴影，替换原来的重投影无描边卡片 */
+.settings-card {
+  background: var(--surface);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+  border-bottom: 2rpx solid var(--brand-line);
+}
+
+.settings-row-last {
+  border-bottom: none;
+}
+
+.settings-row:active {
+  background: var(--surface-2);
+}
+
+.settings-icon {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(43, 29, 24, 0.12);
+}
+
+/* 图标底色压深一档：原来浅绿/浅橙底上的白色图标几乎看不清 */
+.icon-settings-bg {
+  background: linear-gradient(135deg, #C79B7B, #A97A57);
+}
+
+.icon-recycle-bg {
+  background: linear-gradient(135deg, #E8A44C, #C8952C);
+}
+
+.settings-icon-img {
+  /* 线稿图标比原实心图标视觉更轻，放大一档补回重量 */
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.settings-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.settings-desc {
+  font-size: 24rpx;
+  color: var(--text-3);
+  margin-top: 8rpx;
+}
+
+.settings-arrow {
+  font-size: 28rpx;
+  color: var(--text-4);
+  margin-left: 12rpx;
 }

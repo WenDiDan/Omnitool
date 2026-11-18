@@ -30,6 +30,8 @@ const DEFAULT_PERMISSION = {
   avatarVersion: 1,
   createdAt: '',
   isBlocked: false,
+  banReason: '',      // 封禁原因（未封禁为空）
+  bannedAt: '',       // 封禁时间（北京时间字符串）
   vipExpiresAt: '',   // VIP到期时间（ISO字符串），空表示不限制
   historyRetentionDays: 3,  // 历史保留天数
   syncedAt: 0          // 最后同步时间戳
@@ -61,7 +63,7 @@ function loadCache() {
 /**
  * 保存权限到本地缓存
  */
-function saveCache(data) {
+function savePermissionCache(data) {
   cached = { ...cached, ...data, syncedAt: Date.now() }
   try {
     wx.setStorageSync(STORAGE_KEY, cached)
@@ -119,18 +121,23 @@ function syncFromCloud() {
             cloud.nickName !== old.nickName ||
             cloud.avatarUrl !== old.avatarUrl ||
             cloud.avatarVersion !== old.avatarVersion ||
-            cloud.isBlocked !== old.isBlocked
+            cloud.isBlocked !== old.isBlocked ||
+            cloud.banReason !== old.banReason ||
+            cloud.bannedAt !== old.bannedAt ||
+            // VIP 到期时间与保留天数同样影响权限展示，必须参与变更判断
+            cloud.vipExpiresAt !== old.vipExpiresAt ||
+            cloud.historyRetentionDays !== old.historyRetentionDays
 
           if (changed) {
             console.log('[permission] 云端权限变更:', {
               role: old.role + '→' + cloud.role,
               level: old.level + '→' + cloud.level
             })
-            saveCache(cloud)
+            savePermissionCache(cloud)
             resolve({ ...old, ...cloud })
           } else {
             // 无变化也更新时间戳，避免下次立即再请求
-            saveCache(old)
+            savePermissionCache(old)
             resolve(old)
           }
         } else {
@@ -251,7 +258,7 @@ function clearCache() {
 module.exports = {
   ROLES,
   loadCache,
-  saveCache,
+  savePermissionCache,
   needSync,
   syncFromCloud,
   getData,

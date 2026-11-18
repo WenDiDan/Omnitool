@@ -1,5 +1,5 @@
 @import '../common/style/index.wxss';.t-loading{display:inline-flex;align-items:center;justify-content:center;}
-.t-loading--fullscreen{position:fixed;display:flex;align-items:center;vertical-align:middle;justify-content:center;top:0;left:0;width:100%;height:100%;z-index:var(--td-loading-z-index,3500);background-color:var(--td-loading-full-bg-color,rgba(255,255,255,.6));}
+.t-loading--fullscreen{position:fixed;display:flex;align-items:center;vertical-align:middle;justify-content:center;top:0;left:0;width:100%;height:100%;z-index:var(--td-loading-z-index,var(--td-z-index-loading,13500));background-color:var(--td-loading-full-bg-color,rgba(255,255,255,.6));}
 .t-loading__spinner{position:relative;box-sizing:border-box;width:100%;height:100%;max-width:100%;max-height:100%;animation:rotate .8s linear infinite;color:var(--td-loading-color,var(--td-brand-color,var(--td-primary-color-7,#0052d9)));}
 .t-loading__spinner.reverse{animation-name:rotateReverse;}
 .t-loading__spinner--spinner{animation-timing-function:steps(12);color:var(--td-text-color-primary,var(--td-font-gray-1,rgba(0,0,0,.9)));}

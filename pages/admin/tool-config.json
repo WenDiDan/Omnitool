@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "工具配置",
+  "navigationBarBackgroundColor": "#2B1D18",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

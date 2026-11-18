@@ -1,0 +1,111 @@
+.tool-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: var(--sp-4) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* .card / .card-head / .card-title / .card-actions / .card-action 由 app.wxss 提供 */
+.card-action.copy {
+  color: #C8952C;
+}
+
+.main-textarea {
+  width: 100%;
+  min-height: 260rpx;
+  background: var(--surface-2);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  padding: 20rpx var(--sp-4);
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+/* ===== 统计 ===== */
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) 28rpx;
+  margin-top: 20rpx;
+}
+
+.stat-item {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+}
+
+/* ===== 批量替换 ===== */
+.replace-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.replace-input {
+  flex: 1;
+  min-width: 0;
+  height: 76rpx;
+  background: var(--surface-2);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-sm);
+  padding: 0 20rpx;
+  font-size: var(--fs-body);
+  color: var(--text-1);
+}
+
+.replace-btn {
+  padding: 0 var(--sp-5);
+  height: 76rpx;
+  line-height: 72rpx;
+  background: linear-gradient(135deg, #CB5F47, var(--brand-primary));
+  color: var(--text-invert);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(192, 85, 61, 0.2);
+}
+
+/* ===== 功能按钮网格 ===== */
+.action-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-bottom: var(--sp-4);
+}
+
+.action-chip {
+  width: calc((100% - 40rpx) / 3);
+  height: 96rpx;
+  background: var(--surface);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-body);
+  color: var(--text-1);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.action-chip-hover {
+  background: var(--surface-2);
+  transform: scale(0.97);
+}
+
+/* ===== 结果 ===== */
+.result-text {
+  background: var(--surface-2);
+  border: 2rpx solid var(--brand-line);
+  border-radius: var(--r-md);
+  padding: 20rpx var(--sp-4);
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-1);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
