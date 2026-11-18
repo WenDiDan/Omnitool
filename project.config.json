@@ -92,20 +92,20 @@
         "type": "file"
       },
       {
-        "type": "folder",
-        "value": "/minitest"
+        "value": "/minitest",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "coverage"
+        "value": "coverage",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "design"
+        "value": "design",
+        "type": "folder"
       },
       {
-        "type": "folder",
-        "value": "generated-images"
+        "value": "generated-images",
+        "type": "folder"
       }
     ],
     "include": []

@@ -11,7 +11,7 @@
 ## 目录结构
 
 ```
-xuexi/
+omnitool/
 ├── app.js / app.json / app.wxss      # 小程序入口：启动装配与登录编排（业务实现在 utils）
 ├── pages/                            # 小程序页面
 │   ├── home/                         # 首页（工具入口）

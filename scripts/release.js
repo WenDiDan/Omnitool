@@ -16,7 +16,7 @@ const fs = require('fs')
 const ROOT = path.resolve(__dirname, '..')
 const ENV = 'wendi-d5gnswjf75b25aac0'
 const TCB_CLI = 'C:/Program Files/nodejs/node_global/node_modules/@cloudbase/cli/bin/tcb'
-const APP_NAME = 'xuexi-admin'
+const APP_NAME = 'omnitool-admin'
 
 // --app 走云端构建的应用部署；默认走静态托管
 const USE_APP = process.argv.includes('--app')

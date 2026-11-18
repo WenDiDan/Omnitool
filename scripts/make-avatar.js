@@ -1,10 +1,10 @@
 // 裁掉生成图底部水印，导出小程序头像多尺寸版本
-const { chromium } = require('E:/WeChatProjects/xuexi/admin-web/node_modules/playwright-core')
+const { chromium } = require('E:/WeChatProjects/omnitool/admin-web/node_modules/playwright-core')
 const fs = require('fs')
 const path = require('path')
 
-const SRC = 'E:/WeChatProjects/xuexi/design/avatar/v2/扁平化极简_App_图标_正方形_米白色__F9F4EB_背_2026-11-12T02-53-28.png'
-const OUT_DIR = 'E:/WeChatProjects/xuexi/design/avatar/v2'
+const SRC = 'E:/WeChatProjects/omnitool/design/avatar/v2/扁平化极简_App_图标_正方形_米白色__F9F4EB_背_2026-11-12T02-53-28.png'
+const OUT_DIR = 'E:/WeChatProjects/omnitool/design/avatar/v2'
 
 async function main() {
   const browser = await chromium.launch({ channel: 'msedge', headless: true })

@@ -1,9 +1,9 @@
 // v3：手写 SVG 矢量头像 → 导出 1024/400/144 PNG
-const { chromium } = require('E:/WeChatProjects/xuexi/admin-web/node_modules/playwright-core')
+const { chromium } = require('E:/WeChatProjects/omnitool/admin-web/node_modules/playwright-core')
 const fs = require('fs')
 const path = require('path')
 
-const OUT_DIR = 'E:/WeChatProjects/xuexi/design/avatar/v3'
+const OUT_DIR = 'E:/WeChatProjects/omnitool/design/avatar/v3'
 fs.mkdirSync(OUT_DIR, { recursive: true })
 
 // ===== 矢量图标定义（1024×1024 画布） =====
